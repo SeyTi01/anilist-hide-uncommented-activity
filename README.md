@@ -1,0 +1,1 @@
+# anilist-hide-uncommented-activity
