@@ -19,6 +19,9 @@
         targetLoadCount: 3
     };
 
+    const ACTIVITY_SELECTOR = 'activity-entry';
+    const BUTTON_SELECTOR = 'load-more';
+
     const observer = new MutationObserver(observeMutations);
     let currentLoadCount = 0;
     let userPressedButton = true;
@@ -26,7 +29,7 @@
 
     function removeEntry(node) {
         let removed = false;
-        if (node.nodeType === 1 && node.classList.contains('activity-entry')) {
+        if (node instanceof HTMLElement && node.classList.contains(ACTIVITY_SELECTOR)) {
             const repliesDiv = node.querySelector('div.action.replies');
             const likesDiv = node.querySelector('div.action.likes');
 
@@ -48,15 +51,15 @@
         for (const mutation of mutations) {
             if (mutation.addedNodes.length !== 0) {
                 mutation.addedNodes.forEach((node) => {
-                    if (node.nodeType === 1 && node.classList.contains('activity-entry')) {
+                    if (node instanceof HTMLElement && node.classList.contains(ACTIVITY_SELECTOR)) {
                         if (removeEntry(node) === false) {
                             currentLoadCount++
                         }
                     }
 
-                    if (node.nodeType === 1 && node.classList.contains('load-more')) {
+                    if (node.nodeType === 1 && node.classList.contains(BUTTON_SELECTOR)) {
                         loadMoreButton = node;
-                        loadMoreButton.addEventListener("click", function() {
+                        loadMoreButton.addEventListener('click', function() {
                             userPressedButton = true;
                         });
                     }
