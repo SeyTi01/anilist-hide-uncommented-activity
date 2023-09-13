@@ -14,9 +14,9 @@
     'use strict';
 
     const config = {
-        removeUncommented: false, // Remove activities with no comments
-        removeUnliked: true, // Remove activities with no likes
-        targetLoadCount: 2 // Minimum number of activities to show per load
+        removeUncommented: true, // Remove activities with no comments
+        removeUnliked: false, // Remove activities with no likes
+        targetLoadCount: 2 // Minimum number of activities to show per click on the "Load More"-button
     };
 
     const SELECTORS = {
