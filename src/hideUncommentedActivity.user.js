@@ -19,10 +19,12 @@
         targetLoadCount: 2 // Minimum number of activities to show per load
     };
 
-    const ACTIVITY_SELECTOR = 'activity-entry';
-    const BUTTON_SELECTOR = 'load-more';
-    const REPLIES_SELECTOR = 'div.action.replies';
-    const LIKES_SELECTOR = 'div.action.likes';
+    const SELECTORS = {
+        activity: 'activity-entry',
+        button: 'load-more',
+        replies: 'div.action.replies',
+        likes: 'div.action.likes'
+    };
 
     const observer = new MutationObserver(observeMutations);
     let currentLoadCount = 0;
@@ -33,9 +35,9 @@
 
     function removeEntry(element) {
         let removed = false;
-        if (element instanceof HTMLElement && element.classList.contains(ACTIVITY_SELECTOR)) {
-            const repliesDiv = element.querySelector(REPLIES_SELECTOR);
-            const likesDiv = element.querySelector(LIKES_SELECTOR);
+        if (element instanceof HTMLElement && element.classList.contains(SELECTORS.activity)) {
+            const repliesDiv = element.querySelector(SELECTORS.replies);
+            const likesDiv = element.querySelector(SELECTORS.likes);
 
             if (config.removeUncommented && !hasCount(repliesDiv)) {
                 element.remove();
@@ -66,13 +68,13 @@
     }
 
     function handleAddedNode(node) {
-        if (node instanceof HTMLElement && node.classList.contains(ACTIVITY_SELECTOR)) {
-            if (removeEntry(node) === false) {
+        if (node instanceof HTMLElement && node.classList.contains(SELECTORS.activity)) {
+            if (!removeEntry(node)) {
                 currentLoadCount++;
             }
         }
 
-        if (node instanceof HTMLElement && node.classList.contains(BUTTON_SELECTOR)) {
+        if (node instanceof HTMLElement && node.classList.contains(SELECTORS.button)) {
             loadMoreButton = node;
             loadMoreButton.addEventListener('click', function() {
                 userPressedButton = true;
