@@ -57,7 +57,7 @@
                         }
                     }
 
-                    if (node.nodeType === 1 && node.classList.contains(BUTTON_SELECTOR)) {
+                    if (node instanceof HTMLElement && node.classList.contains(BUTTON_SELECTOR)) {
                         loadMoreButton = node;
                         loadMoreButton.addEventListener('click', function() {
                             userPressedButton = true;
