@@ -56,6 +56,9 @@
 
                     if (node.nodeType === 1 && node.classList.contains('load-more')) {
                         loadMoreButton = node;
+                        loadMoreButton.addEventListener("click", function() {
+                            userPressedButton = true;
+                        });
                     }
                 });
             }
@@ -77,5 +80,4 @@
     }
 
     observer.observe(document.body, {childList: true, subtree: true});
-    loadMoreButton.addEventListener("click", userPressedButton = true);
 })();
