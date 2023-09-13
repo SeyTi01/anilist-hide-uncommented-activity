@@ -14,7 +14,7 @@ This is a userscript that hides uncommented/unliked activity on the Anilist soci
 2. Click [here](https://github.com/SeyTi01/anilist-hide-uncommented-activity/raw/1.0/src/hideUncommentedActivity.user.js) to open the raw userscript file.
 3. The userscript manager extension should detect the script and prompt you to install it. Follow the instructions to install the script.
 
-**Note**: You need to refresh the page when you open a show's social feed for the script to work properly.
+**Note**: You need to refresh the page when you open a show's social-feed for the script to work properly.
 
 ## Configuration
 
