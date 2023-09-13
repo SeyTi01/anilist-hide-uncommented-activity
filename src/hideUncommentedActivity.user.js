@@ -14,9 +14,9 @@
     'use strict';
 
     const config = {
-        removeUncommented: true,
-        removeUnliked: false,
-        targetLoadCount: 3
+        removeUncommented: false,
+        removeUnliked: true,
+        targetLoadCount: 2
     };
 
     const ACTIVITY_SELECTOR = 'activity-entry';
