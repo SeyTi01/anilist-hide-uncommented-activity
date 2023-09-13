@@ -4,7 +4,7 @@
 // @version      1.0
 // @description  Hides uncommented/unliked activity on the Anilist social-feed
 // @author       SeyTi01
-// @match        https://anilist.co/*
+// @match        https://anilist.co/anime/*/social
 // @grant        none
 // @run-at       document-start
 // @license      MIT
