@@ -13,13 +13,24 @@
 (function () {
     'use strict';
 
+    const config = {
+        removeUncommented: true,
+        removeUnliked: false,
+    };
+
+    const activityFeed = document.querySelector('.activity-feed');
     const observer = new MutationObserver(observeMutations);
 
-    function removeUncommentedActivity(node) {
+    function removeEntry(node) {
         if (node.nodeType === 1 && node.classList.contains('activity-entry') && node.classList.contains('activity-anime_list')) {
-            const countSpan = node.querySelector('span.count');
-            const actionRepliesDiv = node.querySelector('div.action.replies');
-            if (!countSpan || (actionRepliesDiv && !actionRepliesDiv.contains(countSpan))) {
+            const repliesDiv = node.querySelector('div.action.replies');
+            const likesDiv = node.querySelector('div.action.likes');
+
+            if (config.removeUncommented && !repliesDiv?.querySelector('span.count')) {
+                node.remove();
+            }
+
+            if (config.removeUnliked && !likesDiv?.querySelector('span.count')) {
                 node.remove();
             }
         }
@@ -28,12 +39,11 @@
     function observeMutations(mutations) {
         for (const mutation of mutations) {
             mutation.addedNodes.forEach((node) => {
-                removeUncommentedActivity(node);
+                removeEntry(node);
             });
         }
     }
 
-    const activityFeed = document.querySelector('.activity-feed');
-    if (activityFeed) {activityFeed.forEach(removeUncommentedActivity);}
+    if (activityFeed) {activityFeed.forEach(removeEntry);}
     observer.observe(document.body, {childList: true, subtree: true});
 })();
