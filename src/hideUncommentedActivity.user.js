@@ -39,12 +39,7 @@
             const repliesDiv = element.querySelector(SELECTORS.replies);
             const likesDiv = element.querySelector(SELECTORS.likes);
 
-            if (config.removeUncommented && !hasCount(repliesDiv)) {
-                element.remove();
-                removed = true;
-            }
-
-            if (config.removeUnliked && !hasCount(likesDiv)) {
+            if ((config.removeUncommented && !hasCount(repliesDiv)) || (config.removeUnliked && !hasCount(likesDiv))) {
                 element.remove();
                 removed = true;
             }
