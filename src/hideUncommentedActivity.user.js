@@ -77,5 +77,5 @@
     }
 
     observer.observe(document.body, {childList: true, subtree: true});
-    loadMoreButton.addEventListener("click", userPressedButton = true)
+    loadMoreButton.addEventListener("click", userPressedButton = true);
 })();
