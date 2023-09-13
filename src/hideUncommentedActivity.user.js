@@ -6,7 +6,6 @@
 // @author       SeyTi01
 // @match        https://anilist.co/anime/*/social
 // @grant        none
-// @run-at       document-start
 // @license      MIT
 // ==/UserScript==
 
