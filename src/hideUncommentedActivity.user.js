@@ -63,17 +63,18 @@
     }
 
     function handleAddedNode(node) {
-        if (node instanceof HTMLElement && node.classList.contains(SELECTORS.activity)) {
-            if (!removeEntry(node)) {
-                currentLoadCount++;
-            }
-        }
+        if (node instanceof HTMLElement) {
+            if (node.classList.contains(SELECTORS.activity)) {
+                if (!removeEntry(node)) {
+                    currentLoadCount++;
+                }
 
-        if (node instanceof HTMLElement && node.classList.contains(SELECTORS.button)) {
-            loadMoreButton = node;
-            loadMoreButton.addEventListener('click', function() {
-                userPressedButton = true;
-            });
+            } else if (node.classList.contains(SELECTORS.button)) {
+                loadMoreButton = node;
+                loadMoreButton.addEventListener('click', function() {
+                    userPressedButton = true;
+                });
+            }
         }
     }
 
