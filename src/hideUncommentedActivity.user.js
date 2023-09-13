@@ -44,6 +44,6 @@
         }
     }
 
-    if (activityFeed) {activityFeed.forEach(removeEntry);}
+    if (activityFeed) {activityFeed.childNodes.forEach(removeEntry);}
     observer.observe(document.body, {childList: true, subtree: true});
 })();
