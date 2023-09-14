@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         Anilist: Hide Uncommented Activity
 // @namespace    https://github.com/SeyTi01/
-// @version      1.0
+// @version      1.1
 // @description  Hides uncommented/unliked activity on the Anilist "Social" tab
 // @author       SeyTi01
-// @match        https://anilist.co/anime/*/social
+// @match        https://anilist.co/*/social
 // @grant        none
 // @license      MIT
 // ==/UserScript==
