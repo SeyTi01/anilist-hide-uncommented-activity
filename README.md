@@ -11,7 +11,9 @@ This is a userscript that hides uncommented/unliked activity on the Anilist soci
 ## Installation
 
 1. Install a userscript manager extension for your browser (e.g., Tampermonkey).
-2. Click [here](https://github.com/SeyTi01/anilist-hide-uncommented-activity/raw/1.0/src/hideUncommentedActivity.user.js) to open the raw userscript file.
+
+2. Click [here](https://github.com/SeyTi01/anilist-hide-uncommented-activity/raw/1.1/src/hideUncommentedActivity.user.js) to open the raw userscript file.
+
 3. The userscript manager extension should detect the script and prompt you to install it. Follow the instructions to install the script.
 
 **Note**: You need to refresh the page when you open a show's social-feed for the script to work properly.
@@ -30,4 +32,4 @@ You can customize the script's behavior by editing the `config` object at the to
 
 ## License
 
-This project is licensed under the [MIT License](https://github.com/SeyTi01/new-reddit-spoiler-preview-fix/raw/1.5/LICENSE).
+This project is licensed under the [MIT License](https://github.com/SeyTi01/anilist-hide-uncommented-activity/raw/1.1/LICENSE).
