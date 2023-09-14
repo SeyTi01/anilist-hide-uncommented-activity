@@ -72,9 +72,21 @@
                 loadMoreButton = node;
                 loadMoreButton.addEventListener('click', function() {
                     userPressedButton = true;
+                    triggerDomEvents();
                 });
             }
         }
+    }
+
+    function triggerDomEvents() {
+        let scrollEvent = new CustomEvent('scroll', {bubbles: true});
+        let intervalId = setInterval(function() {
+            if (userPressedButton) {
+                window.dispatchEvent(scrollEvent);
+            } else {
+                clearInterval(intervalId);
+            }
+        }, 100);
     }
 
     function hasCount(element) {
