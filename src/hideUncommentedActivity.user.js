@@ -1,34 +1,36 @@
 // ==UserScript==
 // @name         Anilist: Hide Uncommented Activity
 // @namespace    https://github.com/SeyTi01/
-// @version      1.1
-// @description  Hides uncommented/unliked activity on the Anilist "Social" tab
+// @version      1.3
+// @description  Hides uncommented/unliked activity on any Anilist activity-feed
 // @author       SeyTi01
-// @match        https://anilist.co/*/social
+// @match        https://anilist.co/*
 // @grant        none
 // @license      MIT
 // ==/UserScript==
 
-(function () {
+(function() {
     'use strict';
 
     const config = {
-        removeUncommented: true, // Remove activities with no comments
-        removeUnliked: false, // Remove activities with no likes
-        targetLoadCount: 2 // Minimum number of activities to show per click on the "Load More"-button
+        removeUncommented: true,
+        removeUnliked: false,
+        targetLoadCount: 2
     };
 
     const SELECTORS = {
         activity: 'activity-entry',
         button: 'load-more',
         replies: 'div.action.replies',
-        likes: 'div.action.likes'
+        likes: 'div.action.likes',
+        cancel: 'cancel-load'
     };
 
     const observer = new MutationObserver(observeMutations);
     let currentLoadCount = 0;
     let userPressedButton = true;
     let loadMoreButton;
+    let cancelButton;
 
     observer.observe(document.body, {childList: true, subtree: true});
 
@@ -72,9 +74,22 @@
                 loadMoreButton = node;
                 loadMoreButton.addEventListener('click', function() {
                     userPressedButton = true;
+                    simulateDomEvents();
+                    createCancelButton();
                 });
             }
         }
+    }
+
+    function simulateDomEvents() {
+        const domEvent = new Event('scroll', {bubbles: true});
+        const intervalId = setInterval(function() {
+            if (userPressedButton) {
+                window.dispatchEvent(domEvent);
+            } else {
+                clearInterval(intervalId);
+            }
+        }, 100);
     }
 
     function hasCount(element) {
@@ -91,5 +106,38 @@
     function resetState() {
         currentLoadCount = 0;
         userPressedButton = false;
+        if (cancelButton) {
+            cancelButton.remove();
+            cancelButton = null;
+        }
+    }
+
+    function createCancelButton() {
+        if (!cancelButton) {
+            const buttonStyles = `
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            z-index: 9999;
+            line-height: 1.3;
+            background-color: rgb(var(--color-background-blue-dark));
+            color: rgb(var(--color-text-bright));
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            font-size: 1.6rem;
+            -webkit-font-smoothing: antialiased;
+            box-sizing: border-box;
+        `;
+            cancelButton = document.createElement('button');
+            cancelButton.textContent = 'Cancel';
+            cancelButton.classList.add('cancel-button');
+            cancelButton.style.cssText = buttonStyles;
+            cancelButton.style.setProperty('--button-color', 'rgb(var(--color-blue))');
+            cancelButton.addEventListener('click', function() {
+                userPressedButton = false;
+                cancelButton.remove();
+            });
+
+            document.body.appendChild(cancelButton);
+        }
     }
 })();

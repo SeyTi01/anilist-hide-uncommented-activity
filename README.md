@@ -1,6 +1,6 @@
 # Anilist: Hide Uncommented Activity
 
-This is a userscript that hides uncommented/unliked activity on the Anilist social-feed.
+This is a userscript that hides uncommented/unliked activity on any Anilist activity-feed.
 
 ## Features
 
@@ -12,11 +12,11 @@ This is a userscript that hides uncommented/unliked activity on the Anilist soci
 
 1. Install a userscript manager extension for your browser (e.g., Tampermonkey).
 
-2. Click [here](https://github.com/SeyTi01/anilist-hide-uncommented-activity/raw/1.1/src/hideUncommentedActivity.user.js) to open the raw userscript file.
+2. Click [here](https://github.com/SeyTi01/anilist-hide-uncommented-activity/raw/1.3/src/hideUncommentedActivity.user.js) to open the raw userscript file.
 
 3. The userscript manager extension should detect the script and prompt you to install it. Follow the instructions to install the script.
 
-**Note**: You need to refresh the page when you open a show's social-feed for the script to work properly.
+**Note**: You need to refresh the page when you navigate to a different activity-feed for the script to work properly.
 
 ## Configuration
 
@@ -32,4 +32,4 @@ You can customize the script's behavior by editing the `config` object at the to
 
 ## License
 
-This project is licensed under the [MIT License](https://github.com/SeyTi01/anilist-hide-uncommented-activity/raw/1.1/LICENSE).
+This project is licensed under the [MIT License](https://github.com/SeyTi01/anilist-hide-uncommented-activity/raw/1.3/LICENSE).
