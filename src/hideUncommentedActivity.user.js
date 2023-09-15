@@ -9,13 +9,13 @@
 // @license      MIT
 // ==/UserScript==
 
-(function () {
+(function() {
     'use strict';
 
     const config = {
-        removeUncommented: true, // Remove activities with no comments
-        removeUnliked: false, // Remove activities with no likes
-        targetLoadCount: 2 // Minimum number of activities to show per click on the "Load More"-button
+        removeUncommented: true,
+        removeUnliked: false,
+        targetLoadCount: 2
     };
 
     const SELECTORS = {
@@ -75,7 +75,6 @@
                 loadMoreButton.addEventListener('click', function() {
                     userPressedButton = true;
                     simulateDomEvents();
-                    cancelButton = loadMoreButton.cloneNode(true);
                     createCancelButton();
                 });
             }
@@ -94,20 +93,22 @@
     }
 
     function createCancelButton() {
-        cancelButton = document.createElement('button');
-        cancelButton.textContent = 'Cancel';
-        cancelButton.classList.add(SELECTORS.cancel);
-        cancelButton.style.position = 'fixed';
-        cancelButton.style.bottom = '10px';
-        cancelButton.style.right = '10px';
-        cancelButton.style.zIndex = '9999';
-        cancelButton.addEventListener('click', function() {
-            userPressedButton = false;
-            cancelButton.remove();
-            cancelButton = null;
-        });
+        if (!cancelButton) {
+            cancelButton = document.createElement('button');
+            cancelButton.textContent = 'Cancel';
+            cancelButton.classList.add(SELECTORS.cancel);
+            cancelButton.style.position = 'fixed';
+            cancelButton.style.bottom = '10px';
+            cancelButton.style.right = '10px';
+            cancelButton.style.zIndex = '9999';
+            cancelButton.addEventListener('click', function() {
+                userPressedButton = false;
+                cancelButton.remove();
+                cancelButton = null;
+            });
 
-        document.body.appendChild(cancelButton);
+            document.body.appendChild(cancelButton);
+        }
     }
 
     function hasCount(element) {
@@ -124,5 +125,9 @@
     function resetState() {
         currentLoadCount = 0;
         userPressedButton = false;
+        if (cancelButton) {
+            cancelButton.remove();
+            cancelButton = null;
+        }
     }
 })();
