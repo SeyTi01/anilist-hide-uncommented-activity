@@ -4,7 +4,7 @@
 // @version      1.2
 // @description  Hides uncommented/unliked activity on the Anilist "Social" tab
 // @author       SeyTi01
-// @match        https://anilist.co/*/social
+// @match        https://anilist.co/*
 // @grant        none
 // @license      MIT
 // ==/UserScript==
