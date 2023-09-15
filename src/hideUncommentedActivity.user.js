@@ -22,13 +22,15 @@
         activity: 'activity-entry',
         button: 'load-more',
         replies: 'div.action.replies',
-        likes: 'div.action.likes'
+        likes: 'div.action.likes',
+        cancel: 'cancel-load'
     };
 
     const observer = new MutationObserver(observeMutations);
     let currentLoadCount = 0;
     let userPressedButton = true;
     let loadMoreButton;
+    let cancelButton;
 
     observer.observe(document.body, {childList: true, subtree: true});
 
@@ -73,6 +75,8 @@
                 loadMoreButton.addEventListener('click', function() {
                     userPressedButton = true;
                     simulateDomEvents();
+                    cancelButton = loadMoreButton.cloneNode(true);
+                    createCancelButton();
                 });
             }
         }
@@ -87,6 +91,23 @@
                 clearInterval(intervalId);
             }
         }, 100);
+    }
+
+    function createCancelButton() {
+        cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.classList.add(SELECTORS.cancel);
+        cancelButton.style.position = 'fixed';
+        cancelButton.style.bottom = '10px';
+        cancelButton.style.right = '10px';
+        cancelButton.style.zIndex = '9999';
+        cancelButton.addEventListener('click', function() {
+            userPressedButton = false;
+            cancelButton.remove();
+            cancelButton = null;
+        });
+
+        document.body.appendChild(cancelButton);
     }
 
     function hasCount(element) {
