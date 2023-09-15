@@ -1,6 +1,6 @@
 # Anilist: Hide Uncommented Activity
 
-This is a userscript that hides uncommented/unliked activity on the Anilist social-feed.
+This is a userscript that hides uncommented/unliked activity on any Anilist activity-feed.
 
 ## Features
 
@@ -16,7 +16,7 @@ This is a userscript that hides uncommented/unliked activity on the Anilist soci
 
 3. The userscript manager extension should detect the script and prompt you to install it. Follow the instructions to install the script.
 
-**Note**: You need to refresh the page when you open a show's social-feed for the script to work properly.
+**Note**: You need to refresh the page when you navigate to a different activity-feed for the script to work properly.
 
 ## Configuration
 
