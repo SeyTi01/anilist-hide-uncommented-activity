@@ -92,33 +92,6 @@
         }, 100);
     }
 
-    function createCancelButton() {
-        if (!cancelButton) {
-            cancelButton = document.createElement('button');
-            cancelButton.textContent = 'Cancel';
-            cancelButton.classList.add(SELECTORS.cancel);
-            cancelButton.style.position = 'fixed';
-            cancelButton.style.bottom = '10px';
-            cancelButton.style.right = '10px';
-            cancelButton.style.zIndex = '9999';
-            cancelButton.style.lineHeight = '1.3';
-            cancelButton.style.backgroundColor = 'rgb(var(--color-background-blue-dark))';
-            cancelButton.style.color = 'rgb(var(--color-text-bright))';
-            cancelButton.style.fontFamily = 'Roboto,-apple-system,BlinkMacSystemFont,Segoe UI,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif';
-            cancelButton.style.fontSize = '1.6rem';
-            cancelButton.style.webkitFontSmoothing = 'antialiased';
-            cancelButton.style.boxSizing = 'border-box';
-            cancelButton.style.setProperty('--button-color', 'rgb(var(--color-blue))');
-            cancelButton.addEventListener('click', function() {
-                userPressedButton = false;
-                cancelButton.remove();
-                cancelButton = null;
-            });
-
-            document.body.appendChild(cancelButton);
-        }
-    }
-
     function hasCount(element) {
         return element?.querySelector('span.count');
     }
@@ -136,6 +109,35 @@
         if (cancelButton) {
             cancelButton.remove();
             cancelButton = null;
+        }
+    }
+
+    function createCancelButton() {
+        if (!cancelButton) {
+            const buttonStyles = `
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            z-index: 9999;
+            line-height: 1.3;
+            background-color: rgb(var(--color-background-blue-dark));
+            color: rgb(var(--color-text-bright));
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            font-size: 1.6rem;
+            -webkit-font-smoothing: antialiased;
+            box-sizing: border-box;
+        `;
+            cancelButton = document.createElement('button');
+            cancelButton.textContent = 'Cancel';
+            cancelButton.classList.add('cancel-button');
+            cancelButton.style.cssText = buttonStyles;
+            cancelButton.style.setProperty('--button-color', 'rgb(var(--color-blue))');
+            cancelButton.addEventListener('click', function() {
+                userPressedButton = false;
+                cancelButton.remove();
+            });
+
+            document.body.appendChild(cancelButton);
         }
     }
 })();
