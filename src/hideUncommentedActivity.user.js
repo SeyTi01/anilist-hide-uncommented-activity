@@ -72,17 +72,17 @@
                 loadMoreButton = node;
                 loadMoreButton.addEventListener('click', function() {
                     userPressedButton = true;
-                    triggerDomEvents();
+                    simulateDomEvents();
                 });
             }
         }
     }
 
-    function triggerDomEvents() {
-        let scrollEvent = new CustomEvent('scroll', {bubbles: true});
-        let intervalId = setInterval(function() {
+    function simulateDomEvents() {
+        const domEvent = new Event('scroll', {bubbles: true});
+        const intervalId = setInterval(function() {
             if (userPressedButton) {
-                window.dispatchEvent(scrollEvent);
+                window.dispatchEvent(domEvent);
             } else {
                 clearInterval(intervalId);
             }
