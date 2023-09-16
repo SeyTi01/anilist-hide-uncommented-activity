@@ -34,19 +34,6 @@
     validateConfig(config);
     observer.observe(document.body, {childList: true, subtree: true});
 
-    function removeEntry(node) {
-        let removed = false;
-        const repliesDiv = node.querySelector(SELECTORS.replies);
-        const likesDiv = node.querySelector(SELECTORS.likes);
-
-        if ((config.removeUncommented && !hasCount(repliesDiv)) || (config.removeUnliked && !hasCount(likesDiv))) {
-            node.remove();
-            removed = true;
-        }
-
-        return removed;
-    }
-
     function observeMutations(mutations) {
         for (const mutation of mutations) {
             if (mutation.addedNodes.length > 0) {
@@ -79,6 +66,31 @@
         }
     }
 
+    function removeEntry(node) {
+        let removed = false;
+        const repliesDiv = node.querySelector(SELECTORS.replies);
+        const likesDiv = node.querySelector(SELECTORS.likes);
+
+        if ((config.removeUncommented && !hasCountSpan(repliesDiv)) || (config.removeUnliked && !hasCountSpan(likesDiv))) {
+            node.remove();
+            removed = true;
+        }
+
+        return removed;
+    }
+
+    function hasCountSpan(node) {
+        return node?.querySelector('span.count');
+    }
+
+    function showCancelButton() {
+        if (!cancelButton) {
+            createCancelButton();
+        } else {
+            cancelButton.style.display = 'block';
+        }
+    }
+
     function simulateDomEvents() {
         const domEvent = new Event('scroll', {bubbles: true});
         const intervalId = setInterval(function() {
@@ -90,22 +102,10 @@
         }, 100);
     }
 
-    function hasCount(node) {
-        return node?.querySelector('span.count');
-    }
-
     function clickLoadMoreButton() {
         if (loadMoreButton) {
             loadMoreButton.click();
             loadMoreButton = null;
-        }
-    }
-
-    function showCancelButton() {
-        if (!cancelButton) {
-            createCancelButton();
-        } else {
-            cancelButton.style.display = 'block';
         }
     }
 
