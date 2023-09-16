@@ -28,8 +28,8 @@
     const observer = new MutationObserver(observeMutations);
     let currentLoadCount = 0;
     let userPressedButton = true;
-    let cancelButton;
     let loadMoreButton;
+    let cancelButton;
 
     validateConfig(config);
     observer.observe(document.body, {childList: true, subtree: true});
