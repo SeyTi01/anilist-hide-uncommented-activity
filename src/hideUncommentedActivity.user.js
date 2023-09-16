@@ -36,14 +36,12 @@
 
     function removeEntry(node) {
         let removed = false;
-        if (node.classList.contains(SELECTORS.activity)) {
-            const repliesDiv = node.querySelector(SELECTORS.replies);
-            const likesDiv = node.querySelector(SELECTORS.likes);
+        const repliesDiv = node.querySelector(SELECTORS.replies);
+        const likesDiv = node.querySelector(SELECTORS.likes);
 
-            if ((config.removeUncommented && !hasCount(repliesDiv)) || (config.removeUnliked && !hasCount(likesDiv))) {
-                node.remove();
-                removed = true;
-            }
+        if ((config.removeUncommented && !hasCount(repliesDiv)) || (config.removeUnliked && !hasCount(likesDiv))) {
+            node.remove();
+            removed = true;
         }
 
         return removed;
