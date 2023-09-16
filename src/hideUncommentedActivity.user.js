@@ -28,8 +28,8 @@
     const observer = new MutationObserver(observeMutations);
     let currentLoadCount = 0;
     let userPressedButton = true;
+    let cancelButton = null;
     let loadMoreButton;
-    let cancelButton;
 
     observer.observe(document.body, {childList: true, subtree: true});
 
@@ -72,7 +72,7 @@
                 loadMoreButton.addEventListener('click', function() {
                     userPressedButton = true;
                     simulateDomEvents();
-                    createCancelButton();
+                    showCancelButton();
                 });
             }
         }
@@ -103,37 +103,37 @@
     function resetState() {
         currentLoadCount = 0;
         userPressedButton = false;
-        if (cancelButton) {
-            cancelButton.remove();
-            cancelButton = null;
-        }
+        cancelButton.style.display = 'none';
     }
 
-    function createCancelButton() {
-        if (cancelButton) return;
-        const buttonStyles = `
-        position: fixed;
-        bottom: 10px;
-        right: 10px;
-        z-index: 9999;
-        line-height: 1.3;
-        background-color: rgb(var(--color-background-blue-dark));
-        color: rgb(var(--color-text-bright));
-        font: 1.6rem 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-        -webkit-font-smoothing: antialiased;
-        box-sizing: border-box;
-        `;
+    function showCancelButton() {
+        if (!cancelButton) {
+            const buttonStyles = `
+                position: fixed;
+                bottom: 10px;
+                right: 10px;
+                z-index: 9999;
+                line-height: 1.3;
+                background-color: rgb(var(--color-background-blue-dark));
+                color: rgb(var(--color-text-bright));
+                font: 1.6rem 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+                -webkit-font-smoothing: antialiased;
+                box-sizing: border-box;
+            `;
 
-        cancelButton = Object.assign(document.createElement('button'), {
-            textContent: 'Cancel',
-            className: 'cancel-button',
-            style: `--button-color: rgb(var(--color-blue)); ${buttonStyles}`,
-            onclick: () => {
-                userPressedButton = false;
-                cancelButton.remove();
-            },
-        });
+            cancelButton = Object.assign(document.createElement('button'), {
+                textContent: 'Cancel',
+                className: 'cancel-button',
+                style: `--button-color: rgb(var(--color-blue)); ${buttonStyles}`,
+                onclick: () => {
+                    userPressedButton = false;
+                    cancelButton.style.display = 'none';
+                },
+            });
 
-        document.body.appendChild(cancelButton);
+            document.body.appendChild(cancelButton);
+        } else {
+            cancelButton.style.display = 'block';
+        }
     }
 })();
