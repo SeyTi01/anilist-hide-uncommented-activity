@@ -101,15 +101,22 @@
         }
     }
 
+    function showCancelButton() {
+        if (!cancelButton) {
+            createCancelButton();
+        } else {
+            cancelButton.style.display = 'block';
+        }
+    }
+
     function resetState() {
         currentLoadCount = 0;
         userPressedButton = false;
         cancelButton.style.display = 'none';
     }
 
-    function showCancelButton() {
-        if (!cancelButton) {
-            const buttonStyles = `
+    function createCancelButton() {
+        const buttonStyles = `
                 position: fixed;
                 bottom: 10px;
                 right: 10px;
@@ -122,20 +129,17 @@
                 box-sizing: border-box;
             `;
 
-            cancelButton = Object.assign(document.createElement('button'), {
-                textContent: 'Cancel',
-                className: 'cancel-button',
-                style: `--button-color: rgb(var(--color-blue)); ${buttonStyles}`,
-                onclick: () => {
-                    userPressedButton = false;
-                    cancelButton.style.display = 'none';
-                },
-            });
+        cancelButton = Object.assign(document.createElement('button'), {
+            textContent: 'Cancel',
+            className: 'cancel-button',
+            style: `--button-color: rgb(var(--color-blue)); ${buttonStyles}`,
+            onclick: () => {
+                userPressedButton = false;
+                cancelButton.style.display = 'none';
+            },
+        });
 
-            document.body.appendChild(cancelButton);
-        } else {
-            cancelButton.style.display = 'block';
-        }
+        document.body.appendChild(cancelButton);
     }
 
     function validateConfig(config) {
