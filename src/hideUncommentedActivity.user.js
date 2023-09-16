@@ -49,20 +49,17 @@
     }
 
     function handleAddedNode(node) {
-        if (node instanceof HTMLElement) {
-            if (node.matches(SELECTORS.activity)) {
-                if (!removeEntry(node)) {
-                    currentLoadCount++;
-                }
+        if (!(node instanceof HTMLElement)) {
+            return;
+        }
 
-            } else if (node.matches(SELECTORS.button)) {
-                loadMoreButton = node;
-                loadMoreButton.addEventListener('click', function() {
-                    userPressedButton = true;
-                    simulateDomEvents();
-                    showCancelButton();
-                });
+        if (node.matches(SELECTORS.activity)) {
+            if (!removeEntry(node)) {
+                currentLoadCount++;
             }
+
+        } else if (node.matches(SELECTORS.button)) {
+            handleLoadMoreButton(node);
         }
     }
 
@@ -77,6 +74,15 @@
         }
 
         return removed;
+    }
+
+    function handleLoadMoreButton(button) {
+        loadMoreButton = button;
+        loadMoreButton.addEventListener('click', function() {
+            userPressedButton = true;
+            simulateDomEvents();
+            showCancelButton();
+        });
     }
 
     function showCancelButton() {
