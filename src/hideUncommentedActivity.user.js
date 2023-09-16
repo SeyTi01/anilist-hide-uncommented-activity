@@ -28,7 +28,7 @@
     const observer = new MutationObserver(observeMutations);
     let currentLoadCount = 0;
     let userPressedButton = true;
-    let cancelButton = null;
+    let cancelButton;
     let loadMoreButton;
 
     validateConfig(config);
