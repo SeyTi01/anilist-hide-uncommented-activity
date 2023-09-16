@@ -34,14 +34,14 @@
 
     observer.observe(document.body, {childList: true, subtree: true});
 
-    function removeEntry(element) {
+    function removeEntry(node) {
         let removed = false;
-        if (element instanceof HTMLElement && element.classList.contains(SELECTORS.activity)) {
-            const repliesDiv = element.querySelector(SELECTORS.replies);
-            const likesDiv = element.querySelector(SELECTORS.likes);
+        if (node.classList.contains(SELECTORS.activity)) {
+            const repliesDiv = node.querySelector(SELECTORS.replies);
+            const likesDiv = node.querySelector(SELECTORS.likes);
 
             if ((config.removeUncommented && !hasCount(repliesDiv)) || (config.removeUnliked && !hasCount(likesDiv))) {
-                element.remove();
+                node.remove();
                 removed = true;
             }
         }
