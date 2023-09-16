@@ -19,11 +19,10 @@
     };
 
     const SELECTORS = {
-        activity: 'activity-entry',
-        button: 'load-more',
+        button: 'div.load-more',
+        activity: 'div.activity-entry',
         replies: 'div.action.replies',
         likes: 'div.action.likes',
-        cancel: 'cancel-load'
     };
 
     const observer = new MutationObserver(observeMutations);
@@ -64,12 +63,12 @@
 
     function handleAddedNode(node) {
         if (node instanceof HTMLElement) {
-            if (node.matches('div.activity-entry')) {
+            if (node.matches(SELECTORS.activity)) {
                 if (!removeEntry(node)) {
                     currentLoadCount++;
                 }
 
-            } else if (node.matches('div.load-more')) {
+            } else if (node.matches(SELECTORS.button)) {
                 loadMoreButton = node;
                 loadMoreButton.addEventListener('click', function() {
                     userPressedButton = true;
@@ -91,8 +90,8 @@
         }, 100);
     }
 
-    function hasCount(element) {
-        return element?.querySelector('span.count');
+    function hasCount(node) {
+        return node?.querySelector('span.count');
     }
 
     function clickLoadMoreButton() {
