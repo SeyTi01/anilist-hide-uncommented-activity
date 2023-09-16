@@ -51,12 +51,8 @@
 
     function observeMutations(mutations) {
         for (const mutation of mutations) {
-            if (mutation.addedNodes.length > 0) {
-                const matchingNodes = Array.from(mutation.addedNodes).filter(node => {
-                    return node.nodeType === 1 && node.matches('div.activity-entry');
-                });
-
-                matchingNodes.forEach(handleAddedNode);
+            if (mutation.addedNodes.length !== 0) {
+                mutation.addedNodes.forEach(handleAddedNode);
             }
         }
 
