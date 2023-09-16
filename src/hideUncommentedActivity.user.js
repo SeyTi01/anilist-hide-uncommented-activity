@@ -2,7 +2,7 @@
 // @name         Anilist: Hide Uncommented Activity
 // @namespace    https://github.com/SeyTi01/
 // @version      1.3
-// @description  Hides uncommented/unliked activity on any Anilist activity-feed
+// @description  Hides uncommented/unliked activity on Anilist's activity feeds
 // @author       SeyTi01
 // @match        https://anilist.co/*
 // @grant        none
