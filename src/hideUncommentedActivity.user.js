@@ -79,16 +79,16 @@
         return removed;
     }
 
-    function hasCountSpan(node) {
-        return node?.querySelector('span.count');
-    }
-
     function showCancelButton() {
         if (!cancelButton) {
             createCancelButton();
         } else {
             cancelButton.style.display = 'block';
         }
+    }
+
+    function hasCountSpan(node) {
+        return node?.querySelector('span.count');
     }
 
     function simulateDomEvents() {
