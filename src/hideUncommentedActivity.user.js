@@ -31,6 +31,7 @@
     let cancelButton = null;
     let loadMoreButton;
 
+    validateConfig(config);
     observer.observe(document.body, {childList: true, subtree: true});
 
     function removeEntry(node) {
@@ -134,6 +135,18 @@
             document.body.appendChild(cancelButton);
         } else {
             cancelButton.style.display = 'block';
+        }
+    }
+
+    function validateConfig(config) {
+        const errors = [
+            typeof config.removeUncommented !== 'boolean' && 'removeUncommented must be a boolean',
+            typeof config.removeUnliked !== 'boolean' && 'removeUnliked must be a boolean',
+            (!Number.isInteger(config.targetLoadCount) || config.targetLoadCount < 1) && 'targetLoadCount must be a positive non-zero integer'
+        ].filter(Boolean);
+
+        if (errors.length > 0) {
+            throw new Error(errors.join('\n'));
         }
     }
 })();
