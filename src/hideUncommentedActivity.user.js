@@ -48,9 +48,8 @@
 
     function observeMutations(mutations) {
         for (const mutation of mutations) {
-            const nodeList = mutation.addedNodes;
-            if (nodeList.length > 0) {
-                nodeList.forEach(handleAddedNode);
+            if (mutation.addedNodes.length > 0) {
+                mutation.addedNodes.forEach(handleAddedNode);
             }
         }
 
