@@ -51,8 +51,9 @@
 
     function observeMutations(mutations) {
         for (const mutation of mutations) {
-            if (mutation.addedNodes.length !== 0) {
-                mutation.addedNodes.forEach(handleAddedNode);
+            const nodeList = mutation.addedNodes;
+            if (nodeList.length > 0) {
+                nodeList.forEach(handleAddedNode);
             }
         }
 
@@ -65,12 +66,12 @@
 
     function handleAddedNode(node) {
         if (node instanceof HTMLElement) {
-            if (node.classList.contains(SELECTORS.activity)) {
+            if (node.matches('div.activity-entry')) {
                 if (!removeEntry(node)) {
                     currentLoadCount++;
                 }
 
-            } else if (node.classList.contains(SELECTORS.button)) {
+            } else if (node.matches('div.load-more')) {
                 loadMoreButton = node;
                 loadMoreButton.addEventListener('click', function() {
                     userPressedButton = true;
