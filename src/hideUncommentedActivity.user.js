@@ -14,11 +14,15 @@
 
     const config = {
         targetLoadCount: 2, // Number of activities to show per click on the "Load More" button
-        removeUncommented: true, // Remove activities that have no comments
-        removeUnliked: false, // Remove activities that have no likes
-        runOnHome: true, // Run the script on the home feed
-        runOnProfile: true, // Run the script on user profile feeds
-        runOnSocial: true // Run the script on social feeds
+        remove: {
+            uncommented: true, // Remove activities that have no comments
+            unliked: false, // Remove activities that have no likes
+        },
+        runOn: {
+            home: true, // Run the script on the home feed
+            profile: true, // Run the script on user profile feeds
+            social: true // Run the script on social feeds
+        }
     };
 
     const SELECTORS = {
@@ -28,7 +32,7 @@
         likes: 'div.action.likes',
     };
 
-    const URL = {
+    const URLS = {
         home: 'https://anilist.co/home',
         profile: 'https://anilist.co/user/*/',
         social: 'https://anilist.co/*/social'
@@ -39,11 +43,15 @@
     let loadMoreButton;
     let cancelButton;
 
-    if (!validateConfig(config)) {
-        console.error('Script disabled due to configuration errors.');
-    } else {
-        const observer = new MutationObserver(observeMutations);
-        observer.observe(document.body, { childList: true, subtree: true });
+    initializeObserver();
+
+    function initializeObserver() {
+        if (!validateConfig(config)) {
+            console.error('Script disabled due to configuration errors.');
+        } else {
+            const observer = new MutationObserver(observeMutations);
+            observer.observe(document.body, {childList: true, subtree: true});
+        }
     }
 
     function observeMutations(mutations) {
@@ -80,7 +88,7 @@
             const repliesDiv = node.querySelector(SELECTORS.replies);
             const likesDiv = node.querySelector(SELECTORS.likes);
 
-            if ((config.removeUncommented && !hasCountSpan(repliesDiv)) || (config.removeUnliked && !hasCountSpan(likesDiv))) {
+            if ((config.remove.uncommented && !hasCountSpan(repliesDiv)) || (config.remove.unliked && !hasCountSpan(likesDiv))) {
                 node.remove();
                 return true;
             }
@@ -113,9 +121,9 @@
 
     function isAllowedUrl() {
         const currentUrl = window.location.href;
-        return (config.runOnHome && new RegExp(URL.home.replace('*', '.*')).test(currentUrl)) ||
-            (config.runOnProfile && new RegExp(URL.profile.replace('*', '.*')).test(currentUrl)) ||
-            (config.runOnSocial && new RegExp(URL.social.replace('*', '.*')).test(currentUrl));
+        return (config.runOn.home && new RegExp(URLS.home.replace('*', '.*')).test(currentUrl)) ||
+            (config.runOn.profile && new RegExp(URLS.profile.replace('*', '.*')).test(currentUrl)) ||
+            (config.runOn.social && new RegExp(URLS.social.replace('*', '.*')).test(currentUrl));
     }
 
     function simulateDomEvents() {
@@ -173,12 +181,12 @@
 
     function validateConfig(config) {
         const errors = [
-            typeof config.removeUncommented !== 'boolean' && 'removeUncommented must be a boolean',
-            typeof config.removeUnliked !== 'boolean' && 'removeUnliked must be a boolean',
+            typeof config.remove.uncommented !== 'boolean' && 'removeUncommented must be a boolean',
+            typeof config.remove.unliked !== 'boolean' && 'removeUnliked must be a boolean',
             (!Number.isInteger(config.targetLoadCount) || config.targetLoadCount < 1) && 'targetLoadCount must be a positive non-zero integer',
-            typeof config.runOnHome !== 'boolean' && 'runOnHome must be a boolean',
-            typeof config.runOnProfile !== 'boolean' && 'runOnProfile must be a boolean',
-            typeof config.runOnSocial !== 'boolean' && 'runOnSocial must be a boolean',
+            typeof config.runOn.home !== 'boolean' && 'runOnHome must be a boolean',
+            typeof config.runOn.profile !== 'boolean' && 'runOnProfile must be a boolean',
+            typeof config.runOn.social !== 'boolean' && 'runOnSocial must be a boolean',
         ].filter(Boolean);
 
         if (errors.length > 0) {
