@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Anilist: Hide Uncommented Activity
 // @namespace    https://github.com/SeyTi01/
-// @version      1.4
+// @version      1.5
 // @description  Hides uncommented/unliked activity on Anilist's activity feeds
 // @author       SeyTi01
 // @match        https://anilist.co/*
@@ -13,26 +13,46 @@
     'use strict';
 
     const config = {
-        removeUncommented: true,
-        removeUnliked: false,
-        targetLoadCount: 2
+        targetLoadCount: 2, // Number of activities to show per click on the "Load More" button
+        remove: {
+            uncommented: true, // Remove activities that have no comments
+            unliked: false // Remove activities that have no likes
+        },
+        runOn: {
+            home: true, // Run the script on the home feed
+            profile: true, // Run the script on user profile feeds
+            social: true // Run the script on social feeds
+        }
     };
 
     const SELECTORS = {
         button: 'div.load-more',
         activity: 'div.activity-entry',
         replies: 'div.action.replies',
-        likes: 'div.action.likes',
+        likes: 'div.action.likes'
     };
 
-    const observer = new MutationObserver(observeMutations);
+    const URLS = {
+        home: 'https://anilist.co/home',
+        profile: 'https://anilist.co/user/*/',
+        social: 'https://anilist.co/*/social'
+    };
+
     let currentLoadCount = 0;
     let userPressedButton = true;
     let loadMoreButton;
     let cancelButton;
 
-    validateConfig(config);
-    observer.observe(document.body, {childList: true, subtree: true});
+    initializeObserver();
+
+    function initializeObserver() {
+        if (!validateConfig(config)) {
+            console.error('Script disabled due to configuration errors.');
+        } else {
+            const observer = new MutationObserver(observeMutations);
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+    }
 
     function observeMutations(mutations) {
         for (const mutation of mutations) {
@@ -64,16 +84,17 @@
     }
 
     function removeEntry(node) {
-        let removed = false;
-        const repliesDiv = node.querySelector(SELECTORS.replies);
-        const likesDiv = node.querySelector(SELECTORS.likes);
+        if (isAllowedUrl()) {
+            const repliesDiv = node.querySelector(SELECTORS.replies);
+            const likesDiv = node.querySelector(SELECTORS.likes);
 
-        if ((config.removeUncommented && !hasCountSpan(repliesDiv)) || (config.removeUnliked && !hasCountSpan(likesDiv))) {
-            node.remove();
-            removed = true;
+            if ((config.remove.uncommented && !hasCountSpan(repliesDiv)) || (config.remove.unliked && !hasCountSpan(likesDiv))) {
+                node.remove();
+                return true;
+            }
         }
 
-        return removed;
+        return false;
     }
 
     function handleLoadMoreButton(button) {
@@ -97,6 +118,14 @@
         return node?.querySelector('span.count');
     }
 
+
+    function isAllowedUrl() {
+        const currentUrl = window.location.href;
+        return (config.runOn.home && new RegExp(URLS.home.replace('*', '.*')).test(currentUrl))
+            || (config.runOn.profile && new RegExp(URLS.profile.replace('*', '.*')).test(currentUrl))
+            || (config.runOn.social && new RegExp(URLS.social.replace('*', '.*')).test(currentUrl));
+    }
+
     function simulateDomEvents() {
         const domEvent = new Event('scroll', {bubbles: true});
         const intervalId = setInterval(function() {
@@ -118,7 +147,9 @@
     function resetState() {
         currentLoadCount = 0;
         userPressedButton = false;
-        cancelButton.style.display = 'none';
+        if (cancelButton) {
+            cancelButton.style.display = 'none';
+        }
     }
 
     function createCancelButton() {
@@ -150,13 +181,20 @@
 
     function validateConfig(config) {
         const errors = [
-            typeof config.removeUncommented !== 'boolean' && 'removeUncommented must be a boolean',
-            typeof config.removeUnliked !== 'boolean' && 'removeUnliked must be a boolean',
-            (!Number.isInteger(config.targetLoadCount) || config.targetLoadCount < 1) && 'targetLoadCount must be a positive non-zero integer'
+            typeof config.remove.uncommented !== 'boolean' && 'removeUncommented must be a boolean',
+            typeof config.remove.unliked !== 'boolean' && 'removeUnliked must be a boolean',
+            (!Number.isInteger(config.targetLoadCount) || config.targetLoadCount < 1) && 'targetLoadCount must be a positive non-zero integer',
+            typeof config.runOn.home !== 'boolean' && 'runOnHome must be a boolean',
+            typeof config.runOn.profile !== 'boolean' && 'runOnProfile must be a boolean',
+            typeof config.runOn.social !== 'boolean' && 'runOnSocial must be a boolean',
         ].filter(Boolean);
 
         if (errors.length > 0) {
-            throw new Error(errors.join('\n'));
+            console.error('Script configuration errors:');
+            errors.forEach(error => console.error(error));
+            return false;
         }
+
+        return true;
     }
 })();
