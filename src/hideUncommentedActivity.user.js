@@ -17,8 +17,8 @@
         removeUncommented: true, // Remove activities that have no comments
         removeUnliked: false, // Remove activities that have no likes
         runOnHome: true, // Run the script on the home feed
-        runOnProfile: true, // Run the script on user profile pages
-        runOnSocial: true // Run the script on social pages
+        runOnProfile: true, // Run the script on user profile feeds
+        runOnSocial: true // Run the script on social feeds
     };
 
     const SELECTORS = {
