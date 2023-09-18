@@ -16,7 +16,7 @@
         targetLoadCount: 2, // Number of activities to show per click on the "Load More" button
         remove: {
             uncommented: true, // Remove activities that have no comments
-            unliked: false, // Remove activities that have no likes
+            unliked: false // Remove activities that have no likes
         },
         runOn: {
             home: true, // Run the script on the home feed
@@ -29,7 +29,7 @@
         button: 'div.load-more',
         activity: 'div.activity-entry',
         replies: 'div.action.replies',
-        likes: 'div.action.likes',
+        likes: 'div.action.likes'
     };
 
     const URLS = {
@@ -50,7 +50,7 @@
             console.error('Script disabled due to configuration errors.');
         } else {
             const observer = new MutationObserver(observeMutations);
-            observer.observe(document.body, {childList: true, subtree: true});
+            observer.observe(document.body, { childList: true, subtree: true });
         }
     }
 
@@ -121,9 +121,9 @@
 
     function isAllowedUrl() {
         const currentUrl = window.location.href;
-        return (config.runOn.home && new RegExp(URLS.home.replace('*', '.*')).test(currentUrl)) ||
-            (config.runOn.profile && new RegExp(URLS.profile.replace('*', '.*')).test(currentUrl)) ||
-            (config.runOn.social && new RegExp(URLS.social.replace('*', '.*')).test(currentUrl));
+        return (config.runOn.home && new RegExp(URLS.home.replace('*', '.*')).test(currentUrl))
+            || (config.runOn.profile && new RegExp(URLS.profile.replace('*', '.*')).test(currentUrl))
+            || (config.runOn.social && new RegExp(URLS.social.replace('*', '.*')).test(currentUrl));
     }
 
     function simulateDomEvents() {
