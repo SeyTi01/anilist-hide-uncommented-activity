@@ -118,7 +118,9 @@
     function resetState() {
         currentLoadCount = 0;
         userPressedButton = false;
-        cancelButton.style.display = 'none';
+        if (cancelButton) {
+            cancelButton.style.display = 'none';
+        }
     }
 
     function createCancelButton() {
