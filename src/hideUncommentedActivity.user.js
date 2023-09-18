@@ -109,6 +109,7 @@
         return node?.querySelector('span.count');
     }
 
+
     function isAllowedUrl() {
         const currentUrl = window.location.href;
         return (config.runOnHome && new RegExp(URL.home.replace('*', '.*')).test(currentUrl)) ||
@@ -137,7 +138,9 @@
     function resetState() {
         currentLoadCount = 0;
         userPressedButton = false;
-        cancelButton.style.display = 'none';
+        if (cancelButton) {
+            cancelButton.style.display = 'none';
+        }
     }
 
     function createCancelButton() {
