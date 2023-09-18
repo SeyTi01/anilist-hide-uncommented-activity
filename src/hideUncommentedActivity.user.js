@@ -76,20 +76,17 @@
     }
 
     function removeEntry(node) {
-        let removed = false;
-        if (!isAllowedUrl()) {
-            return removed;
+        if (isAllowedUrl()) {
+            const repliesDiv = node.querySelector(SELECTORS.replies);
+            const likesDiv = node.querySelector(SELECTORS.likes);
+
+            if ((config.removeUncommented && !hasCountSpan(repliesDiv)) || (config.removeUnliked && !hasCountSpan(likesDiv))) {
+                node.remove();
+                return true;
+            }
         }
 
-        const repliesDiv = node.querySelector(SELECTORS.replies);
-        const likesDiv = node.querySelector(SELECTORS.likes);
-
-        if ((config.removeUncommented && !hasCountSpan(repliesDiv)) || (config.removeUnliked && !hasCountSpan(likesDiv))) {
-            node.remove();
-            removed = true;
-        }
-
-        return removed;
+        return false;
     }
 
     function handleLoadMoreButton(button) {
