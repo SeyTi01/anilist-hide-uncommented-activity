@@ -13,9 +13,12 @@
     'use strict';
 
     const config = {
-        removeUncommented: true,
-        removeUnliked: false,
-        targetLoadCount: 2
+        targetLoadCount: 2, // Number of activities to show per click on the "Load More" button
+        removeUncommented: true, // Remove activities that have no comments
+        removeUnliked: false, // Remove activities that have no likes
+        runOnHome: true, // Run the script on the home feed
+        runOnProfile: true, // Run the script on user profile pages
+        runOnSocial: true // Run the script on social pages
     };
 
     const SELECTORS = {
@@ -25,14 +28,23 @@
         likes: 'div.action.likes',
     };
 
-    const observer = new MutationObserver(observeMutations);
+    const URL = {
+        home: 'https://anilist.co/home',
+        profile: 'https://anilist.co/user/*/',
+        social: 'https://anilist.co/*/social'
+    };
+
     let currentLoadCount = 0;
     let userPressedButton = true;
     let loadMoreButton;
     let cancelButton;
 
-    validateConfig(config);
-    observer.observe(document.body, {childList: true, subtree: true});
+    if (!validateConfig(config)) {
+        console.error('Script disabled due to configuration errors.');
+    } else if (isAllowedUrl()) {
+        const observer = new MutationObserver(observeMutations);
+        observer.observe(document.body, { childList: true, subtree: true });
+    }
 
     function observeMutations(mutations) {
         for (const mutation of mutations) {
@@ -97,6 +109,13 @@
         return node?.querySelector('span.count');
     }
 
+    function isAllowedUrl() {
+        const currentUrl = window.location.href;
+        return (config.runOnHome && new RegExp(URL.home.replace('*', '.*')).test(currentUrl)) ||
+            (config.runOnProfile && new RegExp(URL.profile.replace('*', '.*')).test(currentUrl)) ||
+            (config.runOnSocial && new RegExp(URL.social.replace('*', '.*')).test(currentUrl));
+    }
+
     function simulateDomEvents() {
         const domEvent = new Event('scroll', {bubbles: true});
         const intervalId = setInterval(function() {
@@ -152,11 +171,18 @@
         const errors = [
             typeof config.removeUncommented !== 'boolean' && 'removeUncommented must be a boolean',
             typeof config.removeUnliked !== 'boolean' && 'removeUnliked must be a boolean',
-            (!Number.isInteger(config.targetLoadCount) || config.targetLoadCount < 1) && 'targetLoadCount must be a positive non-zero integer'
+            (!Number.isInteger(config.targetLoadCount) || config.targetLoadCount < 1) && 'targetLoadCount must be a positive non-zero integer',
+            typeof config.runOnHome !== 'boolean' && 'runOnHome must be a boolean',
+            typeof config.runOnProfile !== 'boolean' && 'runOnProfile must be a boolean',
+            typeof config.runOnSocial !== 'boolean' && 'runOnSocial must be a boolean',
         ].filter(Boolean);
 
         if (errors.length > 0) {
-            throw new Error(errors.join('\n'));
+            console.error('Script configuration errors:');
+            errors.forEach(error => console.error(error));
+            return false;
         }
+
+        return true;
     }
 })();
