@@ -41,7 +41,7 @@
 
     if (!validateConfig(config)) {
         console.error('Script disabled due to configuration errors.');
-    } else if (isAllowedUrl()) {
+    } else {
         const observer = new MutationObserver(observeMutations);
         observer.observe(document.body, { childList: true, subtree: true });
     }
@@ -77,6 +77,10 @@
 
     function removeEntry(node) {
         let removed = false;
+        if (!isAllowedUrl()) {
+            return removed;
+        }
+
         const repliesDiv = node.querySelector(SELECTORS.replies);
         const likesDiv = node.querySelector(SELECTORS.likes);
 
