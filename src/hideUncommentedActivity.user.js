@@ -26,8 +26,8 @@ const config = {
 
 class MutationObserverHandler {
 
-    constructor(activityManager) {
-        this.activityManager = activityManager;
+    constructor() {
+        this.activityManager = new ActivityManager(this);
         this.observer = new MutationObserver(this.observeMutations.bind(this));
         this.observer.observe(document.body, { childList: true, subtree: true });
     }
@@ -67,12 +67,12 @@ class MutationObserverHandler {
 
 class ActivityManager {
 
-    constructor() {
+    constructor(mutationObserverHandler) {
         this.currentLoadCount = 0;
         this.userPressedButton = true;
         this.loadMoreButton = null;
         this.cancelButton = null;
-        this.mutationObserverHandler = new MutationObserverHandler(this);
+        this.mutationObserverHandler = mutationObserverHandler;
     }
 
     clickLoadMoreOrReset() {
@@ -237,6 +237,6 @@ const URLS = {
     if (!ConfigValidator.validate(config)) {
         console.error('Script disabled due to configuration errors.');
     } else {
-        new ActivityManager();
+        new MutationObserverHandler();
     }
 })();
