@@ -27,19 +27,6 @@
         }
     };
 
-    const SELECTORS = {
-        button: 'div.load-more',
-        activity: 'div.activity-entry',
-        replies: 'div.action.replies',
-        likes: 'div.action.likes'
-    };
-
-    const URLS = {
-        home: 'https://anilist.co/home',
-        profile: 'https://anilist.co/user/*/',
-        social: 'https://anilist.co/*/social'
-    };
-
     let currentLoadCount = 0;
     let userPressedButton = true;
     let loadMoreButton;
@@ -225,4 +212,17 @@
 
         return true;
     }
+
+    const SELECTORS = {
+        button: 'div.load-more',
+        activity: 'div.activity-entry',
+        replies: 'div.action.replies',
+        likes: 'div.action.likes'
+    };
+
+    const URLS = {
+        home: 'https://anilist.co/home',
+        profile: 'https://anilist.co/user/*/',
+        social: 'https://anilist.co/*/social'
+    };
 })();
