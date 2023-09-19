@@ -79,8 +79,19 @@
     function removeEntry(node) {
         const repliesDiv = node.querySelector(SELECTORS.replies);
         const likesDiv = node.querySelector(SELECTORS.likes);
+        const shouldRemove = (
+            (config.remove.uncommented && !hasCountSpan(repliesDiv)) ||
+            (config.remove.unliked && !hasCountSpan(likesDiv)) ||
+            (config.remove.customStrings.some(customString => {
+                if (config.remove.caseSensitive) {
+                    return node.textContent.includes(customString);
+                } else {
+                    return node.textContent.toLowerCase().includes(customString.toLowerCase());
+                }
+            }))
+        );
 
-        if ((config.remove.uncommented && !hasCountSpan(repliesDiv)) || (config.remove.unliked && !hasCountSpan(likesDiv))) {
+        if (shouldRemove) {
             node.remove();
             return true;
         }
