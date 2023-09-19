@@ -33,7 +33,7 @@ class MutationObserverHandler {
     }
 
     observeMutations(mutations) {
-        if (this.activityManager.isAllowedUrl()) {
+        if (this.isAllowedUrl()) {
             for (const mutation of mutations) {
                 if (mutation.addedNodes.length > 0) {
                     mutation.addedNodes.forEach(this.activityManager.handleAddedNode.bind(this.activityManager));
@@ -46,6 +46,15 @@ class MutationObserverHandler {
         } else {
             this.activityManager.resetState();
         }
+    }
+
+    isAllowedUrl() {
+        const currentUrl = window.location.href;
+        return (
+            (config.runOn.home && new RegExp(URLS.home.replace('*', '.*')).test(currentUrl)) ||
+            (config.runOn.profile && new RegExp(URLS.profile.replace('*', '.*')).test(currentUrl)) ||
+            (config.runOn.social && new RegExp(URLS.social.replace('*', '.*')).test(currentUrl))
+        );
     }
 }
 
@@ -132,15 +141,6 @@ class ActivityManager {
 
     hasCountSpan(node) {
         return node?.querySelector('span.count');
-    }
-
-    isAllowedUrl() {
-        const currentUrl = window.location.href;
-        return (
-            (config.runOn.home && new RegExp(URLS.home.replace('*', '.*')).test(currentUrl)) ||
-            (config.runOn.profile && new RegExp(URLS.profile.replace('*', '.*')).test(currentUrl)) ||
-            (config.runOn.social && new RegExp(URLS.social.replace('*', '.*')).test(currentUrl))
-        );
     }
 
     shouldRemoveUncommented(node) {
