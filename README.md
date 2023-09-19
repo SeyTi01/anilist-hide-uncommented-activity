@@ -27,8 +27,8 @@ You can customize the script's behavior by editing the `config` object at the to
   - `unliked`: Set this to `true` if you want to remove activities with no likes, or `false` if you want to keep them. The default value is `false`.
 - `runOn`: Choose where the script should run:
   - `home`: Set this to `true` if you want the script to run on the home feed. The default value is `true`.
-  - `profile`: Set this to `true` if you want the script to run on user profile feeds. The default value is `true`.
   - `social`: Set this to `true` if you want the script to run on social feeds. The default value is `true`.
+  - `profile`: Set this to `true` if you want the script to run on user profile feeds. The default value is `false`.
 
 ## Author
 
