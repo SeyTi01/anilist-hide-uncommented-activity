@@ -77,17 +77,10 @@
     }
 
     function removeEntry(node) {
-        const repliesDiv = node.querySelector(SELECTORS.replies);
-        const likesDiv = node.querySelector(SELECTORS.likes);
-
         if (
-            (config.remove.uncommented && !hasCountSpan(repliesDiv)) ||
-            (config.remove.unliked && !hasCountSpan(likesDiv)) ||
-            config.remove.customStrings.some(customString => {
-                return config.remove.caseSensitive
-                    ? node.textContent.includes(customString)
-                    : node.textContent.toLowerCase().includes(customString.toLowerCase());
-            })
+            shouldRemoveUncommented(node) ||
+            shouldRemoveUnliked(node) ||
+            shouldRemoveByCustomStrings(node)
         ) {
             node.remove();
             return true;
@@ -122,18 +115,6 @@
         }
     }
 
-    function hasCountSpan(node) {
-        return node?.querySelector('span.count');
-    }
-
-
-    function isAllowedUrl() {
-        const currentUrl = window.location.href;
-        return (config.runOn.home && new RegExp(URLS.home.replace('*', '.*')).test(currentUrl))
-            || (config.runOn.profile && new RegExp(URLS.profile.replace('*', '.*')).test(currentUrl))
-            || (config.runOn.social && new RegExp(URLS.social.replace('*', '.*')).test(currentUrl));
-    }
-
     function simulateDomEvents() {
         const domEvent = new Event('scroll', {bubbles: true});
         const intervalId = setInterval(function() {
@@ -144,6 +125,7 @@
             }
         }, 100);
     }
+
 
     function clickLoadMoreButton() {
         if (loadMoreButton) {
@@ -158,6 +140,39 @@
         if (cancelButton) {
             cancelButton.style.display = 'none';
         }
+    }
+
+    function hasCountSpan(node) {
+        return node?.querySelector('span.count');
+    }
+
+    function isAllowedUrl() {
+        const currentUrl = window.location.href;
+        return (config.runOn.home && new RegExp(URLS.home.replace('*', '.*')).test(currentUrl))
+            || (config.runOn.profile && new RegExp(URLS.profile.replace('*', '.*')).test(currentUrl))
+            || (config.runOn.social && new RegExp(URLS.social.replace('*', '.*')).test(currentUrl));
+    }
+
+    function shouldRemoveUncommented(node) {
+        if (config.remove.uncommented) {
+            return !hasCountSpan(node.querySelector(SELECTORS.replies));
+        }
+        return false;
+    }
+
+    function shouldRemoveUnliked(node) {
+        if (config.remove.unliked) {
+            return !hasCountSpan(node.querySelector(SELECTORS.likes));
+        }
+        return false;
+    }
+
+    function shouldRemoveByCustomStrings(node) {
+        return config.remove.customStrings.some(customString => {
+            return config.remove.caseSensitive
+                ? node.textContent.includes(customString)
+                : node.textContent.toLowerCase().includes(customString.toLowerCase());
+        });
     }
 
     function createCancelButton() {
