@@ -48,9 +48,11 @@
     initializeObserver();
 
     function observeMutations(mutations) {
-        for (const mutation of mutations) {
-            if (mutation.addedNodes.length > 0 && isAllowedUrl()) {
-                mutation.addedNodes.forEach(handleAddedNode);
+        if (isAllowedUrl()) {
+            for (const mutation of mutations) {
+                if (mutation.addedNodes.length > 0) {
+                    mutation.addedNodes.forEach(handleAddedNode);
+                }
             }
         }
 
