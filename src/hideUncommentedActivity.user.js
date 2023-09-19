@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Anilist: Hide Uncommented Activity
+// @name         Anilist: Hide Unwanted Activity
 // @namespace    https://github.com/SeyTi01/
 // @version      1.5
 // @description  Hides uncommented/unliked activity on Anilist's activity feeds
@@ -16,7 +16,9 @@
         targetLoadCount: 2, // Number of activities to show per click on the "Load More" button
         remove: {
             uncommented: true, // Remove activities that have no comments
-            unliked: false // Remove activities that have no likes
+            unliked: false, // Remove activities that have no likes
+            customStrings: [], // Remove activities with user-defined strings
+            caseSensitive: false // Whether string removal should be case-sensitive
         },
         runOn: {
             home: true, // Run the script on the home feed
@@ -44,15 +46,6 @@
     let cancelButton;
 
     initializeObserver();
-
-    function initializeObserver() {
-        if (!validateConfig(config)) {
-            console.error('Script disabled due to configuration errors.');
-        } else {
-            const observer = new MutationObserver(observeMutations);
-            observer.observe(document.body, { childList: true, subtree: true });
-        }
-    }
 
     function observeMutations(mutations) {
         for (const mutation of mutations) {
@@ -87,7 +80,15 @@
         const repliesDiv = node.querySelector(SELECTORS.replies);
         const likesDiv = node.querySelector(SELECTORS.likes);
 
-        if ((config.remove.uncommented && !hasCountSpan(repliesDiv)) || (config.remove.unliked && !hasCountSpan(likesDiv))) {
+        if (
+            (config.remove.uncommented && !hasCountSpan(repliesDiv)) ||
+            (config.remove.unliked && !hasCountSpan(likesDiv)) ||
+            config.remove.customStrings.some(customString => {
+                return config.remove.caseSensitive
+                    ? node.textContent.includes(customString)
+                    : node.textContent.toLowerCase().includes(customString.toLowerCase());
+            })
+        ) {
             node.remove();
             return true;
         }
@@ -102,6 +103,15 @@
             simulateDomEvents();
             showCancelButton();
         });
+    }
+
+    function initializeObserver() {
+        if (!validateConfig(config)) {
+            console.error('Script disabled due to configuration errors.');
+        } else {
+            const observer = new MutationObserver(observeMutations);
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
     }
 
     function showCancelButton() {
@@ -179,12 +189,15 @@
 
     function validateConfig(config) {
         const errors = [
-            typeof config.remove.uncommented !== 'boolean' && 'removeUncommented must be a boolean',
-            typeof config.remove.unliked !== 'boolean' && 'removeUnliked must be a boolean',
+            typeof config.remove.uncommented !== 'boolean' && 'remove.uncommented must be a boolean',
+            typeof config.remove.unliked !== 'boolean' && 'remove.unliked must be a boolean',
             (!Number.isInteger(config.targetLoadCount) || config.targetLoadCount < 1) && 'targetLoadCount must be a positive non-zero integer',
-            typeof config.runOn.home !== 'boolean' && 'runOnHome must be a boolean',
-            typeof config.runOn.profile !== 'boolean' && 'runOnProfile must be a boolean',
-            typeof config.runOn.social !== 'boolean' && 'runOnSocial must be a boolean',
+            typeof config.runOn.home !== 'boolean' && 'runOn.home must be a boolean',
+            typeof config.runOn.profile !== 'boolean' && 'runOn.profile must be a boolean',
+            typeof config.runOn.social !== 'boolean' && 'runOn.social must be a boolean',
+            !Array.isArray(config.remove.customStrings) && 'remove.customStrings must be an array',
+            config.remove.customStrings.some(str => typeof str !== 'string') && 'remove.customStrings must only contain strings',
+            typeof config.remove.caseSensitive !== 'boolean' && 'remove.caseSensitive must be a boolean',
         ].filter(Boolean);
 
         if (errors.length > 0) {
