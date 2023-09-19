@@ -36,11 +36,22 @@ class MutationObserverHandler {
         if (this.isAllowedUrl()) {
             for (const mutation of mutations) {
                 if (mutation.addedNodes.length > 0) {
-                    mutation.addedNodes.forEach(this.activityManager.handleAddedNode.bind(this.activityManager));
+                    mutation.addedNodes.forEach(this.handleAddedNode.bind(this));
                 }
             }
 
-            this.activityManager.handleLoadMoreOrReset();
+            this.activityManager.clickLoadMoreOrReset();
+        }
+    }
+
+    handleAddedNode(node) {
+        if (node instanceof HTMLElement) {
+            if (node.matches(SELECTORS.activity)) {
+                this.activityManager.removeEntry(node)
+
+            } else if (node.matches(SELECTORS.button)) {
+                this.activityManager.handleLoadMoreButton(node);
+            }
         }
     }
 
@@ -64,22 +75,7 @@ class ActivityManager {
         this.mutationObserverHandler = new MutationObserverHandler(this);
     }
 
-    handleAddedNode(node) {
-        if (!(node instanceof HTMLElement)) {
-            return;
-        }
-
-        if (node.matches(SELECTORS.activity)) {
-            if (!this.removeEntry(node)) {
-                this.currentLoadCount++;
-            }
-
-        } else if (node.matches(SELECTORS.button)) {
-            this.handleLoadMoreButton(node);
-        }
-    }
-
-    handleLoadMoreOrReset() {
+    clickLoadMoreOrReset() {
         if (this.currentLoadCount < config.targetLoadCount && this.userPressedButton) {
             this.clickLoadMoreButton();
         } else {
@@ -94,10 +90,9 @@ class ActivityManager {
             this.shouldRemoveByCustomStrings(node)
         ) {
             node.remove();
-            return true;
+        } else {
+            this.currentLoadCount++;
         }
-
-        return false;
     }
 
     handleLoadMoreButton(button) {
