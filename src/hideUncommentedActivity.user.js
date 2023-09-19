@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         Anilist: Hide Uncommented Activity
+// @name         Anilist: Hide Unwanted Activity
 // @namespace    https://github.com/SeyTi01/
 // @version      1.5
 // @description  Hides uncommented/unliked activity on Anilist's activity feeds
@@ -79,19 +79,16 @@
     function removeEntry(node) {
         const repliesDiv = node.querySelector(SELECTORS.replies);
         const likesDiv = node.querySelector(SELECTORS.likes);
-        const shouldRemove = (
+
+        if (
             (config.remove.uncommented && !hasCountSpan(repliesDiv)) ||
             (config.remove.unliked && !hasCountSpan(likesDiv)) ||
-            (config.remove.customStrings.some(customString => {
-                if (config.remove.caseSensitive) {
-                    return node.textContent.includes(customString);
-                } else {
-                    return node.textContent.toLowerCase().includes(customString.toLowerCase());
-                }
-            }))
-        );
-
-        if (shouldRemove) {
+            config.remove.customStrings.some(customString => {
+                return config.remove.caseSensitive
+                    ? node.textContent.includes(customString)
+                    : node.textContent.toLowerCase().includes(customString.toLowerCase());
+            })
+        ) {
             node.remove();
             return true;
         }
