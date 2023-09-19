@@ -39,12 +39,8 @@ class MutationObserverHandler {
                     mutation.addedNodes.forEach(this.activityManager.handleAddedNode.bind(this.activityManager));
                 }
             }
-        }
 
-        if (this.activityManager.currentLoadCount < config.targetLoadCount && this.activityManager.userPressedButton) {
-            this.activityManager.clickLoadMoreButton();
-        } else {
-            this.activityManager.resetState();
+            this.activityManager.handleLoadMoreOrReset();
         }
     }
 
@@ -80,6 +76,14 @@ class ActivityManager {
 
         } else if (node.matches(SELECTORS.button)) {
             this.handleLoadMoreButton(node);
+        }
+    }
+
+    handleLoadMoreOrReset() {
+        if (this.currentLoadCount < config.targetLoadCount && this.userPressedButton) {
+            this.clickLoadMoreButton();
+        } else {
+            this.resetState();
         }
     }
 
