@@ -56,7 +56,7 @@
 
     function observeMutations(mutations) {
         for (const mutation of mutations) {
-            if (mutation.addedNodes.length > 0) {
+            if (mutation.addedNodes.length > 0 && isAllowedUrl()) {
                 mutation.addedNodes.forEach(handleAddedNode);
             }
         }
@@ -84,14 +84,12 @@
     }
 
     function removeEntry(node) {
-        if (isAllowedUrl()) {
-            const repliesDiv = node.querySelector(SELECTORS.replies);
-            const likesDiv = node.querySelector(SELECTORS.likes);
+        const repliesDiv = node.querySelector(SELECTORS.replies);
+        const likesDiv = node.querySelector(SELECTORS.likes);
 
-            if ((config.remove.uncommented && !hasCountSpan(repliesDiv)) || (config.remove.unliked && !hasCountSpan(likesDiv))) {
-                node.remove();
-                return true;
-            }
+        if ((config.remove.uncommented && !hasCountSpan(repliesDiv)) || (config.remove.unliked && !hasCountSpan(likesDiv))) {
+            node.remove();
+            return true;
         }
 
         return false;
