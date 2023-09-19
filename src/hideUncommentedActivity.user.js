@@ -24,7 +24,8 @@ const config = {
     },
 };
 
-class ActivityManager {
+class AnilistActivityManager {
+
     constructor(config) {
         this.config = config;
         this.currentLoadCount = 0;
@@ -95,6 +96,15 @@ class ActivityManager {
         }
     }
 
+    initializeObserver() {
+        if (!this.validateConfig(this.config)) {
+            console.error('Script disabled due to configuration errors.');
+        } else {
+            const observer = new MutationObserver(this.observeMutations.bind(this));
+            observer.observe(document.body, { childList: true, subtree: true });
+        }
+    }
+
     simulateDomEvents() {
         const domEvent = new Event('scroll', { bubbles: true });
         const intervalId = setInterval(() => {
@@ -156,11 +166,6 @@ class ActivityManager {
         });
     }
 
-    initializeObserver() {
-        const observer = new MutationObserver(this.observeMutations.bind(this));
-        observer.observe(document.body, { childList: true, subtree: true });
-    }
-
     createCancelButton() {
         const buttonStyles = `
                 position: fixed;
@@ -187,10 +192,8 @@ class ActivityManager {
 
         document.body.appendChild(this.cancelButton);
     }
-}
 
-class ConfigValidator {
-    static validate(config) {
+    validateConfig(config) {
         const errors = [
             typeof config.remove.uncommented !== 'boolean' && 'remove.uncommented must be a boolean',
             typeof config.remove.unliked !== 'boolean' && 'remove.unliked must be a boolean',
@@ -230,9 +233,5 @@ const URLS = {
 
 (function () {
     'use strict';
-    if (!ConfigValidator.validate(config)) {
-        console.error('Script disabled due to configuration errors.');
-    } else {
-        new ActivityManager(config);
-    }
+    new AnilistActivityManager(config);
 })();
