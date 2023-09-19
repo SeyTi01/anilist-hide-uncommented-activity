@@ -24,6 +24,31 @@ const config = {
     },
 };
 
+class MutationObserverHandler {
+
+    constructor(activityManager) {
+        this.activityManager = activityManager;
+        this.observer = new MutationObserver(this.observeMutations.bind(this));
+        this.observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    observeMutations(mutations) {
+        if (this.activityManager.isAllowedUrl()) {
+            for (const mutation of mutations) {
+                if (mutation.addedNodes.length > 0) {
+                    mutation.addedNodes.forEach(this.activityManager.handleAddedNode.bind(this.activityManager));
+                }
+            }
+        }
+
+        if (this.activityManager.currentLoadCount < config.targetLoadCount && this.activityManager.userPressedButton) {
+            this.activityManager.clickLoadMoreButton();
+        } else {
+            this.activityManager.resetState();
+        }
+    }
+}
+
 class ActivityManager {
 
     constructor() {
@@ -31,24 +56,7 @@ class ActivityManager {
         this.userPressedButton = true;
         this.loadMoreButton = null;
         this.cancelButton = null;
-        this.observer = new MutationObserver(this.observeMutations.bind(this));
-        this.observer.observe(document.body, { childList: true, subtree: true });
-    }
-
-    observeMutations(mutations) {
-        if (this.isAllowedUrl()) {
-            for (const mutation of mutations) {
-                if (mutation.addedNodes.length > 0) {
-                    mutation.addedNodes.forEach(this.handleAddedNode.bind(this));
-                }
-            }
-        }
-
-        if (this.currentLoadCount < config.targetLoadCount && this.userPressedButton) {
-            this.clickLoadMoreButton();
-        } else {
-            this.resetState();
-        }
+        this.mutationObserverHandler = new MutationObserverHandler(this);
     }
 
     handleAddedNode(node) {
