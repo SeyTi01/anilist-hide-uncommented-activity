@@ -100,20 +100,20 @@
         });
     }
 
+    function showCancelButton() {
+        if (!cancelButton) {
+            createCancelButton();
+        } else {
+            cancelButton.style.display = 'block';
+        }
+    }
+
     function initializeObserver() {
         if (!validateConfig(config)) {
             console.error('Script disabled due to configuration errors.');
         } else {
             const observer = new MutationObserver(observeMutations);
             observer.observe(document.body, { childList: true, subtree: true });
-        }
-    }
-
-    function showCancelButton() {
-        if (!cancelButton) {
-            createCancelButton();
-        } else {
-            cancelButton.style.display = 'block';
         }
     }
 
