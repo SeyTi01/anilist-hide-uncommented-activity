@@ -25,13 +25,14 @@ const config = {
 };
 
 class ActivityManager {
-    constructor(config) {
-        this.config = config;
+
+    constructor() {
         this.currentLoadCount = 0;
         this.userPressedButton = true;
         this.loadMoreButton = null;
         this.cancelButton = null;
-        this.initializeObserver();
+        this.observer = new MutationObserver(this.observeMutations.bind(this));
+        this.observer.observe(document.body, { childList: true, subtree: true });
     }
 
     observeMutations(mutations) {
@@ -43,7 +44,7 @@ class ActivityManager {
             }
         }
 
-        if (this.currentLoadCount < this.config.targetLoadCount && this.userPressedButton) {
+        if (this.currentLoadCount < config.targetLoadCount && this.userPressedButton) {
             this.clickLoadMoreButton();
         } else {
             this.resetState();
@@ -128,37 +129,32 @@ class ActivityManager {
     isAllowedUrl() {
         const currentUrl = window.location.href;
         return (
-            (this.config.runOn.home && new RegExp(URLS.home.replace('*', '.*')).test(currentUrl)) ||
-            (this.config.runOn.profile && new RegExp(URLS.profile.replace('*', '.*')).test(currentUrl)) ||
-            (this.config.runOn.social && new RegExp(URLS.social.replace('*', '.*')).test(currentUrl))
+            (config.runOn.home && new RegExp(URLS.home.replace('*', '.*')).test(currentUrl)) ||
+            (config.runOn.profile && new RegExp(URLS.profile.replace('*', '.*')).test(currentUrl)) ||
+            (config.runOn.social && new RegExp(URLS.social.replace('*', '.*')).test(currentUrl))
         );
     }
 
     shouldRemoveUncommented(node) {
-        if (this.config.remove.uncommented) {
+        if (config.remove.uncommented) {
             return !this.hasCountSpan(node.querySelector(SELECTORS.replies));
         }
         return false;
     }
 
     shouldRemoveUnliked(node) {
-        if (this.config.remove.unliked) {
+        if (config.remove.unliked) {
             return !this.hasCountSpan(node.querySelector(SELECTORS.likes));
         }
         return false;
     }
 
     shouldRemoveByCustomStrings(node) {
-        return this.config.remove.customStrings.some((customString) => {
-            return this.config.remove.caseSensitive
+        return config.remove.customStrings.some((customString) => {
+            return config.remove.caseSensitive
                 ? node.textContent.includes(customString)
                 : node.textContent.toLowerCase().includes(customString.toLowerCase());
         });
-    }
-
-    initializeObserver() {
-        const observer = new MutationObserver(this.observeMutations.bind(this));
-        observer.observe(document.body, { childList: true, subtree: true });
     }
 
     createCancelButton() {
@@ -190,6 +186,7 @@ class ActivityManager {
 }
 
 class ConfigValidator {
+
     static validate(config) {
         const errors = [
             typeof config.remove.uncommented !== 'boolean' && 'remove.uncommented must be a boolean',
@@ -233,6 +230,6 @@ const URLS = {
     if (!ConfigValidator.validate(config)) {
         console.error('Script disabled due to configuration errors.');
     } else {
-        new ActivityManager(config);
+        new ActivityManager();
     }
 })();
