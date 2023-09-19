@@ -19,8 +19,8 @@ const config = {
     },
     runOn: {
         home: true, // Run the script on the home feed
-        profile: true, // Run the script on user profile feeds
         social: true, // Run the script on social feeds
+        profile: false, // Run the script on user profile feeds
     },
 };
 
