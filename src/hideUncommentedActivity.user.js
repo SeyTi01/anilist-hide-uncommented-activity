@@ -81,8 +81,8 @@ class ObserverManager {
 
 class ActivityHandler {
 
-    constructor(mutationObserverHandler) {
-        this.mutationObserverHandler = mutationObserverHandler;
+    constructor(observerHandler) {
+        this.observerHandler = observerHandler;
     }
 
     removeEntry(node) {
@@ -128,8 +128,8 @@ class ActivityHandler {
 
 class UIHandler {
 
-    constructor(mutationObserverHandler) {
-        this.mutationObserverHandler = mutationObserverHandler;
+    constructor(observerHandler) {
+        this.observerHandler = observerHandler;
         this.userPressedButton = true;
         this.cancelButton = null;
         this.loadMoreButton = null;
@@ -153,7 +153,7 @@ class UIHandler {
     }
 
     simulateDomEvents() {
-        const domEvent = new Event('scroll', {bubbles: true});
+        const domEvent = new Event('scroll', { bubbles: true });
         const intervalId = setInterval(() => {
             if (this.userPressedButton) {
                 window.dispatchEvent(domEvent);
