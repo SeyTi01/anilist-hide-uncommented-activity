@@ -24,7 +24,7 @@ const config = {
     },
 };
 
-class MutationObserverHandler {
+class ObserverHandler {
 
     constructor() {
         this.activity = new ActivityHandler(this);
@@ -43,7 +43,7 @@ class MutationObserverHandler {
             }
 
             if (this.currentLoadCount < config.targetLoadCount && this.ui.userPressedButton) {
-                this.ui.clickLoadMoreButton();
+                this.ui.clickLoadMore();
             } else {
                 this.currentLoadCount = 0;
                 this.ui.resetState();
@@ -73,85 +73,6 @@ class MutationObserverHandler {
             (config.runOn.profile && new RegExp(URLS.profile.replace('*', '.*')).test(currentUrl)) ||
             (config.runOn.social && new RegExp(URLS.social.replace('*', '.*')).test(currentUrl))
         );
-    }
-}
-
-class UIHandler {
-
-    constructor(mutationObserverHandler) {
-        this.mutationObserverHandler = mutationObserverHandler;
-        this.userPressedButton = true;
-        this.cancelButton = null;
-        this.loadMoreButton = null;
-    }
-
-    handleLoadMoreButton(button) {
-        this.loadMoreButton = button;
-        this.loadMoreButton.addEventListener('click', () => {
-            this.userPressedButton = true;
-            this.simulateDomEvents();
-            this.showCancelButton();
-        });
-    }
-
-    showCancelButton() {
-        if (!this.cancelButton) {
-            this.createCancelButton();
-        } else {
-            this.cancelButton.style.display = 'block';
-        }
-    }
-
-    simulateDomEvents() {
-        const domEvent = new Event('scroll', {bubbles: true});
-        const intervalId = setInterval(() => {
-            if (this.userPressedButton) {
-                window.dispatchEvent(domEvent);
-            } else {
-                clearInterval(intervalId);
-            }
-        }, 100);
-    }
-
-    clickLoadMoreButton() {
-        if (this.loadMoreButton) {
-            this.loadMoreButton.click();
-            this.loadMoreButton = null;
-        }
-    }
-
-    resetState() {
-        this.userPressedButton = false;
-        if (this.cancelButton) {
-            this.cancelButton.style.display = 'none';
-        }
-    }
-
-    createCancelButton() {
-        const buttonStyles = `
-                position: fixed;
-                bottom: 10px;
-                right: 10px;
-                z-index: 9999;
-                line-height: 1.3;
-                background-color: rgb(var(--color-background-blue-dark));
-                color: rgb(var(--color-text-bright));
-                font: 1.6rem 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-                -webkit-font-smoothing: antialiased;
-                box-sizing: border-box;
-            `;
-
-        this.cancelButton = Object.assign(document.createElement('button'), {
-            textContent: 'Cancel',
-            className: 'cancel-button',
-            style: `--button-color: rgb(var(--color-blue)); ${buttonStyles}`,
-            onclick: () => {
-                this.userPressedButton = false;
-                this.cancelButton.style.display = 'none';
-            },
-        });
-
-        document.body.appendChild(this.cancelButton);
     }
 }
 
@@ -202,20 +123,97 @@ class ActivityHandler {
     }
 }
 
+class UIHandler {
+
+    constructor(mutationObserverHandler) {
+        this.mutationObserverHandler = mutationObserverHandler;
+        this.userPressedButton = true;
+        this.cancelButton = null;
+        this.loadMoreButton = null;
+    }
+
+    handleLoadMoreButton(button) {
+        this.loadMoreButton = button;
+        this.loadMoreButton.addEventListener('click', () => {
+            this.userPressedButton = true;
+            this.simulateDomEvents();
+            this.showCancelButton();
+        });
+    }
+
+    showCancelButton() {
+        if (!this.cancelButton) {
+            this.createCancelButton();
+        } else {
+            this.cancelButton.style.display = 'block';
+        }
+    }
+
+    simulateDomEvents() {
+        const domEvent = new Event('scroll', {bubbles: true});
+        const intervalId = setInterval(() => {
+            if (this.userPressedButton) {
+                window.dispatchEvent(domEvent);
+            } else {
+                clearInterval(intervalId);
+            }
+        }, 100);
+    }
+
+    clickLoadMore() {
+        if (this.loadMoreButton) {
+            this.loadMoreButton.click();
+            this.loadMoreButton = null;
+        }
+    }
+
+    resetState() {
+        this.userPressedButton = false;
+        if (this.cancelButton) {
+            this.cancelButton.style.display = 'none';
+        }
+    }
+
+    createCancelButton() {
+        const buttonStyles = `
+                position: fixed;
+                bottom: 10px;
+                right: 10px;
+                z-index: 9999;
+                line-height: 1.3;
+                background-color: rgb(var(--color-background-blue-dark));
+                color: rgb(var(--color-text-bright));
+                font: 1.6rem 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+                -webkit-font-smoothing: antialiased;
+                box-sizing: border-box;
+            `;
+
+        this.cancelButton = Object.assign(document.createElement('button'), {
+            textContent: 'Cancel',
+            className: 'cancel-button',
+            style: `--button-color: rgb(var(--color-blue)); ${buttonStyles}`,
+            onclick: () => {
+                this.userPressedButton = false;
+                this.cancelButton.style.display = 'none';
+            },
+        });
+
+        document.body.appendChild(this.cancelButton);
+    }
+}
+
 class ConfigValidator {
 
     static validate(config) {
         const errors = [
             typeof config.remove.uncommented !== 'boolean' && 'remove.uncommented must be a boolean',
             typeof config.remove.unliked !== 'boolean' && 'remove.unliked must be a boolean',
-            (!Number.isInteger(config.targetLoadCount) || config.targetLoadCount < 1) &&
-            'targetLoadCount must be a positive non-zero integer',
+            (!Number.isInteger(config.targetLoadCount) || config.targetLoadCount < 1) && 'targetLoadCount must be a positive non-zero integer',
             typeof config.runOn.home !== 'boolean' && 'runOn.home must be a boolean',
             typeof config.runOn.profile !== 'boolean' && 'runOn.profile must be a boolean',
             typeof config.runOn.social !== 'boolean' && 'runOn.social must be a boolean',
             !Array.isArray(config.remove.customStrings) && 'remove.customStrings must be an array',
-            config.remove.customStrings.some((str) => typeof str !== 'string') &&
-            'remove.customStrings must only contain strings',
+            config.remove.customStrings.some((str) => typeof str !== 'string') && 'remove.customStrings must only contain strings',
             typeof config.remove.caseSensitive !== 'boolean' && 'remove.caseSensitive must be a boolean',
         ].filter(Boolean);
 
@@ -247,6 +245,6 @@ const URLS = {
     if (!ConfigValidator.validate(config)) {
         console.error('Script disabled due to configuration errors.');
     } else {
-        new MutationObserverHandler();
+        new ObserverHandler();
     }
 })();
