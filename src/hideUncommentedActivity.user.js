@@ -30,7 +30,6 @@ class ObserverManager {
         this.activity = new ActivityHandler(this);
         this.ui = new UIHandler(this);
         this.currentLoadCount = 0;
-        this.initializeObserver();
     }
 
     observeMutations(mutations) {
@@ -61,7 +60,7 @@ class ObserverManager {
             }
 
         } else if (node.matches(SELECTORS.button)) {
-            this.ui.handleLoadMoreButton(node);
+            this.ui.setLoadMoreButton(node);
         }
     }
 
@@ -136,7 +135,7 @@ class UIHandler {
         this.loadMoreButton = null;
     }
 
-    handleLoadMoreButton(button) {
+    setLoadMoreButton(button) {
         this.loadMoreButton = button;
         this.loadMoreButton.addEventListener('click', () => {
             this.userPressedButton = true;
@@ -249,6 +248,6 @@ const URLS = {
     if (!ConfigValidator.validate(config)) {
         console.error('Script disabled due to configuration errors.');
     } else {
-        new ObserverManager();
+        new ObserverManager().initializeObserver();
     }
 })();
