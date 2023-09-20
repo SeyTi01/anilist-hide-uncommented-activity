@@ -24,14 +24,13 @@ const config = {
     },
 };
 
-class ObserverHandler {
+class ObserverManager {
 
     constructor() {
         this.activity = new ActivityHandler(this);
         this.ui = new UIHandler(this);
-        this.observer = new MutationObserver(this.observeMutations.bind(this));
-        this.observer.observe(document.body, {childList: true, subtree: true});
         this.currentLoadCount = 0;
+        this.initializeObserver();
     }
 
     observeMutations(mutations) {
@@ -73,6 +72,11 @@ class ObserverHandler {
             (config.runOn.profile && new RegExp(URLS.profile.replace('*', '.*')).test(currentUrl)) ||
             (config.runOn.social && new RegExp(URLS.social.replace('*', '.*')).test(currentUrl))
         );
+    }
+
+    initializeObserver() {
+        this.observer = new MutationObserver(this.observeMutations.bind(this));
+        this.observer.observe(document.body, { childList: true, subtree: true });
     }
 }
 
@@ -245,6 +249,6 @@ const URLS = {
     if (!ConfigValidator.validate(config)) {
         console.error('Script disabled due to configuration errors.');
     } else {
-        new ObserverHandler();
+        new ObserverManager();
     }
 })();
