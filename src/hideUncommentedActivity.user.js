@@ -49,15 +49,13 @@ class ObserverManager {
     }
 
     handleAddedNode(node) {
-        if (!(node instanceof HTMLElement)) {
-            return;
-        }
+        if (node instanceof HTMLElement) {
+            if (node.matches(SELECTORS.activity)) {
+                this.activity.removeEntry(node);
 
-        if (node.matches(SELECTORS.activity)) {
-            this.activity.removeEntry(node);
-
-        } else if (node.matches(SELECTORS.button)) {
-            this.ui.setLoadMoreButton(node);
+            } else if (node.matches(SELECTORS.button)) {
+                this.ui.setLoadMoreButton(node);
+            }
         }
     }
 
