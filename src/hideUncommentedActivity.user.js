@@ -28,8 +28,10 @@ class MutationObserverHandler {
 
     constructor() {
         this.activityManager = new ActivityManager(this);
+        this.uiManager = new UIManager(this);
         this.observer = new MutationObserver(this.observeMutations.bind(this));
-        this.observer.observe(document.body, { childList: true, subtree: true });
+        this.observer.observe(document.body, {childList: true, subtree: true});
+        this.currentLoadCount = 0;
     }
 
     observeMutations(mutations) {
@@ -40,18 +42,27 @@ class MutationObserverHandler {
                 }
             }
 
-            this.activityManager.clickLoadMoreOrReset();
+            if (this.currentLoadCount < config.targetLoadCount && this.uiManager.userPressedButton) {
+                this.uiManager.clickLoadMoreButton();
+            } else {
+                this.currentLoadCount = 0;
+                this.uiManager.resetState();
+            }
         }
     }
 
     handleAddedNode(node) {
-        if (node instanceof HTMLElement) {
-            if (node.matches(SELECTORS.activity)) {
-                this.activityManager.removeEntry(node)
+        if (!(node instanceof HTMLElement)) {
+            return;
+        }
 
-            } else if (node.matches(SELECTORS.button)) {
-                this.activityManager.handleLoadMoreButton(node);
+        if (node.matches(SELECTORS.activity)) {
+            if (!this.activityManager.removeEntry(node)) {
+                this.currentLoadCount++;
             }
+
+        } else if (node.matches(SELECTORS.button)) {
+            this.uiManager.handleLoadMoreButton(node);
         }
     }
 
@@ -65,34 +76,13 @@ class MutationObserverHandler {
     }
 }
 
-class ActivityManager {
+class UIManager {
 
     constructor(mutationObserverHandler) {
-        this.currentLoadCount = 0;
-        this.userPressedButton = true;
-        this.loadMoreButton = null;
-        this.cancelButton = null;
         this.mutationObserverHandler = mutationObserverHandler;
-    }
-
-    clickLoadMoreOrReset() {
-        if (this.currentLoadCount < config.targetLoadCount && this.userPressedButton) {
-            this.clickLoadMoreButton();
-        } else {
-            this.resetState();
-        }
-    }
-
-    removeEntry(node) {
-        if (
-            this.shouldRemoveUncommented(node) ||
-            this.shouldRemoveUnliked(node) ||
-            this.shouldRemoveByCustomStrings(node)
-        ) {
-            node.remove();
-        } else {
-            this.currentLoadCount++;
-        }
+        this.userPressedButton = true;
+        this.cancelButton = null;
+        this.loadMoreButton = null;
     }
 
     handleLoadMoreButton(button) {
@@ -113,7 +103,7 @@ class ActivityManager {
     }
 
     simulateDomEvents() {
-        const domEvent = new Event('scroll', { bubbles: true });
+        const domEvent = new Event('scroll', {bubbles: true});
         const intervalId = setInterval(() => {
             if (this.userPressedButton) {
                 window.dispatchEvent(domEvent);
@@ -131,37 +121,10 @@ class ActivityManager {
     }
 
     resetState() {
-        this.currentLoadCount = 0;
         this.userPressedButton = false;
         if (this.cancelButton) {
             this.cancelButton.style.display = 'none';
         }
-    }
-
-    hasCountSpan(node) {
-        return node?.querySelector('span.count');
-    }
-
-    shouldRemoveUncommented(node) {
-        if (config.remove.uncommented) {
-            return !this.hasCountSpan(node.querySelector(SELECTORS.replies));
-        }
-        return false;
-    }
-
-    shouldRemoveUnliked(node) {
-        if (config.remove.unliked) {
-            return !this.hasCountSpan(node.querySelector(SELECTORS.likes));
-        }
-        return false;
-    }
-
-    shouldRemoveByCustomStrings(node) {
-        return config.remove.customStrings.some((customString) => {
-            return config.remove.caseSensitive
-                ? node.textContent.includes(customString)
-                : node.textContent.toLowerCase().includes(customString.toLowerCase());
-        });
     }
 
     createCancelButton() {
@@ -189,6 +152,53 @@ class ActivityManager {
         });
 
         document.body.appendChild(this.cancelButton);
+    }
+}
+
+class ActivityManager {
+
+    constructor(mutationObserverHandler) {
+        this.mutationObserverHandler = mutationObserverHandler;
+    }
+
+    removeEntry(node) {
+        if (
+            this.shouldRemoveUncommented(node) ||
+            this.shouldRemoveUnliked(node) ||
+            this.shouldRemoveByCustomStrings(node)
+        ) {
+            node.remove();
+        } else {
+            return false;
+        }
+
+        return true;
+    }
+
+    shouldRemoveUncommented(node) {
+        if (config.remove.uncommented) {
+            return !this.hasCountSpan(node.querySelector(SELECTORS.replies));
+        }
+        return false;
+    }
+
+    shouldRemoveUnliked(node) {
+        if (config.remove.unliked) {
+            return !this.hasCountSpan(node.querySelector(SELECTORS.likes));
+        }
+        return false;
+    }
+
+    shouldRemoveByCustomStrings(node) {
+        return config.remove.customStrings.some((customString) => {
+            return config.remove.caseSensitive
+                ? node.textContent.includes(customString)
+                : node.textContent.toLowerCase().includes(customString.toLowerCase());
+        });
+    }
+
+    hasCountSpan(node) {
+        return node?.querySelector('span.count');
     }
 }
 
@@ -232,7 +242,7 @@ const URLS = {
     social: 'https://anilist.co/*/social',
 };
 
-(function () {
+(function() {
     'use strict';
     if (!ConfigValidator.validate(config)) {
         console.error('Script disabled due to configuration errors.');
