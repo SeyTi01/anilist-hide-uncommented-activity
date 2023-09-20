@@ -81,10 +81,6 @@ class ObserverManager {
 
 class ActivityHandler {
 
-    constructor(observerHandler) {
-        this.observerHandler = observerHandler;
-    }
-
     removeEntry(node) {
         if (
             this.shouldRemoveUncommented(node) ||
@@ -128,8 +124,7 @@ class ActivityHandler {
 
 class UIHandler {
 
-    constructor(observerHandler) {
-        this.observerHandler = observerHandler;
+    constructor() {
         this.userPressedButton = true;
         this.cancelButton = null;
         this.loadMoreButton = null;
