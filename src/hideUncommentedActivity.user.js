@@ -29,7 +29,6 @@ class ObserverManager {
     constructor(activityHandler, uiHandler) {
         this.activity = activityHandler;
         this.ui = uiHandler;
-        this.currentLoadCount = 0;
     }
 
     observeMutations(mutations) {
@@ -40,10 +39,10 @@ class ObserverManager {
                 }
             }
 
-            if (this.currentLoadCount < config.targetLoadCount && this.ui.userPressedButton) {
+            if (this.activity.currentLoadCount < config.targetLoadCount && this.ui.userPressedButton) {
                 this.ui.clickLoadMore();
             } else {
-                this.currentLoadCount = 0;
+                this.activity.resetState();
                 this.ui.resetState();
             }
         }
@@ -55,9 +54,7 @@ class ObserverManager {
         }
 
         if (node.matches(SELECTORS.activity)) {
-            if (!this.activity.removeEntry(node)) {
-                this.currentLoadCount++;
-            }
+            this.activity.removeEntry(node);
 
         } else if (node.matches(SELECTORS.button)) {
             this.ui.setLoadMoreButton(node);
@@ -73,13 +70,17 @@ class ObserverManager {
         );
     }
 
-    initializeObserver() {
+    initialize() {
         this.observer = new MutationObserver(this.observeMutations.bind(this));
-        this.observer.observe(document.body, { childList: true, subtree: true });
+        this.observer.observe(document.body, {childList: true, subtree: true});
     }
 }
 
 class ActivityHandler {
+
+    constructor() {
+        this.currentLoadCount = 0;
+    }
 
     removeEntry(node) {
         if (
@@ -89,10 +90,12 @@ class ActivityHandler {
         ) {
             node.remove();
         } else {
-            return false;
+            this.currentLoadCount++;
         }
+    }
 
-        return true;
+    resetState() {
+        this.currentLoadCount = 0;
     }
 
     shouldRemoveUncommented(node) {
@@ -139,25 +142,6 @@ class UIHandler {
         });
     }
 
-    showCancelButton() {
-        if (!this.cancelButton) {
-            this.createCancelButton();
-        } else {
-            this.cancelButton.style.display = 'block';
-        }
-    }
-
-    simulateDomEvents() {
-        const domEvent = new Event('scroll', { bubbles: true });
-        const intervalId = setInterval(() => {
-            if (this.userPressedButton) {
-                window.dispatchEvent(domEvent);
-            } else {
-                clearInterval(intervalId);
-            }
-        }, 100);
-    }
-
     clickLoadMore() {
         if (this.loadMoreButton) {
             this.loadMoreButton.click();
@@ -170,6 +154,25 @@ class UIHandler {
         if (this.cancelButton) {
             this.cancelButton.style.display = 'none';
         }
+    }
+
+    showCancelButton() {
+        if (!this.cancelButton) {
+            this.createCancelButton();
+        } else {
+            this.cancelButton.style.display = 'block';
+        }
+    }
+
+    simulateDomEvents() {
+        const domEvent = new Event('scroll', {bubbles: true});
+        const intervalId = setInterval(() => {
+            if (this.userPressedButton) {
+                window.dispatchEvent(domEvent);
+            } else {
+                clearInterval(intervalId);
+            }
+        }, 100);
     }
 
     createCancelButton() {
@@ -245,6 +248,6 @@ const URLS = {
     } else {
         const activityHandler = new ActivityHandler();
         const uiHandler = new UIHandler();
-        new ObserverManager(activityHandler, uiHandler).initializeObserver();
+        new ObserverManager(activityHandler, uiHandler).initialize();
     }
 })();
