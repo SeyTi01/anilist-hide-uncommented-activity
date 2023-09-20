@@ -26,9 +26,9 @@ const config = {
 
 class ObserverManager {
 
-    constructor() {
-        this.activity = new ActivityHandler(this);
-        this.ui = new UIHandler(this);
+    constructor(activityHandler, uiHandler) {
+        this.activity = activityHandler;
+        this.ui = uiHandler;
         this.currentLoadCount = 0;
     }
 
@@ -243,6 +243,8 @@ const URLS = {
     if (!ConfigValidator.validate(config)) {
         console.error('Script disabled due to configuration errors.');
     } else {
-        new ObserverManager().initializeObserver();
+        const activityHandler = new ActivityHandler();
+        const uiHandler = new UIHandler();
+        new ObserverManager(activityHandler, uiHandler).initializeObserver();
     }
 })();
