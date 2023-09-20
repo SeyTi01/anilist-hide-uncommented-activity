@@ -1,6 +1,6 @@
 # Anilist: Hide Unwanted Activity
 
-Customize activity feeds on by removing unwanted entries.
+Customize activity feeds by removing unwanted entries.
 
 ## Features
 

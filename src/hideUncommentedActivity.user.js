@@ -2,7 +2,7 @@
 // @name         Anilist: Hide Unwanted Activity
 // @namespace    https://github.com/SeyTi01/
 // @version      1.6b
-// @description  Hides unwanted activity on Anilist's activity feeds
+// @description  Customize activity feeds by removing unwanted entries.
 // @author       SeyTi01
 // @match        https://anilist.co/*
 // @grant        none
