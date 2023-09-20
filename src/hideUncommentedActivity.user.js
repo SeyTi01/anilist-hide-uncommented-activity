@@ -24,11 +24,11 @@ const config = {
     },
 };
 
-class MutationObserverHandler {
+class ObserverHandler {
 
     constructor() {
-        this.activityManager = new ActivityManager(this);
-        this.uiManager = new UIManager(this);
+        this.activity = new ActivityAction(this);
+        this.ui = new UIAction(this);
         this.observer = new MutationObserver(this.observeMutations.bind(this));
         this.observer.observe(document.body, {childList: true, subtree: true});
         this.currentLoadCount = 0;
@@ -42,11 +42,9 @@ class MutationObserverHandler {
                 }
             }
 
-            if (this.currentLoadCount < config.targetLoadCount && this.uiManager.userPressedButton) {
-                this.uiManager.clickLoadMoreButton();
-            } else {
+            const isCurrentCountBelowTarget = this.currentLoadCount < config.targetLoadCount;
+            if (!this.ui.clickLoadMoreOrReset(isCurrentCountBelowTarget)) {
                 this.currentLoadCount = 0;
-                this.uiManager.resetState();
             }
         }
     }
@@ -57,12 +55,12 @@ class MutationObserverHandler {
         }
 
         if (node.matches(SELECTORS.activity)) {
-            if (!this.activityManager.removeEntry(node)) {
+            if (!this.activity.removeEntry(node)) {
                 this.currentLoadCount++;
             }
 
         } else if (node.matches(SELECTORS.button)) {
-            this.uiManager.handleLoadMoreButton(node);
+            this.ui.setLoadMoreButton(node);
         }
     }
 
@@ -76,89 +74,10 @@ class MutationObserverHandler {
     }
 }
 
-class UIManager {
+class ActivityAction {
 
-    constructor(mutationObserverHandler) {
-        this.mutationObserverHandler = mutationObserverHandler;
-        this.userPressedButton = true;
-        this.cancelButton = null;
-        this.loadMoreButton = null;
-    }
-
-    handleLoadMoreButton(button) {
-        this.loadMoreButton = button;
-        this.loadMoreButton.addEventListener('click', () => {
-            this.userPressedButton = true;
-            this.simulateDomEvents();
-            this.showCancelButton();
-        });
-    }
-
-    showCancelButton() {
-        if (!this.cancelButton) {
-            this.createCancelButton();
-        } else {
-            this.cancelButton.style.display = 'block';
-        }
-    }
-
-    simulateDomEvents() {
-        const domEvent = new Event('scroll', {bubbles: true});
-        const intervalId = setInterval(() => {
-            if (this.userPressedButton) {
-                window.dispatchEvent(domEvent);
-            } else {
-                clearInterval(intervalId);
-            }
-        }, 100);
-    }
-
-    clickLoadMoreButton() {
-        if (this.loadMoreButton) {
-            this.loadMoreButton.click();
-            this.loadMoreButton = null;
-        }
-    }
-
-    resetState() {
-        this.userPressedButton = false;
-        if (this.cancelButton) {
-            this.cancelButton.style.display = 'none';
-        }
-    }
-
-    createCancelButton() {
-        const buttonStyles = `
-                position: fixed;
-                bottom: 10px;
-                right: 10px;
-                z-index: 9999;
-                line-height: 1.3;
-                background-color: rgb(var(--color-background-blue-dark));
-                color: rgb(var(--color-text-bright));
-                font: 1.6rem 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-                -webkit-font-smoothing: antialiased;
-                box-sizing: border-box;
-            `;
-
-        this.cancelButton = Object.assign(document.createElement('button'), {
-            textContent: 'Cancel',
-            className: 'cancel-button',
-            style: `--button-color: rgb(var(--color-blue)); ${buttonStyles}`,
-            onclick: () => {
-                this.userPressedButton = false;
-                this.cancelButton.style.display = 'none';
-            },
-        });
-
-        document.body.appendChild(this.cancelButton);
-    }
-}
-
-class ActivityManager {
-
-    constructor(mutationObserverHandler) {
-        this.mutationObserverHandler = mutationObserverHandler;
+    constructor(observerHandler) {
+        this.observerHandler = observerHandler;
     }
 
     removeEntry(node) {
@@ -199,6 +118,95 @@ class ActivityManager {
 
     hasCountSpan(node) {
         return node?.querySelector('span.count');
+    }
+}
+
+class UIAction {
+
+    constructor(observerHandler) {
+        this.observerHandler = observerHandler;
+        this.userPressedButton = true;
+        this.cancelButton = null;
+        this.loadMoreButton = null;
+    }
+
+    setLoadMoreButton(button) {
+        this.loadMoreButton = button;
+        this.loadMoreButton.addEventListener('click', () => {
+            this.userPressedButton = true;
+            this.simulateDomEvents();
+            this.showCancelButton();
+        });
+    }
+
+    clickLoadMoreOrReset(isCurrentCountBelowTarget) {
+        if (isCurrentCountBelowTarget && this.userPressedButton) {
+            this.clickLoadMore();
+            return true;
+        }
+
+        this.resetState();
+        return false;
+    }
+
+    showCancelButton() {
+        if (!this.cancelButton) {
+            this.createCancelButton();
+        } else {
+            this.cancelButton.style.display = 'block';
+        }
+    }
+
+    clickLoadMore() {
+        if (this.loadMoreButton) {
+            this.loadMoreButton.click();
+            this.loadMoreButton = null;
+        }
+    }
+
+    resetState() {
+        this.userPressedButton = false;
+        if (this.cancelButton) {
+            this.cancelButton.style.display = 'none';
+        }
+    }
+
+    simulateDomEvents() {
+        const domEvent = new Event('scroll', {bubbles: true});
+        const intervalId = setInterval(() => {
+            if (this.userPressedButton) {
+                window.dispatchEvent(domEvent);
+            } else {
+                clearInterval(intervalId);
+            }
+        }, 100);
+    }
+
+    createCancelButton() {
+        const buttonStyles = `
+                position: fixed;
+                bottom: 10px;
+                right: 10px;
+                z-index: 9999;
+                line-height: 1.3;
+                background-color: rgb(var(--color-background-blue-dark));
+                color: rgb(var(--color-text-bright));
+                font: 1.6rem 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+                -webkit-font-smoothing: antialiased;
+                box-sizing: border-box;
+            `;
+
+        this.cancelButton = Object.assign(document.createElement('button'), {
+            textContent: 'Cancel',
+            className: 'cancel-button',
+            style: `--button-color: rgb(var(--color-blue)); ${buttonStyles}`,
+            onclick: () => {
+                this.userPressedButton = false;
+                this.cancelButton.style.display = 'none';
+            },
+        });
+
+        document.body.appendChild(this.cancelButton);
     }
 }
 
@@ -247,6 +255,6 @@ const URLS = {
     if (!ConfigValidator.validate(config)) {
         console.error('Script disabled due to configuration errors.');
     } else {
-        new MutationObserverHandler();
+        new ObserverHandler();
     }
 })();
