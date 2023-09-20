@@ -9,105 +9,163 @@
 // @license      MIT
 // ==/UserScript==
 
-(function() {
-    'use strict';
+const config = {
+    targetLoadCount: 2, // Number of activities to show per click on the "Load More" button
+    remove: {
+        uncommented: true, // Remove activities that have no comments
+        unliked: false, // Remove activities that have no likes
+        customStrings: [], // Remove activities with user-defined strings
+        caseSensitive: false, // Whether string removal should be case-sensitive
+    },
+    runOn: {
+        home: true, // Run the script on the home feed
+        social: true, // Run the script on social feeds
+        profile: false, // Run the script on user profile feeds
+    },
+};
 
-    const config = {
-        targetLoadCount: 2, // Number of activities to show per click on the "Load More" button
-        remove: {
-            uncommented: true, // Remove activities that have no comments
-            unliked: false, // Remove activities that have no likes
-            customStrings: [], // Remove activities with user-defined strings
-            caseSensitive: false // Whether string removal should be case-sensitive
-        },
-        runOn: {
-            home: true, // Run the script on the home feed
-            profile: true, // Run the script on user profile feeds
-            social: true // Run the script on social feeds
-        }
-    };
+class ObserverManager {
 
-    let currentLoadCount = 0;
-    let userPressedButton = true;
-    let loadMoreButton;
-    let cancelButton;
+    constructor(activityHandler, uiHandler) {
+        this.activity = activityHandler;
+        this.ui = uiHandler;
+    }
 
-    initializeObserver();
-
-    function observeMutations(mutations) {
-        if (isAllowedUrl()) {
+    observeMutations(mutations) {
+        if (this.isAllowedUrl()) {
             for (const mutation of mutations) {
                 if (mutation.addedNodes.length > 0) {
-                    mutation.addedNodes.forEach(handleAddedNode);
+                    mutation.addedNodes.forEach(this.handleAddedNode.bind(this));
                 }
             }
-        }
 
-        if (currentLoadCount < config.targetLoadCount && userPressedButton) {
-            clickLoadMoreButton();
-        } else {
-            resetState();
-        }
-    }
-
-    function handleAddedNode(node) {
-        if (!(node instanceof HTMLElement)) {
-            return;
-        }
-
-        if (node.matches(SELECTORS.activity)) {
-            if (!removeEntry(node)) {
-                currentLoadCount++;
+            if (this.activity.currentLoadCount < config.targetLoadCount && this.ui.userPressedButton) {
+                this.ui.clickLoadMore();
+            } else {
+                this.activity.resetState();
+                this.ui.resetState();
             }
-
-        } else if (node.matches(SELECTORS.button)) {
-            handleLoadMoreButton(node);
         }
     }
 
-    function removeEntry(node) {
+    handleAddedNode(node) {
+        if (node instanceof HTMLElement) {
+            if (node.matches(SELECTORS.activity)) {
+                this.activity.removeEntry(node);
+
+            } else if (node.matches(SELECTORS.button)) {
+                this.ui.setLoadMoreButton(node);
+            }
+        }
+    }
+
+    isAllowedUrl() {
+        const currentUrl = window.location.href;
+        return (
+            (config.runOn.home && new RegExp(URLS.home.replace('*', '.*')).test(currentUrl)) ||
+            (config.runOn.profile && new RegExp(URLS.profile.replace('*', '.*')).test(currentUrl)) ||
+            (config.runOn.social && new RegExp(URLS.social.replace('*', '.*')).test(currentUrl))
+        );
+    }
+
+    initialize() {
+        this.observer = new MutationObserver(this.observeMutations.bind(this));
+        this.observer.observe(document.body, {childList: true, subtree: true});
+    }
+}
+
+class ActivityHandler {
+
+    constructor() {
+        this.currentLoadCount = 0;
+    }
+
+    removeEntry(node) {
         if (
-            shouldRemoveUncommented(node) ||
-            shouldRemoveUnliked(node) ||
-            shouldRemoveByCustomStrings(node)
+            this.shouldRemoveUncommented(node) ||
+            this.shouldRemoveUnliked(node) ||
+            this.shouldRemoveByCustomStrings(node)
         ) {
             node.remove();
-            return true;
+        } else {
+            this.currentLoadCount++;
         }
+    }
 
+    resetState() {
+        this.currentLoadCount = 0;
+    }
+
+    shouldRemoveUncommented(node) {
+        if (config.remove.uncommented) {
+            return !this.hasCountSpan(node.querySelector(SELECTORS.replies));
+        }
         return false;
     }
 
-    function handleLoadMoreButton(button) {
-        loadMoreButton = button;
-        loadMoreButton.addEventListener('click', function() {
-            userPressedButton = true;
-            simulateDomEvents();
-            showCancelButton();
+    shouldRemoveUnliked(node) {
+        if (config.remove.unliked) {
+            return !this.hasCountSpan(node.querySelector(SELECTORS.likes));
+        }
+        return false;
+    }
+
+    shouldRemoveByCustomStrings(node) {
+        return config.remove.customStrings.some((customString) => {
+            return config.remove.caseSensitive
+                ? node.textContent.includes(customString)
+                : node.textContent.toLowerCase().includes(customString.toLowerCase());
         });
     }
 
-    function showCancelButton() {
-        if (!cancelButton) {
-            createCancelButton();
-        } else {
-            cancelButton.style.display = 'block';
+    hasCountSpan(node) {
+        return node?.querySelector('span.count');
+    }
+}
+
+class UIHandler {
+
+    constructor() {
+        this.userPressedButton = true;
+        this.cancelButton = null;
+        this.loadMoreButton = null;
+    }
+
+    setLoadMoreButton(button) {
+        this.loadMoreButton = button;
+        this.loadMoreButton.addEventListener('click', () => {
+            this.userPressedButton = true;
+            this.simulateDomEvents();
+            this.showCancelButton();
+        });
+    }
+
+    clickLoadMore() {
+        if (this.loadMoreButton) {
+            this.loadMoreButton.click();
+            this.loadMoreButton = null;
         }
     }
 
-    function initializeObserver() {
-        if (!validateConfig(config)) {
-            console.error('Script disabled due to configuration errors.');
-        } else {
-            const observer = new MutationObserver(observeMutations);
-            observer.observe(document.body, { childList: true, subtree: true });
+    resetState() {
+        this.userPressedButton = false;
+        if (this.cancelButton) {
+            this.cancelButton.style.display = 'none';
         }
     }
 
-    function simulateDomEvents() {
+    showCancelButton() {
+        if (!this.cancelButton) {
+            this.createCancelButton();
+        } else {
+            this.cancelButton.style.display = 'block';
+        }
+    }
+
+    simulateDomEvents() {
         const domEvent = new Event('scroll', {bubbles: true});
-        const intervalId = setInterval(function() {
-            if (userPressedButton) {
+        const intervalId = setInterval(() => {
+            if (this.userPressedButton) {
                 window.dispatchEvent(domEvent);
             } else {
                 clearInterval(intervalId);
@@ -115,56 +173,7 @@
         }, 100);
     }
 
-
-    function clickLoadMoreButton() {
-        if (loadMoreButton) {
-            loadMoreButton.click();
-            loadMoreButton = null;
-        }
-    }
-
-    function resetState() {
-        currentLoadCount = 0;
-        userPressedButton = false;
-        if (cancelButton) {
-            cancelButton.style.display = 'none';
-        }
-    }
-
-    function hasCountSpan(node) {
-        return node?.querySelector('span.count');
-    }
-
-    function isAllowedUrl() {
-        const currentUrl = window.location.href;
-        return (config.runOn.home && new RegExp(URLS.home.replace('*', '.*')).test(currentUrl))
-            || (config.runOn.profile && new RegExp(URLS.profile.replace('*', '.*')).test(currentUrl))
-            || (config.runOn.social && new RegExp(URLS.social.replace('*', '.*')).test(currentUrl));
-    }
-
-    function shouldRemoveUncommented(node) {
-        if (config.remove.uncommented) {
-            return !hasCountSpan(node.querySelector(SELECTORS.replies));
-        }
-        return false;
-    }
-
-    function shouldRemoveUnliked(node) {
-        if (config.remove.unliked) {
-            return !hasCountSpan(node.querySelector(SELECTORS.likes));
-        }
-        return false;
-    }
-
-    function shouldRemoveByCustomStrings(node) {
-        return config.remove.customStrings.some(customString => {
-            return config.remove.caseSensitive
-                ? node.textContent.includes(customString)
-                : node.textContent.toLowerCase().includes(customString.toLowerCase());
-        });
-    }
-
-    function createCancelButton() {
+    createCancelButton() {
         const buttonStyles = `
                 position: fixed;
                 bottom: 10px;
@@ -178,20 +187,23 @@
                 box-sizing: border-box;
             `;
 
-        cancelButton = Object.assign(document.createElement('button'), {
+        this.cancelButton = Object.assign(document.createElement('button'), {
             textContent: 'Cancel',
             className: 'cancel-button',
             style: `--button-color: rgb(var(--color-blue)); ${buttonStyles}`,
             onclick: () => {
-                userPressedButton = false;
-                cancelButton.style.display = 'none';
+                this.userPressedButton = false;
+                this.cancelButton.style.display = 'none';
             },
         });
 
-        document.body.appendChild(cancelButton);
+        document.body.appendChild(this.cancelButton);
     }
+}
 
-    function validateConfig(config) {
+class ConfigValidator {
+
+    static validate(config) {
         const errors = [
             typeof config.remove.uncommented !== 'boolean' && 'remove.uncommented must be a boolean',
             typeof config.remove.unliked !== 'boolean' && 'remove.unliked must be a boolean',
@@ -200,29 +212,40 @@
             typeof config.runOn.profile !== 'boolean' && 'runOn.profile must be a boolean',
             typeof config.runOn.social !== 'boolean' && 'runOn.social must be a boolean',
             !Array.isArray(config.remove.customStrings) && 'remove.customStrings must be an array',
-            config.remove.customStrings.some(str => typeof str !== 'string') && 'remove.customStrings must only contain strings',
+            config.remove.customStrings.some((str) => typeof str !== 'string') && 'remove.customStrings must only contain strings',
             typeof config.remove.caseSensitive !== 'boolean' && 'remove.caseSensitive must be a boolean',
         ].filter(Boolean);
 
         if (errors.length > 0) {
             console.error('Script configuration errors:');
-            errors.forEach(error => console.error(error));
+            errors.forEach((error) => console.error(error));
             return false;
         }
 
         return true;
     }
+}
 
-    const SELECTORS = {
-        button: 'div.load-more',
-        activity: 'div.activity-entry',
-        replies: 'div.action.replies',
-        likes: 'div.action.likes'
-    };
+const SELECTORS = {
+    button: 'div.load-more',
+    activity: 'div.activity-entry',
+    replies: 'div.action.replies',
+    likes: 'div.action.likes',
+};
 
-    const URLS = {
-        home: 'https://anilist.co/home',
-        profile: 'https://anilist.co/user/*/',
-        social: 'https://anilist.co/*/social'
-    };
+const URLS = {
+    home: 'https://anilist.co/home',
+    profile: 'https://anilist.co/user/*/',
+    social: 'https://anilist.co/*/social',
+};
+
+(function() {
+    'use strict';
+    if (!ConfigValidator.validate(config)) {
+        console.error('Script disabled due to configuration errors.');
+    } else {
+        const activityHandler = new ActivityHandler();
+        const uiHandler = new UIHandler();
+        new ObserverManager(activityHandler, uiHandler).initialize();
+    }
 })();
