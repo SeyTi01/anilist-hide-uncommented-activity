@@ -39,12 +39,7 @@ class ObserverManager {
                 }
             }
 
-            if (this.activity.currentLoadCount < config.targetLoadCount && this.ui.userPressedButton) {
-                this.ui.clickLoadMore();
-            } else {
-                this.activity.resetState();
-                this.ui.resetState();
-            }
+            this.loadMoreOrReset();
         }
     }
 
@@ -56,6 +51,15 @@ class ObserverManager {
             } else if (node.matches(SELECTORS.button)) {
                 this.ui.setLoadMore(node);
             }
+        }
+    }
+
+    loadMoreOrReset() {
+        if (this.activity.currentLoadCount < config.targetLoadCount && this.ui.userPressedButton) {
+            this.ui.clickLoadMore();
+        } else {
+            this.activity.resetState();
+            this.ui.resetState();
         }
     }
 
