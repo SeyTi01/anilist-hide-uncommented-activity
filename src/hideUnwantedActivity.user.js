@@ -178,23 +178,22 @@ class UIHandler {
     }
 
     createCancelButton() {
-        const buttonStyles = `
-                position: fixed;
-                bottom: 10px;
-                right: 10px;
-                z-index: 9999;
-                line-height: 1.3;
-                background-color: rgb(var(--color-background-blue-dark));
-                color: rgb(var(--color-text-bright));
-                font: 1.6rem 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-                -webkit-font-smoothing: antialiased;
-                box-sizing: border-box;
-            `;
-
         this.cancelButton = Object.assign(document.createElement('button'), {
             textContent: 'Cancel',
             className: 'cancel-button',
-            style: `--button-color: rgb(var(--color-blue)); ${buttonStyles}`,
+            style: `
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            z-index: 9999;
+            line-height: 1.3;
+            background-color: rgb(var(--color-background-blue-dark));
+            color: rgb(var(--color-text-bright));
+            font: 1.6rem 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            box-sizing: border-box;
+            --button-color: rgb(var(--color-blue));
+        `,
             onclick: () => {
                 this.userPressedButton = false;
                 this.cancelButton.style.display = 'none';
