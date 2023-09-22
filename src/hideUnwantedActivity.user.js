@@ -153,9 +153,7 @@ class UIHandler {
 
     resetState() {
         this.userPressedButton = false;
-        if (this.cancelButton) {
-            this.cancelButton.style.display = 'none';
-        }
+        this.hideCancelButton();
     }
 
     showCancelButton() {
@@ -163,6 +161,12 @@ class UIHandler {
             this.createCancelButton();
         } else {
             this.cancelButton.style.display = 'block';
+        }
+    }
+
+    hideCancelButton() {
+        if (this.cancelButton) {
+            this.cancelButton.style.display = 'none';
         }
     }
 
