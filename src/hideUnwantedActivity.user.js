@@ -244,11 +244,15 @@ const URLS = {
 
 (function() {
     'use strict';
+
     if (!ConfigValidator.validate(config)) {
         console.error('Script disabled due to configuration errors.');
-    } else {
-        const activityHandler = new ActivityHandler();
-        const uiHandler = new UIHandler();
-        new MainApp(activityHandler, uiHandler).initializeObserver();
+        return;
     }
+
+    const activityHandler = new ActivityHandler();
+    const uiHandler = new UIHandler();
+    const mainApp = new MainApp(activityHandler, uiHandler);
+
+    mainApp.initializeObserver();
 })();
