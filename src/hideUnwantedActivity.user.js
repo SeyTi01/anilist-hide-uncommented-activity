@@ -54,7 +54,7 @@ class ObserverManager {
                 this.activity.removeEntry(node);
 
             } else if (node.matches(SELECTORS.button)) {
-                this.ui.setLoadMoreButton(node);
+                this.ui.setLoadMore(node);
             }
         }
     }
@@ -131,7 +131,7 @@ class UIHandler {
         this.loadMoreButton = null;
     }
 
-    setLoadMoreButton(button) {
+    setLoadMore(button) {
         this.loadMoreButton = button;
         this.loadMoreButton.addEventListener('click', () => {
             this.userPressedButton = true;
