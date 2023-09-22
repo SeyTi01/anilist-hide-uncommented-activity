@@ -24,7 +24,7 @@ const config = {
     },
 };
 
-class ObserverManager {
+class MainApp {
 
     constructor(activityHandler, uiHandler) {
         this.activity = activityHandler;
@@ -72,7 +72,7 @@ class ObserverManager {
         );
     }
 
-    initialize() {
+    initializeObserver() {
         this.observer = new MutationObserver(this.observeMutations.bind(this));
         this.observer.observe(document.body, {childList: true, subtree: true});
     }
@@ -249,6 +249,6 @@ const URLS = {
     } else {
         const activityHandler = new ActivityHandler();
         const uiHandler = new UIHandler();
-        new ObserverManager(activityHandler, uiHandler).initialize();
+        new MainApp(activityHandler, uiHandler).initializeObserver();
     }
 })();
