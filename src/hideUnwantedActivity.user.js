@@ -47,7 +47,6 @@ class MainApp {
         if (node instanceof HTMLElement) {
             if (node.matches(SELECTORS.activity)) {
                 this.activity.removeEntry(node);
-
             } else if (node.matches(SELECTORS.button)) {
                 this.ui.setLoadMore(node);
             }
@@ -65,11 +64,12 @@ class MainApp {
 
     isAllowedUrl() {
         const currentUrl = window.location.href;
-        return (
-            (config.runOn.home && new RegExp(URLS.home.replace('*', '.*')).test(currentUrl)) ||
-            (config.runOn.profile && new RegExp(URLS.profile.replace('*', '.*')).test(currentUrl)) ||
-            (config.runOn.social && new RegExp(URLS.social.replace('*', '.*')).test(currentUrl))
-        );
+        const allowedPatterns = Object.keys(URLS).filter(pattern => config.runOn[pattern]);
+
+        return allowedPatterns.some(pattern => {
+            const regex = new RegExp(URLS[pattern].replace('*', '.*'));
+            return regex.test(currentUrl);
+        });
     }
 
     initializeObserver() {
