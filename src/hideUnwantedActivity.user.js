@@ -116,9 +116,9 @@ class ActivityHandler {
 
     shouldRemoveByCustomStrings(node) {
         return config.remove.customStrings.some((customString) => {
-            return config.remove.caseSensitive
-                ? node.textContent.includes(customString)
-                : node.textContent.toLowerCase().includes(customString.toLowerCase());
+            return config.remove.caseSensitive ?
+                node.textContent.includes(customString) :
+                node.textContent.toLowerCase().includes(customString.toLowerCase());
         });
     }
 
