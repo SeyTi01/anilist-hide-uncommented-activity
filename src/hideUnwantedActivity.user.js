@@ -87,13 +87,7 @@ class ActivityHandler {
     }
 
     removeEntry(node) {
-        if (
-            this.shouldRemoveUncommented(node) ||
-            this.shouldRemoveUnliked(node) ||
-            this.shouldRemoveImage(node) ||
-            this.shouldRemoveVideo(node) ||
-            this.shouldRemoveByCustomStrings(node)
-        ) {
+        if (this.shouldRemoveNode(node)) {
             node.remove();
         } else {
             this.currentLoadCount++;
@@ -102,6 +96,16 @@ class ActivityHandler {
 
     resetState() {
         this.currentLoadCount = 0;
+    }
+
+    shouldRemoveNode(node) {
+        return (
+            this.shouldRemoveUncommented(node) ||
+            this.shouldRemoveUnliked(node) ||
+            this.shouldRemoveImage(node) ||
+            this.shouldRemoveVideo(node) ||
+            this.shouldRemoveByCustomStrings(node)
+        );
     }
 
     shouldRemoveUncommented(node) {
