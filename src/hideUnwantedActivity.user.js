@@ -27,7 +27,7 @@ const config = {
 class MainApp {
 
     constructor(activityHandler, uiHandler) {
-        this.activity = activityHandler;
+        this.ac = activityHandler;
         this.ui = uiHandler;
     }
 
@@ -46,7 +46,7 @@ class MainApp {
     handleAddedNode(node) {
         if (node instanceof HTMLElement) {
             if (node.matches(SELECTORS.activity)) {
-                this.activity.removeEntry(node);
+                this.ac.removeEntry(node);
             } else if (node.matches(SELECTORS.button)) {
                 this.ui.setLoadMore(node);
             }
@@ -54,10 +54,10 @@ class MainApp {
     }
 
     loadMoreOrReset() {
-        if (this.activity.currentLoadCount < config.targetLoadCount && this.ui.userPressedButton) {
+        if (this.ac.currentLoadCount < config.targetLoadCount && this.ui.userPressedButton) {
             this.ui.clickLoadMore();
         } else {
-            this.activity.resetState();
+            this.ac.resetState();
             this.ui.resetState();
         }
     }
