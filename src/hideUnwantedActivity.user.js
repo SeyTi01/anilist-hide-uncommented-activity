@@ -14,8 +14,8 @@ const config = {
     remove: {
         uncommented: true, // Remove activities that have no comments
         unliked: false, // Remove activities that have no likes
-        images: false, // Remove activities with images
-        videos: false, // Remove activities with videos
+        images: false, // Remove activities containing images
+        videos: false, // Remove activities containing videos
         customStrings: [], // Remove activities with user-defined strings
         caseSensitive: false, // Whether string removal should be case-sensitive
     },
@@ -47,9 +47,9 @@ class MainApp {
 
     handleAddedNode(node) {
         if (node instanceof HTMLElement) {
-            if (node.matches(SELECTORS.activity)) {
+            if (node.matches(SELECTORS.div.activity)) {
                 this.ac.removeEntry(node);
-            } else if (node.matches(SELECTORS.button)) {
+            } else if (node.matches(SELECTORS.div.button)) {
                 this.ui.setLoadMore(node);
             }
         }
@@ -110,28 +110,28 @@ class ActivityHandler {
 
     shouldRemoveUncommented(node) {
         if (config.remove.uncommented) {
-            return !this.hasCountSpan(node.querySelector(SELECTORS.replies));
+            return !this.hasElement(SELECTORS.span.count, node.querySelector(SELECTORS.div.replies));
         }
         return false;
     }
 
     shouldRemoveUnliked(node) {
         if (config.remove.unliked) {
-            return !this.hasCountSpan(node.querySelector(SELECTORS.likes));
+            return !this.hasElement(SELECTORS.span.count, node.querySelector(SELECTORS.div.likes));
         }
         return false;
     }
 
     shouldRemoveImage(node) {
         if (config.remove.images) {
-            return node?.querySelector('img');
+            return this.hasElement(SELECTORS.class.image, node);
         }
         return false;
     }
 
     shouldRemoveVideo(node) {
         if (config.remove.videos) {
-            return node?.querySelector('video');
+            return this.hasElement(SELECTORS.class.video, node);
         }
         return false;
     }
@@ -144,8 +144,8 @@ class ActivityHandler {
         });
     }
 
-    hasCountSpan(node) {
-        return node?.querySelector('span.count');
+    hasElement(selector, node) {
+        return node?.querySelector(selector);
     }
 }
 
@@ -256,10 +256,19 @@ class ConfigValidator {
 }
 
 const SELECTORS = {
-    button: 'div.load-more',
-    activity: 'div.activity-entry',
-    replies: 'div.action.replies',
-    likes: 'div.action.likes',
+    div: {
+        button: 'div.load-more',
+        activity: 'div.activity-entry',
+        replies: 'div.action.replies',
+        likes: 'div.action.likes',
+    },
+    span: {
+        count: 'span.count',
+    },
+    class: {
+        image: 'img',
+        video: 'video',
+    }
 };
 
 const URLS = {
