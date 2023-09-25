@@ -10,7 +10,7 @@
 // ==/UserScript==
 
 const config = {
-    targetLoadCount: 2, // Number of activities to show per click on the "Load More" button
+    targetLoadCount: 2, // Minimum number of activities to show per click on the "Load More" button
     remove: {
         uncommented: true, // Remove activities that have no comments
         unliked: false, // Remove activities that have no likes
