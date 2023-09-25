@@ -125,55 +125,55 @@ class ActivityHandler {
     hasCountSpan(node) {
         return node?.querySelector('span.count');
     }
-}
+}document.querySelector("#\\30 \\.6295605599577729 > center > p:nth-child(7) > img")
 
 class UIHandler {
 
     constructor() {
-        this.userPressedButton = true;
-        this.cancelButton = null;
-        this.loadMoreButton = null;
+        this.userPressed = true;
+        this.cancel = null;
+        this.loadMore = null;
     }
 
     setLoadMore(button) {
-        this.loadMoreButton = button;
-        this.loadMoreButton.addEventListener('click', () => {
-            this.userPressedButton = true;
+        this.loadMore = button;
+        this.loadMore.addEventListener('click', () => {
+            this.userPressed = true;
             this.simulateDomEvents();
             this.showCancelButton();
         });
     }
 
     clickLoadMore() {
-        if (this.loadMoreButton) {
-            this.loadMoreButton.click();
-            this.loadMoreButton = null;
+        if (this.loadMore) {
+            this.loadMore.click();
+            this.loadMore = null;
         }
     }
 
     resetState() {
-        this.userPressedButton = false;
+        this.userPressed = false;
         this.hideCancelButton();
     }
 
     showCancelButton() {
-        if (!this.cancelButton) {
+        if (!this.cancel) {
             this.createCancelButton();
         } else {
-            this.cancelButton.style.display = 'block';
+            this.cancel.style.display = 'block';
         }
     }
 
     hideCancelButton() {
-        if (this.cancelButton) {
-            this.cancelButton.style.display = 'none';
+        if (this.cancel) {
+            this.cancel.style.display = 'none';
         }
     }
 
     simulateDomEvents() {
         const domEvent = new Event('scroll', {bubbles: true});
         const intervalId = setInterval(() => {
-            if (this.userPressedButton) {
+            if (this.userPressed) {
                 window.dispatchEvent(domEvent);
             } else {
                 clearInterval(intervalId);
@@ -182,7 +182,7 @@ class UIHandler {
     }
 
     createCancelButton() {
-        this.cancelButton = Object.assign(document.createElement('button'), {
+        this.cancel = Object.assign(document.createElement('button'), {
             textContent: 'Cancel',
             className: 'cancel-button',
             style: `
@@ -199,12 +199,12 @@ class UIHandler {
             --button-color: rgb(var(--color-blue));
         `,
             onclick: () => {
-                this.userPressedButton = false;
-                this.cancelButton.style.display = 'none';
+                this.userPressed = false;
+                this.cancel.style.display = 'none';
             },
         });
 
-        document.body.appendChild(this.cancelButton);
+        document.body.appendChild(this.cancel);
     }
 }
 
