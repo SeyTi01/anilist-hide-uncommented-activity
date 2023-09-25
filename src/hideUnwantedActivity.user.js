@@ -123,7 +123,7 @@ class ActivityHandler {
     }
 
     shouldRemoveImage(node) {
-        if (config.remove.image) {
+        if (config.remove.images) {
             return node?.querySelector('img');
         }
         return false;
