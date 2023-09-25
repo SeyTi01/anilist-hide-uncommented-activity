@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Anilist: Hide Unwanted Activity
 // @namespace    https://github.com/SeyTi01/
-// @version      1.6
+// @version      1.7b
 // @description  Customize activity feeds by removing unwanted entries.
 // @author       SeyTi01
 // @match        https://anilist.co/*
