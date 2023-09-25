@@ -236,6 +236,8 @@ class ConfigValidator {
         const errors = [
             typeof config.remove.uncommented !== 'boolean' && 'remove.uncommented must be a boolean',
             typeof config.remove.unliked !== 'boolean' && 'remove.unliked must be a boolean',
+            typeof config.remove.images !== 'boolean' && 'remove.images must be a boolean',
+            typeof config.remove.videos !== 'boolean' && 'remove.videos must be a boolean',
             (!Number.isInteger(config.targetLoadCount) || config.targetLoadCount < 1) && 'targetLoadCount must be a positive non-zero integer',
             typeof config.runOn.home !== 'boolean' && 'runOn.home must be a boolean',
             typeof config.runOn.profile !== 'boolean' && 'runOn.profile must be a boolean',
