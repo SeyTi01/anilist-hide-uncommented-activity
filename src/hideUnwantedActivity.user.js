@@ -14,7 +14,8 @@ const config = {
     remove: {
         uncommented: true, // Remove activities that have no comments
         unliked: false, // Remove activities that have no likes
-        image: false, // Remove activities with images
+        images: false, // Remove activities with images
+        videos: false, // Remove activities with videos
         customStrings: [], // Remove activities with user-defined strings
         caseSensitive: false, // Whether string removal should be case-sensitive
     },
@@ -90,6 +91,7 @@ class ActivityHandler {
             this.shouldRemoveUncommented(node) ||
             this.shouldRemoveUnliked(node) ||
             this.shouldRemoveImage(node) ||
+            this.shouldRemoveVideo(node) ||
             this.shouldRemoveByCustomStrings(node)
         ) {
             node.remove();
@@ -116,19 +118,26 @@ class ActivityHandler {
         return false;
     }
 
+    shouldRemoveImage(node) {
+        if (config.remove.image) {
+            return node?.querySelector('img');
+        }
+        return false;
+    }
+
+    shouldRemoveVideo(node) {
+        if (config.remove.videos) {
+            return node?.querySelector('video');
+        }
+        return false;
+    }
+
     shouldRemoveByCustomStrings(node) {
         return config.remove.customStrings.some((customString) => {
             return config.remove.caseSensitive ?
                 node.textContent.includes(customString) :
                 node.textContent.toLowerCase().includes(customString.toLowerCase());
         });
-    }
-
-    shouldRemoveImage(node) {
-        if (config.remove.image) {
-            return node?.querySelector('img');
-        }
-        return false;
     }
 
     hasCountSpan(node) {
