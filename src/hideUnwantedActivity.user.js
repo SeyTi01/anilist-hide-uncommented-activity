@@ -14,7 +14,7 @@ const config = {
     remove: {
         uncommented: true, // Remove activities that have no comments
         unliked: false, // Remove activities that have no likes
-        image: false,
+        image: false, // Remove activities with images
         customStrings: [], // Remove activities with user-defined strings
         caseSensitive: false, // Whether string removal should be case-sensitive
     },
