@@ -112,46 +112,26 @@ class ActivityHandler {
         }
 
         const conditions = [
-            {name: 'remove.uncommented', predicate: this.shouldRemoveUncommented.bind(this)},
-            {name: 'remove.unliked', predicate: this.shouldRemoveUnliked.bind(this)},
-            {name: 'remove.images', predicate: this.shouldRemoveImage.bind(this)},
-            {name: 'remove.videos', predicate: this.shouldRemoveVideo.bind(this)},
-            {name: 'remove.customStrings', predicate: this.shouldRemoveByCustomStrings.bind(this)}
+            {name: 'remove.uncommented', predicate: node => this.shouldRemoveUncommented(node)},
+            {name: 'remove.unliked', predicate: node => this.shouldRemoveUnliked(node)},
+            {name: 'remove.images', predicate: node => this.shouldRemoveImage(node)},
+            {name: 'remove.videos', predicate: node => this.shouldRemoveVideo(node)},
+            {name: 'remove.customStrings', predicate: node => this.shouldRemoveByCustomStrings(node)}
         ];
 
-        for (let condition of conditions) {
-            if (checkCondition(condition.name, condition.predicate)) {
-                return true;
-            }
-        }
-
-        return false;
+        return conditions.some(({name, predicate}) => checkCondition(name, predicate));
     }
 
     shouldRemoveByLinkedConditions(node) {
         const conditionsMap = new Map([
-            ['remove.uncommented', this.shouldRemoveUncommented],
-            ['remove.unliked', this.shouldRemoveUnliked],
-            ['remove.images', this.shouldRemoveImage],
-            ['remove.videos', this.shouldRemoveVideo],
-            ['remove.customStrings', this.shouldRemoveByCustomStrings]
+            ['remove.uncommented', node => this.shouldRemoveUncommented(node)],
+            ['remove.unliked', node => this.shouldRemoveUnliked(node)],
+            ['remove.images', node => this.shouldRemoveImage(node)],
+            ['remove.videos', node => this.shouldRemoveVideo(node)],
+            ['remove.customStrings', node => this.shouldRemoveByCustomStrings(node)]
         ]);
 
-        const answers = [];
-        for (let i = 0; i < config.linkedConditions.length; i++) {
-            const link = config.linkedConditions[i];
-            const result = [];
-
-            for (let [condition, func] of conditionsMap) {
-                if (link.includes(condition)) {
-                    result.push(func.call(this, node));
-                }
-            }
-
-            answers.push(!result.includes(false));
-        }
-
-        return answers.includes(true);
+        return config.linkedConditions.some(link => link.every(condition => conditionsMap.get(condition)(node)));
     }
 
     shouldRemoveUncommented(node) {
