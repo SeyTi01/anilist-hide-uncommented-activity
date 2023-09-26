@@ -129,25 +129,23 @@ class ActivityHandler {
     }
 
     shouldRemoveByLinkedConditions(node) {
+        const conditionsMap = new Map([
+            ['remove.uncommented', this.shouldRemoveUncommented],
+            ['remove.unliked', this.shouldRemoveUnliked],
+            ['remove.images', this.shouldRemoveImage],
+            ['remove.videos', this.shouldRemoveVideo],
+            ['remove.customStrings', this.shouldRemoveByCustomStrings]
+        ]);
+
         const answers = [];
         for (let i = 0; i < config.linkedConditions.length; i++) {
             const link = config.linkedConditions[i];
             const result = [];
 
-            if (link.includes('remove.uncommented')) {
-                result.push(this.shouldRemoveUncommented(node));
-            }
-            if (link.includes('remove.unliked')) {
-                result.push(this.shouldRemoveUnliked(node));
-            }
-            if (link.includes('remove.images')) {
-                result.push(this.shouldRemoveImage(node));
-            }
-            if (link.includes('remove.videos')) {
-                result.push(this.shouldRemoveVideo(node));
-            }
-            if (link.includes('remove.customStrings')) {
-                result.push(this.shouldRemoveByCustomStrings(node));
+            for (let [condition, func] of conditionsMap) {
+                if (link.includes(condition)) {
+                    result.push(func.call(this, node));
+                }
             }
 
             answers.push(!result.includes(false));
