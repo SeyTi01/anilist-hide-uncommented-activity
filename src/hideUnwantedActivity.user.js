@@ -103,23 +103,26 @@ class ActivityHandler {
     }
 
     shouldRemoveNode(node) {
+        const checkCondition = (conditionName, predicate) => {
+            return config[conditionName] && predicate(node) && !config.linkedConditions.some(innerArray => innerArray.includes(conditionName));
+        };
+
         if (this.shouldRemoveByLinkedConditions(node)) {
             return true;
         }
-        if (config.remove.uncommented && this.shouldRemoveUncommented(node) && !config.linkedConditions.some(innerArray => innerArray.includes('remove.uncommented'))) {
-            return true;
-        }
-        if (config.remove.unliked && this.shouldRemoveUnliked(node) && !config.linkedConditions.some(innerArray => innerArray.includes('remove.unliked'))) {
-            return true;
-        }
-        if (config.remove.images && this.shouldRemoveImage(node) && !config.linkedConditions.some(innerArray => innerArray.includes('remove.images'))) {
-            return true;
-        }
-        if (config.remove.videos && this.shouldRemoveVideo(node) && !config.linkedConditions.some(innerArray => innerArray.includes('remove.videos'))) {
-            return true;
-        }
-        if (config.remove.customStrings.length > 0 && this.shouldRemoveByCustomStrings(node) && !config.linkedConditions.some(innerArray => innerArray.includes('remove.customStrings'))) {
-            return true;
+
+        const conditions = [
+            {name: 'remove.uncommented', predicate: this.shouldRemoveUncommented.bind(this)},
+            {name: 'remove.unliked', predicate: this.shouldRemoveUnliked.bind(this)},
+            {name: 'remove.images', predicate: this.shouldRemoveImage.bind(this)},
+            {name: 'remove.videos', predicate: this.shouldRemoveVideo.bind(this)},
+            {name: 'remove.customStrings', predicate: this.shouldRemoveByCustomStrings.bind(this)}
+        ];
+
+        for (let condition of conditions) {
+            if (checkCondition(condition.name, condition.predicate)) {
+                return true;
+            }
         }
 
         return false;
