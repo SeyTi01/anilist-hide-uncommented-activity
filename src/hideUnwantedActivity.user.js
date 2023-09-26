@@ -25,6 +25,9 @@ const config = {
         social: true, // Run the script on social feeds
         profile: false, // Run the script on user profile feeds
     },
+    linkedConditions: [
+        [],
+    ],
 };
 
 class MainApp {
@@ -100,49 +103,49 @@ class ActivityHandler {
     }
 
     shouldRemoveNode(node) {
-        return (
-            this.shouldRemoveUncommented(node) ||
-            this.shouldRemoveUnliked(node) ||
-            this.shouldRemoveImage(node) ||
-            this.shouldRemoveVideo(node) ||
-            this.shouldRemoveByCustomStrings(node)
-        );
+        const answers = [];
+
+        if (config.remove.uncommented) {
+            answers.push(this.shouldRemoveUncommented(node));
+        }
+        if (config.remove.unliked) {
+            answers.push(this.shouldRemoveUnliked(node));
+        }
+        if (config.remove.images) {
+            answers.push(this.shouldRemoveImage(node));
+        }
+        if (config.remove.videos) {
+            answers.push(this.shouldRemoveVideo(node));
+        }
+        if (config.remove.customStrings.length > 0) {
+            answers.push(this.shouldRemoveByCustomStrings(node));
+        }
+
+        return answers.includes(true);
     }
 
     shouldRemoveUncommented(node) {
-        if (config.remove.uncommented) {
-            return !this.hasElement(SELECTORS.span.count, node.querySelector(SELECTORS.div.replies));
-        }
-        return false;
+        return !this.hasElement(SELECTORS.span.count, node.querySelector(SELECTORS.div.replies));
     }
 
     shouldRemoveUnliked(node) {
-        if (config.remove.unliked) {
-            return !this.hasElement(SELECTORS.span.count, node.querySelector(SELECTORS.div.likes));
-        }
-        return false;
+        return !this.hasElement(SELECTORS.span.count, node.querySelector(SELECTORS.div.likes));
     }
 
     shouldRemoveImage(node) {
-        if (config.remove.images) {
-            return this.hasElement(SELECTORS.class.image, node);
-        }
-        return false;
+        return this.hasElement(SELECTORS.class.image, node);
     }
 
     shouldRemoveVideo(node) {
-        if (config.remove.videos) {
-            return this.hasElement(SELECTORS.class.video, node);
-        }
-        return false;
+        return this.hasElement(SELECTORS.class.video, node);
     }
 
     shouldRemoveByCustomStrings(node) {
-        return config.remove.customStrings.some((customString) => {
-            return config.remove.caseSensitive ?
+        return config.remove.customStrings.some((customString) =>
+            (config.remove.caseSensitive ?
                 node.textContent.includes(customString) :
-                node.textContent.toLowerCase().includes(customString.toLowerCase());
-        });
+                node.textContent.toLowerCase().includes(customString.toLowerCase()))
+        );
     }
 
     hasElement(selector, node) {
