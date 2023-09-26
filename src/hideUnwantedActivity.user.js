@@ -103,25 +103,23 @@ class ActivityHandler {
     }
 
     shouldRemoveNode(node) {
-        const answers = [];
-
-        if (config.remove.uncommented) {
-            answers.push(this.shouldRemoveUncommented(node));
+        if (config.remove.uncommented && this.shouldRemoveUncommented(node)) {
+            return true;
         }
-        if (config.remove.unliked) {
-            answers.push(this.shouldRemoveUnliked(node));
+        if (config.remove.unliked && this.shouldRemoveUnliked(node)) {
+            return true;
         }
-        if (config.remove.images) {
-            answers.push(this.shouldRemoveImage(node));
+        if (config.remove.images && this.shouldRemoveImage(node)) {
+            return true;
         }
-        if (config.remove.videos) {
-            answers.push(this.shouldRemoveVideo(node));
+        if (config.remove.videos && this.shouldRemoveVideo(node)) {
+            return true;
         }
-        if (config.remove.customStrings.length > 0) {
-            answers.push(this.shouldRemoveByCustomStrings(node));
+        if (config.remove.customStrings.length > 0 && this.shouldRemoveByCustomStrings(node)) {
+            return true;
         }
 
-        return answers.includes(true);
+        return false;
     }
 
     shouldRemoveUncommented(node) {
