@@ -103,23 +103,54 @@ class ActivityHandler {
     }
 
     shouldRemoveNode(node) {
-        if (config.remove.uncommented && this.shouldRemoveUncommented(node)) {
+        if (this.shouldRemoveByLinkedConditions(node)) {
             return true;
         }
-        if (config.remove.unliked && this.shouldRemoveUnliked(node)) {
+        if (config.remove.uncommented && this.shouldRemoveUncommented(node) && !config.linkedConditions.some(innerArray => innerArray.includes('remove.uncommented'))) {
             return true;
         }
-        if (config.remove.images && this.shouldRemoveImage(node)) {
+        if (config.remove.unliked && this.shouldRemoveUnliked(node) && !config.linkedConditions.some(innerArray => innerArray.includes('remove.unliked'))) {
             return true;
         }
-        if (config.remove.videos && this.shouldRemoveVideo(node)) {
+        if (config.remove.images && this.shouldRemoveImage(node) && !config.linkedConditions.some(innerArray => innerArray.includes('remove.images'))) {
             return true;
         }
-        if (config.remove.customStrings.length > 0 && this.shouldRemoveByCustomStrings(node)) {
+        if (config.remove.videos && this.shouldRemoveVideo(node) && !config.linkedConditions.some(innerArray => innerArray.includes('remove.videos'))) {
+            return true;
+        }
+        if (config.remove.customStrings.length > 0 && this.shouldRemoveByCustomStrings(node) && !config.linkedConditions.some(innerArray => innerArray.includes('remove.customStrings'))) {
             return true;
         }
 
         return false;
+    }
+
+    shouldRemoveByLinkedConditions(node) {
+        const answers = [];
+        for (let i = 0; i < config.linkedConditions.length; i++) {
+            const link = config.linkedConditions[i];
+            const result = [];
+
+            if (link.includes('remove.uncommented')) {
+                result.push(this.shouldRemoveUncommented(node));
+            }
+            if (link.includes('remove.unliked')) {
+                result.push(this.shouldRemoveUnliked(node));
+            }
+            if (link.includes('remove.images')) {
+                result.push(this.shouldRemoveImage(node));
+            }
+            if (link.includes('remove.videos')) {
+                result.push(this.shouldRemoveVideo(node));
+            }
+            if (link.includes('remove.customStrings')) {
+                result.push(this.shouldRemoveByCustomStrings(node));
+            }
+
+            answers.push(!result.includes(false));
+        }
+
+        return answers.includes(true);
     }
 
     shouldRemoveUncommented(node) {
