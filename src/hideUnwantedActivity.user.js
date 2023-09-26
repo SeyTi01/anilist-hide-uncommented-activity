@@ -162,7 +162,7 @@ class UIHandler {
         this.loadMore.addEventListener('click', () => {
             this.userPressed = true;
             this.simulateDomEvents();
-            this.showCancelButton();
+            this.showCancel();
         });
     }
 
@@ -175,18 +175,18 @@ class UIHandler {
 
     resetState() {
         this.userPressed = false;
-        this.hideCancelButton();
+        this.hideCancel();
     }
 
-    showCancelButton() {
+    showCancel() {
         if (!this.cancel) {
-            this.createCancelButton();
+            this.createCancel();
         } else {
             this.cancel.style.display = 'block';
         }
     }
 
-    hideCancelButton() {
+    hideCancel() {
         if (this.cancel) {
             this.cancel.style.display = 'none';
         }
@@ -203,7 +203,7 @@ class UIHandler {
         }, 100);
     }
 
-    createCancelButton() {
+    createCancel() {
         this.cancel = Object.assign(document.createElement('button'), {
             textContent: 'Cancel',
             className: 'cancel-button',
