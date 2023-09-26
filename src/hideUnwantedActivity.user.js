@@ -8,6 +8,7 @@
 // @grant        none
 // @license      MIT
 // ==/UserScript==
+// noinspection JSPrimitiveTypeWrapperUsage
 
 const config = {
     targetLoadCount: 2, // Minimum number of activities to show per click on the "Load More" button
@@ -207,19 +208,7 @@ class UIHandler {
         this.cancel = Object.assign(document.createElement('button'), {
             textContent: 'Cancel',
             className: 'cancel-button',
-            style: `
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            z-index: 9999;
-            line-height: 1.3;
-            background-color: rgb(var(--color-background-blue-dark));
-            color: rgb(var(--color-text-bright));
-            font: 1.6rem 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            box-sizing: border-box;
-            --button-color: rgb(var(--color-blue));
-        `,
+            style: BUTTON_STYLE,
             onclick: () => {
                 this.userPressed = false;
                 this.cancel.style.display = 'none';
@@ -278,6 +267,20 @@ const URLS = {
     profile: 'https://anilist.co/user/*/',
     social: 'https://anilist.co/*/social',
 };
+
+const BUTTON_STYLE = `
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 9999;
+    line-height: 1.3;
+    background-color: rgb(var(--color-background-blue-dark));
+    color: rgb(var(--color-text-bright));
+    font: 1.6rem 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+    --button-color: rgb(var(--color-blue));
+`;
 
 (function() {
     'use strict';
