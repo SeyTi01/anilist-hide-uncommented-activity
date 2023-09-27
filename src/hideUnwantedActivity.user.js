@@ -102,6 +102,14 @@ class ActivityHandler {
         this.currentLoadCount = 0;
     }
 
+    conditionsMap = new Map([
+        ['remove.uncommented', node => this.shouldRemoveUncommented(node)],
+        ['remove.unliked', node => this.shouldRemoveUnliked(node)],
+        ['remove.images', node => this.shouldRemoveImage(node)],
+        ['remove.videos', node => this.shouldRemoveVideo(node)],
+        ['remove.customStrings', node => this.shouldRemoveByCustomStrings(node)]
+    ]);
+
     shouldRemoveNode(node) {
         const checkCondition = (conditionName, predicate) => {
             return config[conditionName] && predicate(node) &&
@@ -112,28 +120,15 @@ class ActivityHandler {
             return true;
         }
 
-        const conditions = [
-            {name: 'remove.uncommented', predicate: node => this.shouldRemoveUncommented(node)},
-            {name: 'remove.unliked', predicate: node => this.shouldRemoveUnliked(node)},
-            {name: 'remove.images', predicate: node => this.shouldRemoveImage(node)},
-            {name: 'remove.videos', predicate: node => this.shouldRemoveVideo(node)},
-            {name: 'remove.customStrings', predicate: node => this.shouldRemoveByCustomStrings(node)}
-        ];
+        const conditions = Array.from(this.conditionsMap.entries());
 
-        return conditions.some(({name, predicate}) => checkCondition(name, predicate));
+        return conditions.some(([name, predicate]) => checkCondition(name, predicate));
     }
 
     shouldRemoveByLinkedConditions(node) {
-        const conditionsMap = new Map([
-            ['remove.uncommented', node => this.shouldRemoveUncommented(node)],
-            ['remove.unliked', node => this.shouldRemoveUnliked(node)],
-            ['remove.images', node => this.shouldRemoveImage(node)],
-            ['remove.videos', node => this.shouldRemoveVideo(node)],
-            ['remove.customStrings', node => this.shouldRemoveByCustomStrings(node)]
-        ]);
-
-        return config.linkedConditions.some(link => link.every(condition => conditionsMap.get(condition)(node)));
+        return config.linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
     }
+
 
     shouldRemoveUncommented(node) {
         return !this.hasElement(SELECTORS.span.count, node.querySelector(SELECTORS.div.replies));
