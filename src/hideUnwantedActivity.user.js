@@ -70,10 +70,10 @@ class MainApp {
 
     isAllowedUrl() {
         const currentUrl = window.location.href;
-        const allowedPatterns = Object.keys(URLS).filter(pattern => config.runOn[pattern]);
+        const allowedPatterns = Object.keys(this.URLS).filter(pattern => config.runOn[pattern]);
 
         return allowedPatterns.some(pattern => {
-            const regex = new RegExp(URLS[pattern].replace('*', '.*'));
+            const regex = new RegExp(this.URLS[pattern].replace('*', '.*'));
             return regex.test(currentUrl);
         });
     }
@@ -82,6 +82,12 @@ class MainApp {
         this.observer = new MutationObserver(this.observeMutations.bind(this));
         this.observer.observe(document.body, {childList: true, subtree: true});
     }
+
+    URLS = {
+        home: 'https://anilist.co/home',
+        profile: 'https://anilist.co/user/*/',
+        social: 'https://anilist.co/*/social',
+    };
 }
 
 class ActivityHandler {
@@ -217,6 +223,20 @@ class UIHandler {
     }
 
     createCancel() {
+        const BUTTON_STYLE = `
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            z-index: 9999;
+            line-height: 1.3;
+            background-color: rgb(var(--color-background-blue-dark));
+            color: rgb(var(--color-text-bright));
+            font: 1.6rem 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            box-sizing: border-box;
+            --button-color: rgb(var(--color-blue));
+            `;
+
         this.cancel = Object.assign(document.createElement('button'), {
             textContent: 'Cancel',
             className: 'cancel-button',
@@ -273,26 +293,6 @@ const SELECTORS = {
         video: 'video',
     }
 };
-
-const URLS = {
-    home: 'https://anilist.co/home',
-    profile: 'https://anilist.co/user/*/',
-    social: 'https://anilist.co/*/social',
-};
-
-const BUTTON_STYLE = `
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    z-index: 9999;
-    line-height: 1.3;
-    background-color: rgb(var(--color-background-blue-dark));
-    color: rgb(var(--color-text-bright));
-    font: 1.6rem 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    box-sizing: border-box;
-    --button-color: rgb(var(--color-blue));
-`;
 
 (function() {
     'use strict';
