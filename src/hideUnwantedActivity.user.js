@@ -90,6 +90,14 @@ class ActivityHandler {
         this.currentLoadCount = 0;
     }
 
+    conditionsMap = new Map([
+        ['uncommented', node => this.shouldRemoveUncommented(node)],
+        ['unliked', node => this.shouldRemoveUnliked(node)],
+        ['images', node => this.shouldRemoveImage(node)],
+        ['videos', node => this.shouldRemoveVideo(node)],
+        ['customStrings', node => this.shouldRemoveByCustomStrings(node)]
+    ]);
+
     removeEntry(node) {
         if (this.shouldRemoveNode(node)) {
             node.remove();
@@ -102,18 +110,13 @@ class ActivityHandler {
         this.currentLoadCount = 0;
     }
 
-    conditionsMap = new Map([
-        ['remove.uncommented', node => this.shouldRemoveUncommented(node)],
-        ['remove.unliked', node => this.shouldRemoveUnliked(node)],
-        ['remove.images', node => this.shouldRemoveImage(node)],
-        ['remove.videos', node => this.shouldRemoveVideo(node)],
-        ['remove.customStrings', node => this.shouldRemoveByCustomStrings(node)]
-    ]);
-
     shouldRemoveNode(node) {
         const checkCondition = (conditionName, predicate) => {
-            return config[conditionName] && predicate(node) &&
-                !config.linkedConditions.some(innerArray => innerArray.includes(conditionName));
+            return (
+                config.remove[conditionName] &&
+                predicate(node) &&
+                !config.linkedConditions.some(innerArray => innerArray.includes(conditionName))
+            );
         };
 
         if (this.shouldRemoveByLinkedConditions(node)) {
@@ -126,9 +129,9 @@ class ActivityHandler {
     }
 
     shouldRemoveByLinkedConditions(node) {
-        return config.linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
+        return !config.linkedConditions.every(link => link.length === 0) &&
+            config.linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
     }
-
 
     shouldRemoveUncommented(node) {
         return !this.hasElement(SELECTORS.span.count, node.querySelector(SELECTORS.div.replies));
