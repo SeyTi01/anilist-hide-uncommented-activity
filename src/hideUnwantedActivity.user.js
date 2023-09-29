@@ -8,7 +8,6 @@
 // @grant        none
 // @license      MIT
 // ==/UserScript==
-// noinspection JSPrimitiveTypeWrapperUsage
 
 const config = {
     targetLoadCount: 2, // Minimum number of activities to show per click on the "Load More" button
