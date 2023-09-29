@@ -97,11 +97,11 @@ class ActivityHandler {
     }
 
     conditionsMap = new Map([
-        ['uncommented', node => this.shouldRemoveUncommented(node)],
-        ['unliked', node => this.shouldRemoveUnliked(node)],
-        ['images', node => this.shouldRemoveImage(node)],
-        ['videos', node => this.shouldRemoveVideo(node)],
-        ['customStrings', node => this.shouldRemoveByCustomStrings(node)]
+        ['uncommented', function(node) { return this.shouldRemoveUncommented(node); }.bind(this)],
+        ['unliked', function(node) { return this.shouldRemoveUnliked(node); }.bind(this)],
+        ['images', function(node) { return this.shouldRemoveImage(node); }.bind(this)],
+        ['videos', function(node) { return this.shouldRemoveVideo(node); }.bind(this)],
+        ['customStrings', function(node) { return this.shouldRemoveByCustomStrings(node); }.bind(this)]
     ]);
 
     removeEntry(node) {
@@ -130,7 +130,6 @@ class ActivityHandler {
         }
 
         const conditions = Array.from(this.conditionsMap.entries());
-
         return conditions.some(([name, predicate]) => checkCondition(name, predicate));
     }
 
