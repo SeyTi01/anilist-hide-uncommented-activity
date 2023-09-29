@@ -26,7 +26,7 @@ const config = {
         profile: false, // Run the script on user profile feeds
     },
     linkedConditions: [
-        [],
+        [] // Groups of conditions to be checked together (linked conditions are always considered 'true')
     ],
 };
 
