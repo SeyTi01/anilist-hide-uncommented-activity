@@ -266,6 +266,17 @@ class ConfigValidator {
             !Array.isArray(config.remove.customStrings) && 'remove.customStrings must be an array',
             config.remove.customStrings.some((str) => typeof str !== 'string') && 'remove.customStrings must only contain strings',
             typeof config.remove.caseSensitive !== 'boolean' && 'remove.caseSensitive must be a boolean',
+            !Array.isArray(config.linkedConditions) && 'linkedConditions must be an array',
+            config.linkedConditions.some((conditionGroup) => {
+                if (!Array.isArray(conditionGroup)) return true;
+                return conditionGroup.some((condition) => {
+                    if (typeof condition !== 'string' && !Array.isArray(condition)) return true;
+                    if (Array.isArray(condition)) {
+                        return condition.some((item) => !['uncommented', 'unliked', 'images', 'videos', 'customStrings'].includes(item));
+                    }
+                    return !['uncommented', 'unliked', 'images', 'videos', 'customStrings'].includes(condition);
+                });
+            }) && 'linkedConditions must only contain arrays with valid strings',
         ].filter(Boolean);
 
         if (errors.length > 0) {
