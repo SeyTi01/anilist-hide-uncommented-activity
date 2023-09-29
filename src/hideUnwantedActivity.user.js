@@ -25,6 +25,9 @@ const config = {
         social: true, // Run the script on social feeds
         profile: false, // Run the script on user profile feeds
     },
+    linkedConditions: [
+        [],
+    ],
 };
 
 class MainApp {
@@ -67,10 +70,10 @@ class MainApp {
 
     isAllowedUrl() {
         const currentUrl = window.location.href;
-        const allowedPatterns = Object.keys(URLS).filter(pattern => config.runOn[pattern]);
+        const allowedPatterns = Object.keys(this.URLS).filter(pattern => config.runOn[pattern]);
 
         return allowedPatterns.some(pattern => {
-            const regex = new RegExp(URLS[pattern].replace('*', '.*'));
+            const regex = new RegExp(this.URLS[pattern].replace('*', '.*'));
             return regex.test(currentUrl);
         });
     }
@@ -79,6 +82,12 @@ class MainApp {
         this.observer = new MutationObserver(this.observeMutations.bind(this));
         this.observer.observe(document.body, {childList: true, subtree: true});
     }
+
+    URLS = {
+        home: 'https://anilist.co/home',
+        profile: 'https://anilist.co/user/*/',
+        social: 'https://anilist.co/*/social',
+    };
 }
 
 class ActivityHandler {
@@ -86,6 +95,14 @@ class ActivityHandler {
     constructor() {
         this.currentLoadCount = 0;
     }
+
+    conditionsMap = new Map([
+        ['uncommented', node => this.shouldRemoveUncommented(node)],
+        ['unliked', node => this.shouldRemoveUnliked(node)],
+        ['images', node => this.shouldRemoveImage(node)],
+        ['videos', node => this.shouldRemoveVideo(node)],
+        ['customStrings', node => this.shouldRemoveByCustomStrings(node)]
+    ]);
 
     removeEntry(node) {
         if (this.shouldRemoveNode(node)) {
@@ -100,49 +117,50 @@ class ActivityHandler {
     }
 
     shouldRemoveNode(node) {
-        return (
-            this.shouldRemoveUncommented(node) ||
-            this.shouldRemoveUnliked(node) ||
-            this.shouldRemoveImage(node) ||
-            this.shouldRemoveVideo(node) ||
-            this.shouldRemoveByCustomStrings(node)
-        );
+        const checkCondition = (conditionName, predicate) => {
+            return (
+                config.remove[conditionName] &&
+                predicate(node) &&
+                !config.linkedConditions.some(innerArray => innerArray.includes(conditionName))
+            );
+        };
+
+        if (this.shouldRemoveByLinkedConditions(node)) {
+            return true;
+        }
+
+        const conditions = Array.from(this.conditionsMap.entries());
+
+        return conditions.some(([name, predicate]) => checkCondition(name, predicate));
+    }
+
+    shouldRemoveByLinkedConditions(node) {
+        return !config.linkedConditions.every(link => link.length === 0) &&
+            config.linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
     }
 
     shouldRemoveUncommented(node) {
-        if (config.remove.uncommented) {
-            return !this.hasElement(SELECTORS.span.count, node.querySelector(SELECTORS.div.replies));
-        }
-        return false;
+        return !this.hasElement(SELECTORS.span.count, node.querySelector(SELECTORS.div.replies));
     }
 
     shouldRemoveUnliked(node) {
-        if (config.remove.unliked) {
-            return !this.hasElement(SELECTORS.span.count, node.querySelector(SELECTORS.div.likes));
-        }
-        return false;
+        return !this.hasElement(SELECTORS.span.count, node.querySelector(SELECTORS.div.likes));
     }
 
     shouldRemoveImage(node) {
-        if (config.remove.images) {
-            return this.hasElement(SELECTORS.class.image, node);
-        }
-        return false;
+        return this.hasElement(SELECTORS.class.image, node);
     }
 
     shouldRemoveVideo(node) {
-        if (config.remove.videos) {
-            return this.hasElement(SELECTORS.class.video, node);
-        }
-        return false;
+        return this.hasElement(SELECTORS.class.video, node);
     }
 
     shouldRemoveByCustomStrings(node) {
-        return config.remove.customStrings.some((customString) => {
-            return config.remove.caseSensitive ?
+        return config.remove.customStrings.some((customString) =>
+            (config.remove.caseSensitive ?
                 node.textContent.includes(customString) :
-                node.textContent.toLowerCase().includes(customString.toLowerCase());
-        });
+                node.textContent.toLowerCase().includes(customString.toLowerCase()))
+        );
     }
 
     hasElement(selector, node) {
@@ -205,6 +223,20 @@ class UIHandler {
     }
 
     createCancel() {
+        const BUTTON_STYLE = `
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            z-index: 9999;
+            line-height: 1.3;
+            background-color: rgb(var(--color-background-blue-dark));
+            color: rgb(var(--color-text-bright));
+            font: 1.6rem 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            box-sizing: border-box;
+            --button-color: rgb(var(--color-blue));
+            `;
+
         this.cancel = Object.assign(document.createElement('button'), {
             textContent: 'Cancel',
             className: 'cancel-button',
@@ -261,26 +293,6 @@ const SELECTORS = {
         video: 'video',
     }
 };
-
-const URLS = {
-    home: 'https://anilist.co/home',
-    profile: 'https://anilist.co/user/*/',
-    social: 'https://anilist.co/*/social',
-};
-
-const BUTTON_STYLE = `
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    z-index: 9999;
-    line-height: 1.3;
-    background-color: rgb(var(--color-background-blue-dark));
-    color: rgb(var(--color-text-bright));
-    font: 1.6rem 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    box-sizing: border-box;
-    --button-color: rgb(var(--color-blue));
-`;
 
 (function() {
     'use strict';
