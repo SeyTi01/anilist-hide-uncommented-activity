@@ -33,8 +33,23 @@ describe('removeEntry', function () {
     function runTestCases(testCases) {
         testCases.forEach((testCase) => {
             const { htmlPath, configOptions, expectedRemove } = testCase;
+            let nodeType = '';
 
-            it(`should ${expectedRemove ? '' : 'not '}remove node with config: ${JSON.stringify(configOptions)}`, function (done) {
+            if (htmlPath.includes('unliked')) {
+                nodeType = 'unliked';
+            } else if (htmlPath.includes('uncommented')) {
+                nodeType = 'uncommented';
+            } else if (htmlPath.includes('images')) {
+                nodeType = 'images';
+            } else if (htmlPath.includes('videos')) {
+                nodeType = 'videos';
+            } else if (htmlPath.includes('customStrings')) {
+                nodeType = 'customStrings';
+            } else if (htmlPath.includes('linkedConditions')) {
+                nodeType = 'linkedConditions';
+            }
+
+            it(`should ${expectedRemove ? '' : 'not '}remove ${nodeType} node with config: ${JSON.stringify(configOptions)}`, function (done) {
                 fs.readFile(htmlPath, 'utf8', function (err, htmlContent) {
                     if (err) throw err;
 
@@ -51,6 +66,7 @@ describe('removeEntry', function () {
             });
         });
     }
+
 
     const testCases = [
         // Tests for unliked
