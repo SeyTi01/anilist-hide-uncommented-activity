@@ -304,9 +304,7 @@ const SELECTORS = {
     }
 };
 
-(function() {
-    'use strict';
-
+function main() {
     if (!ConfigValidator.validate(config)) {
         console.error('Script disabled due to configuration errors.');
         return;
@@ -317,4 +315,10 @@ const SELECTORS = {
     const mainApp = new MainApp(activityHandler, uiHandler);
 
     mainApp.initializeObserver();
-})();
+}
+
+if (require.main === module) {
+    main();
+}
+
+module.exports = { ActivityHandler, UIHandler, MainApp };
