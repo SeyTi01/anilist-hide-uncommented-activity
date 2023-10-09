@@ -83,7 +83,8 @@ describe('removeEntry', function () {
         { htmlPath: './tests/data/activity-images.html', configOptions: { remove: { customStrings: ['custom string'] } }, expectedRemove: false },
         { htmlPath: './tests/data/activity-videos.html', configOptions: { remove: { customStrings: ['custom string'] } }, expectedRemove: false },
         { htmlPath: './tests/data/activity-customStrings.html', configOptions: { remove: { customStrings: ['custom string'] } }, expectedRemove: true },
-        { htmlPath: './tests/data/activity-customStrings.html', configOptions: { remove: { customStrings: ['custom string'] } }, expectedRemove: true },
+        { htmlPath: './tests/data/activity-customStrings.html', configOptions: { remove: { customStrings: ['custom string'], caseSensitive: true } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-customStrings.html', configOptions: { remove: { customStrings: ['Custom String'], caseSensitive: true } }, expectedRemove: true },
         { htmlPath: './tests/data/activity-linkedConditions.html', configOptions: { remove: { customStrings: ['custom string'] } }, expectedRemove: false },
 
         // Tests for linkedConditions
