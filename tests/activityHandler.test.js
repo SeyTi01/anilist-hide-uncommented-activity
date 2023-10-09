@@ -13,9 +13,9 @@ describe('removeEntry', function () {
 
     function runTestCases(testCases) {
         testCases.forEach((testCase) => {
-            const { htmlPath, configOptions, expectedRemoveCalled } = testCase;
+            const { htmlPath, configOptions, expectedRemove } = testCase;
 
-            it(`should ${expectedRemoveCalled ? '' : 'not '}remove node with config: ${JSON.stringify(configOptions)}`, function (done) {
+            it(`should ${expectedRemove ? '' : 'not '}remove node with config: ${JSON.stringify(configOptions)}`, function (done) {
                 fs.readFile(htmlPath, 'utf8', function (err, htmlContent) {
                     if (err) throw err;
 
@@ -25,7 +25,7 @@ describe('removeEntry', function () {
                     const removeSpy = spy(node, 'remove');
                     activityHandler.removeEntry(node);
 
-                    expect(removeSpy.calledOnce).to.equal(expectedRemoveCalled);
+                    expect(removeSpy.calledOnce).to.equal(expectedRemove);
                     done();
                 });
             });
@@ -34,52 +34,52 @@ describe('removeEntry', function () {
 
     const testCases = [
         // Tests for unliked
-        { htmlPath: './tests/data/activity-unliked.html', configOptions: { remove: { unliked: true, uncommented: false } }, expectedRemoveCalled: true },
-        { htmlPath: './tests/data/activity-uncommented.html', configOptions: { remove: { unliked: true, uncommented: false } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-images.html', configOptions: { remove: { unliked: true, uncommented: false } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-videos.html', configOptions: { remove: { unliked: true, uncommented: false } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-customStrings.html', configOptions: { remove: { unliked: true, uncommented: false } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-linkedConditions.html', configOptions: { remove: { unliked: true, uncommented: false } }, expectedRemoveCalled: true },
+        { htmlPath: './tests/data/activity-unliked.html', configOptions: { remove: { unliked: true, uncommented: false } }, expectedRemove: true },
+        { htmlPath: './tests/data/activity-uncommented.html', configOptions: { remove: { unliked: true, uncommented: false } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-images.html', configOptions: { remove: { unliked: true, uncommented: false } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-videos.html', configOptions: { remove: { unliked: true, uncommented: false } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-customStrings.html', configOptions: { remove: { unliked: true, uncommented: false } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-linkedConditions.html', configOptions: { remove: { unliked: true, uncommented: false } }, expectedRemove: true },
 
         // Tests for uncommented
-        { htmlPath: './tests/data/activity-unliked.html', configOptions: { remove: { uncommented: true } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-uncommented.html', configOptions: { remove: { uncommented: true } }, expectedRemoveCalled: true },
-        { htmlPath: './tests/data/activity-images.html', configOptions: { remove: { uncommented: true } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-videos.html', configOptions: { remove: { uncommented: true } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-customStrings.html', configOptions: { remove: { uncommented: true } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-linkedConditions.html', configOptions: { remove: { uncommented: true } }, expectedRemoveCalled: false },
+        { htmlPath: './tests/data/activity-unliked.html', configOptions: { remove: { uncommented: true } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-uncommented.html', configOptions: { remove: { uncommented: true } }, expectedRemove: true },
+        { htmlPath: './tests/data/activity-images.html', configOptions: { remove: { uncommented: true } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-videos.html', configOptions: { remove: { uncommented: true } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-customStrings.html', configOptions: { remove: { uncommented: true } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-linkedConditions.html', configOptions: { remove: { uncommented: true } }, expectedRemove: false },
 
         // Tests for images
-        { htmlPath: './tests/data/activity-unliked.html', configOptions: { remove: { images: true, uncommented: false } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-uncommented.html', configOptions: { remove: { images: true, uncommented: false } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-images.html', configOptions: { remove: { images: true, uncommented: false } }, expectedRemoveCalled: true },
-        { htmlPath: './tests/data/activity-videos.html', configOptions: { remove: { images: true, uncommented: false } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-customStrings.html', configOptions: { remove: { images: true, uncommented: false } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-linkedConditions.html', configOptions: { remove: { images: true, uncommented: false } }, expectedRemoveCalled: true },
+        { htmlPath: './tests/data/activity-unliked.html', configOptions: { remove: { images: true, uncommented: false } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-uncommented.html', configOptions: { remove: { images: true, uncommented: false } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-images.html', configOptions: { remove: { images: true, uncommented: false } }, expectedRemove: true },
+        { htmlPath: './tests/data/activity-videos.html', configOptions: { remove: { images: true, uncommented: false } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-customStrings.html', configOptions: { remove: { images: true, uncommented: false } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-linkedConditions.html', configOptions: { remove: { images: true, uncommented: false } }, expectedRemove: true },
 
         // Tests for videos
-        { htmlPath: './tests/data/activity-unliked.html', configOptions: { remove: { videos: true, uncommented: false } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-uncommented.html', configOptions: { remove: { videos: true, uncommented: false } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-images.html', configOptions: { remove: { videos: true, uncommented: false } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-videos.html', configOptions: { remove: { videos: true, uncommented: false } }, expectedRemoveCalled: true },
-        { htmlPath: './tests/data/activity-customStrings.html', configOptions: { remove: { videos: true, uncommented: false } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-linkedConditions.html', configOptions: { remove: { videos: true, uncommented: false } }, expectedRemoveCalled: false },
+        { htmlPath: './tests/data/activity-unliked.html', configOptions: { remove: { videos: true, uncommented: false } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-uncommented.html', configOptions: { remove: { videos: true, uncommented: false } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-images.html', configOptions: { remove: { videos: true, uncommented: false } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-videos.html', configOptions: { remove: { videos: true, uncommented: false } }, expectedRemove: true },
+        { htmlPath: './tests/data/activity-customStrings.html', configOptions: { remove: { videos: true, uncommented: false } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-linkedConditions.html', configOptions: { remove: { videos: true, uncommented: false } }, expectedRemove: false },
 
         // Tests for customStrings
-        { htmlPath: './tests/data/activity-unliked.html', configOptions: { remove: { customStrings: ['custom string'], uncommented: false } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-uncommented.html', configOptions: { remove: { customStrings: ['custom string'], uncommented: false } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-images.html', configOptions: { remove: { customStrings: ['custom string'], uncommented: false } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-videos.html', configOptions: { remove: { customStrings: ['custom string'], uncommented: false } }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-customStrings.html', configOptions: { remove: { customStrings: ['custom string'], uncommented: false } }, expectedRemoveCalled: true },
-        { htmlPath: './tests/data/activity-linkedConditions.html', configOptions: { remove: { customStrings: ['custom string'], uncommented: false } }, expectedRemoveCalled: false },
+        { htmlPath: './tests/data/activity-unliked.html', configOptions: { remove: { customStrings: ['custom string'], uncommented: false } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-uncommented.html', configOptions: { remove: { customStrings: ['custom string'], uncommented: false } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-images.html', configOptions: { remove: { customStrings: ['custom string'], uncommented: false } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-videos.html', configOptions: { remove: { customStrings: ['custom string'], uncommented: false } }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-customStrings.html', configOptions: { remove: { customStrings: ['custom string'], uncommented: false } }, expectedRemove: true },
+        { htmlPath: './tests/data/activity-linkedConditions.html', configOptions: { remove: { customStrings: ['custom string'], uncommented: false } }, expectedRemove: false },
 
         // Tests for linkedConditions
-        { htmlPath: './tests/data/activity-unliked.html', configOptions: { remove: { uncommented: false }, linkedConditions: [['images', 'unliked']] }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-uncommented.html', configOptions: { remove: { uncommented: false }, linkedConditions: [['images', 'unliked']] }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-images.html', configOptions: { remove: { uncommented: false }, linkedConditions: [['images', 'unliked']] }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-videos.html', configOptions: { remove: { uncommented: false }, linkedConditions: [['images', 'unliked']] }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-customStrings.html', configOptions: { remove: { uncommented: false }, linkedConditions: [['images', 'unliked']] }, expectedRemoveCalled: false },
-        { htmlPath: './tests/data/activity-linkedConditions.html', configOptions: { remove: { uncommented: false }, linkedConditions: [['images', 'unliked']] }, expectedRemoveCalled: true },
+        { htmlPath: './tests/data/activity-unliked.html', configOptions: { remove: { uncommented: false }, linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-uncommented.html', configOptions: { remove: { uncommented: false }, linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-images.html', configOptions: { remove: { uncommented: false }, linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-videos.html', configOptions: { remove: { uncommented: false }, linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-customStrings.html', configOptions: { remove: { uncommented: false }, linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
+        { htmlPath: './tests/data/activity-linkedConditions.html', configOptions: { remove: { uncommented: false }, linkedConditions: [['images', 'unliked']] }, expectedRemove: true },
     ];
 
     runTestCases(testCases);
