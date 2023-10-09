@@ -23,6 +23,7 @@ describe('removeEntry', function () {
             remove: {
                 uncommented: false,
                 unliked: false,
+                text: false,
                 images: false,
                 videos: false,
                 customStrings: [],
@@ -73,6 +74,15 @@ describe('removeEntry', function () {
         { htmlPath: VIDEOS, configOptions: { remove: { uncommented: true } }, expectedRemove: false },
         { htmlPath: CUSTOM_STRINGS, configOptions: { remove: { uncommented: true } }, expectedRemove: false },
         { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { uncommented: true } }, expectedRemove: false },
+
+        // Tests for text
+        { htmlPath: UNLIKED, configOptions: { remove: { text: true } }, expectedRemove: false },
+        { htmlPath: UNCOMMENTED, configOptions: { remove: { text: true } }, expectedRemove: false },
+        { htmlPath: TEXT, configOptions: { remove: { text: true } }, expectedRemove: true },
+        { htmlPath: IMAGES, configOptions: { remove: { text: true } }, expectedRemove: false },
+        { htmlPath: VIDEOS, configOptions: { remove: { text: true } }, expectedRemove: false },
+        { htmlPath: CUSTOM_STRINGS, configOptions: { remove: { text: true } }, expectedRemove: false },
+        { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { text: true } }, expectedRemove: false },
 
         // Tests for images
         { htmlPath: UNLIKED, configOptions: { remove: { images: true } }, expectedRemove: false },
