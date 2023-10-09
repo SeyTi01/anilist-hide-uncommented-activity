@@ -1,114 +1,82 @@
 const fs = require('fs');
 const jsdom = require('jsdom');
-const { expect} = require('chai');
+const { expect } = require('chai');
 const { ActivityHandler, config } = require('../src/hideUnwantedActivity.user');
-const {restore, spy} = require("sinon");
+const { restore, spy } = require('sinon');
 
-describe('removeEntry', function() {
-    let activityHandler;
+function setupAndTest(filePath, testConfig, doneCallback) {
+    fs.readFile(filePath, 'utf8', function (err, htmlContent) {
+        if (err) throw err;
 
-    beforeEach(function() {
-        activityHandler = new ActivityHandler();
+        const dom = new jsdom.JSDOM(htmlContent);
+        const node = dom.window.document.body.firstChild;
+        Object.assign(config.remove, testConfig);
+
+        const removeSpy = spy(node, 'remove');
+        const activityHandler = new ActivityHandler();
+
+        activityHandler.removeEntry(node);
+
+        expect(removeSpy.calledOnce).to.be.true;
+        expect(activityHandler.currentLoadCount).to.equal(0);
+        doneCallback();
     });
+}
 
-    it('should remove node if it is unliked and remove.unliked is true', function(done) {
-        fs.readFile('./tests/data/activity-unliked.html', 'utf8', function(err, htmlContent) {
-            if (err) throw err;
-            config.remove.uncommented = false;
-            config.remove.unliked = true;
-            const dom = new jsdom.JSDOM(htmlContent);
-            const node = dom.window.document.body.firstChild;
-            const removeSpy = spy(node, 'remove');
-            activityHandler.removeEntry(node);
-
-            expect(removeSpy.calledOnce).to.be.true;
-            expect(activityHandler.currentLoadCount).to.equal(0);
-            done();
-        });
-    });
-
-    it('should remove node if it is uncommented and remove.uncommented is true', function(done) {
-        fs.readFile('./tests/data/activity-uncommented.html', 'utf8', function(err, htmlContent) {
-            if (err) throw err;
-            config.remove.uncommented = true;
-            const dom = new jsdom.JSDOM(htmlContent);
-            const node = dom.window.document.body.firstChild;
-            const removeSpy = spy(node, 'remove');
-            activityHandler.removeEntry(node);
-
-            expect(removeSpy.calledOnce).to.be.true;
-            expect(activityHandler.currentLoadCount).to.equal(0);
-            done();
-        });
-    });
-
-    it('should remove node if it contains images and remove.images is true', function(done) {
-        fs.readFile('./tests/data/activity-with-images.html', 'utf8', function(err, htmlContent) {
-            if (err) throw err;
-            config.remove.uncommented = false;
-            config.remove.images = true;
-            const dom = new jsdom.JSDOM(htmlContent);
-            const node = dom.window.document.body.firstChild;
-            const removeSpy = spy(node, 'remove');
-            activityHandler.removeEntry(node);
-
-            expect(removeSpy.calledOnce).to.be.true;
-            expect(activityHandler.currentLoadCount).to.equal(0);
-            done();
-        });
-    });
-
-    it('should remove node if it contains videos and remove.videos is true', function(done) {
-        fs.readFile('./tests/data/activity-with-videos.html', 'utf8', function(err, htmlContent) {
-            if (err) throw err;
-            config.remove.uncommented = false;
-            config.remove.videos = true;
-            const dom = new jsdom.JSDOM(htmlContent);
-            const node = dom.window.document.body.firstChild;
-            const removeSpy = spy(node, 'remove');
-            activityHandler.removeEntry(node);
-
-            expect(removeSpy.calledOnce).to.be.true;
-            expect(activityHandler.currentLoadCount).to.equal(0);
-            done();
-        });
-    });
-
-    it('should remove node if it contains a custom string and remove.customStrings is not empty', function(done) {
-        fs.readFile('./tests/data/activity-with-custom-string.html', 'utf8', function(err, htmlContent) {
-            if (err) throw err;
-            config.remove.uncommented = false;
-            config.remove.customStrings = ['custom string'];
-            config.remove.caseSensitive = false;
-            const dom = new jsdom.JSDOM(htmlContent);
-            const node = dom.window.document.body.firstChild;
-            const removeSpy = spy(node, 'remove');
-            activityHandler.removeEntry(node);
-
-            expect(removeSpy.calledOnce).to.be.true;
-            expect(activityHandler.currentLoadCount).to.equal(0);
-            done();
-        });
-    });
-
-    it('should remove node if it satisfies linked conditions', function(done) {
-        fs.readFile('./tests/data/activity-linked-conditions.html', 'utf8', function(err, htmlContent) {
-            if (err) throw err;
-            config.remove.uncommented = false;
-            config.linkedConditions = [['unliked', 'images']];
-            const dom = new jsdom.JSDOM(htmlContent);
-            const node = dom.window.document.body.firstChild;
-            const removeSpy = spy(node, 'remove');
-            activityHandler.removeEntry(node);
-
-            expect(removeSpy.calledOnce).to.be.true;
-            expect(activityHandler.currentLoadCount).to.equal(0);
-            done();
-        });
-    });
-
-    afterEach(function() {
-        activityHandler.resetState();
+describe('removeEntry', function () {
+    afterEach(function () {
         restore();
+    });
+
+    it('should remove node if it is unliked and remove.unliked is true', function (done) {
+        setupAndTest(
+            './tests/data/activity-unliked.html',
+            { uncommented: false, unliked: true },
+            done
+        );
+    });
+
+    it('should remove node if it is uncommented and remove.uncommented is true', function (done) {
+        setupAndTest(
+            './tests/data/activity-uncommented.html',
+            { uncommented: true },
+            done
+        );
+    });
+
+    it('should remove node if it contains images and remove.images is true', function (done) {
+        setupAndTest(
+            './tests/data/activity-with-images.html',
+            { uncommented: false, images: true },
+            done
+        );
+    });
+
+    it('should remove node if it contains videos and remove.videos is true', function (done) {
+        setupAndTest(
+            './tests/data/activity-with-videos.html',
+            { uncommented: false, videos: true },
+            done
+        );
+    });
+
+    it('should remove node if it contains a custom string and remove.customStrings is not empty', function (done) {
+        setupAndTest(
+            './tests/data/activity-with-custom-string.html',
+            {
+                uncommented: false,
+                customStrings: ['custom string'],
+                caseSensitive: false,
+            },
+            done
+        );
+    });
+
+    it('should remove node if it satisfies linked conditions', function (done) {
+        setupAndTest(
+            './tests/data/activity-linked-conditions.html',
+            { uncommented: false, linkedConditions: [['unliked', 'images']] },
+            done
+        );
     });
 });
