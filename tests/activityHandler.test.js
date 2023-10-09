@@ -74,6 +74,22 @@ describe('removeEntry', function() {
         });
     });
 
+    it('should remove node if it contains a custom string and remove.customStrings is true', function(done) {
+        fs.readFile('./tests/data/activity-with-custom-string.html', 'utf8', function(err, htmlContent) {
+            if (err) throw err;
+            config.remove.uncommented = false;
+            config.remove.customStrings = ['custom string'];
+            config.remove.caseSensitive = false;
+            const dom = new jsdom.JSDOM(htmlContent);
+            const node = dom.window.document.body.firstChild;
+            const removeSpy = spy(node, 'remove');
+            activityHandler.removeEntry(node);
+
+            expect(removeSpy.calledOnce).to.be.true;
+            expect(activityHandler.currentLoadCount).to.equal(0);
+            done();
+        });
+    });
 
     afterEach(function() {
         activityHandler.resetState();
