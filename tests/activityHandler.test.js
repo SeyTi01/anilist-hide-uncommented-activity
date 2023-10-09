@@ -7,6 +7,7 @@ const { restore, spy } = require("sinon");
 const TEST_DATA_PATH = './tests/data/';
 const UNLIKED = `${TEST_DATA_PATH}activity-unliked.html`;
 const UNCOMMENTED = `${TEST_DATA_PATH}activity-uncommented.html`;
+const TEXT = `${TEST_DATA_PATH}activity-text.html`;
 const IMAGES = `${TEST_DATA_PATH}activity-images.html`;
 const VIDEOS = `${TEST_DATA_PATH}activity-videos.html`;
 const VIDEOS_YOUTUBE = `${TEST_DATA_PATH}activity-videosYoutube.html`;
@@ -58,6 +59,7 @@ describe('removeEntry', function () {
         // Tests for unliked
         { htmlPath: UNLIKED, configOptions: { remove: { unliked: true } }, expectedRemove: true },
         { htmlPath: UNCOMMENTED, configOptions: { remove: { unliked: true } }, expectedRemove: false },
+        { htmlPath: TEXT, configOptions: { remove: { unliked: true } }, expectedRemove: false },
         { htmlPath: IMAGES, configOptions: { remove: { unliked: true } }, expectedRemove: false },
         { htmlPath: VIDEOS, configOptions: { remove: { unliked: true } }, expectedRemove: false },
         { htmlPath: CUSTOM_STRINGS, configOptions: { remove: { unliked: true } }, expectedRemove: false },
@@ -66,6 +68,7 @@ describe('removeEntry', function () {
         // Tests for uncommented
         { htmlPath: UNLIKED, configOptions: { remove: { uncommented: true } }, expectedRemove: false },
         { htmlPath: UNCOMMENTED, configOptions: { remove: { uncommented: true } }, expectedRemove: true },
+        { htmlPath: TEXT, configOptions: { remove: { uncommented: true } }, expectedRemove: false },
         { htmlPath: IMAGES, configOptions: { remove: { uncommented: true } }, expectedRemove: false },
         { htmlPath: VIDEOS, configOptions: { remove: { uncommented: true } }, expectedRemove: false },
         { htmlPath: CUSTOM_STRINGS, configOptions: { remove: { uncommented: true } }, expectedRemove: false },
@@ -74,6 +77,7 @@ describe('removeEntry', function () {
         // Tests for images
         { htmlPath: UNLIKED, configOptions: { remove: { images: true } }, expectedRemove: false },
         { htmlPath: UNCOMMENTED, configOptions: { remove: { images: true } }, expectedRemove: false },
+        { htmlPath: TEXT, configOptions: { remove: { images: true } }, expectedRemove: false },
         { htmlPath: IMAGES, configOptions: { remove: { images: true } }, expectedRemove: true },
         { htmlPath: VIDEOS, configOptions: { remove: { images: true } }, expectedRemove: false },
         { htmlPath: CUSTOM_STRINGS, configOptions: { remove: { images: true } }, expectedRemove: false },
@@ -82,6 +86,7 @@ describe('removeEntry', function () {
         // Tests for videos
         { htmlPath: UNLIKED, configOptions: { remove: { videos: true } }, expectedRemove: false },
         { htmlPath: UNCOMMENTED, configOptions: { remove: { videos: true } }, expectedRemove: false },
+        { htmlPath: TEXT, configOptions: { remove: { videos: true } }, expectedRemove: false },
         { htmlPath: IMAGES, configOptions: { remove: { videos: true } }, expectedRemove: false },
         { htmlPath: VIDEOS, configOptions: { remove: { videos: true } }, expectedRemove: true },
         { htmlPath: VIDEOS_YOUTUBE, configOptions: { remove: { videos: true } }, expectedRemove: true },
@@ -91,6 +96,7 @@ describe('removeEntry', function () {
         // Tests for customStrings
         { htmlPath: UNLIKED, configOptions: { remove: { customStrings: ['custom string'] } }, expectedRemove: false },
         { htmlPath: UNCOMMENTED, configOptions: { remove: { customStrings: ['custom string'] } }, expectedRemove: false },
+        { htmlPath: TEXT, configOptions: { remove: { customStrings: ['custom string'] } }, expectedRemove: false },
         { htmlPath: IMAGES, configOptions: { remove: { customStrings: ['custom string'] } }, expectedRemove: false },
         { htmlPath: VIDEOS, configOptions: { remove: { customStrings: ['custom string'] } }, expectedRemove: false },
         { htmlPath: CUSTOM_STRINGS, configOptions: { remove: { customStrings: ['custom string'] } }, expectedRemove: true },
@@ -101,6 +107,7 @@ describe('removeEntry', function () {
         // Tests for linkedConditions
         { htmlPath: UNLIKED, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
         { htmlPath: UNCOMMENTED, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
+        { htmlPath: TEXT, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
         { htmlPath: IMAGES, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
         { htmlPath: VIDEOS, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
         { htmlPath: CUSTOM_STRINGS, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
