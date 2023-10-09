@@ -15,6 +15,7 @@ const config = {
     remove: {
         uncommented: true, // Remove activities that have no comments
         unliked: false, // Remove activities that have no likes
+        text: false, // Remove activities containing only text
         images: false, // Remove activities containing images
         videos: false, // Remove activities containing videos
         customStrings: [], // Remove activities with user-defined strings
@@ -99,6 +100,7 @@ class ActivityHandler {
     conditionsMap = new Map([
         ['uncommented', function(node) { return this.shouldRemoveUncommented(node); }.bind(this)],
         ['unliked', function(node) { return this.shouldRemoveUnliked(node); }.bind(this)],
+        ['text', function(node) { return this.shouldRemoveText(node); }.bind(this)],
         ['images', function(node) { return this.shouldRemoveImage(node); }.bind(this)],
         ['videos', function(node) { return this.shouldRemoveVideo(node); }.bind(this)],
         ['customStrings', function(node) { return this.shouldRemoveByCustomStrings(node); }.bind(this)]
@@ -144,6 +146,10 @@ class ActivityHandler {
 
     shouldRemoveUnliked(node) {
         return !this.hasElement(SELECTORS.span.count, node.querySelector(SELECTORS.div.likes));
+    }
+
+    shouldRemoveText(node) {
+        // todo: implement
     }
 
     shouldRemoveImage(node) {
