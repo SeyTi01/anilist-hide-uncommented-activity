@@ -9,6 +9,7 @@ const UNLIKED = `${TEST_DATA_PATH}activity-unliked.html`;
 const UNCOMMENTED = `${TEST_DATA_PATH}activity-uncommented.html`;
 const IMAGES = `${TEST_DATA_PATH}activity-images.html`;
 const VIDEOS = `${TEST_DATA_PATH}activity-videos.html`;
+const VIDEOS_YOUTUBE = `${TEST_DATA_PATH}activity-videosYoutube.html`;
 const CUSTOM_STRINGS = `${TEST_DATA_PATH}activity-customStrings.html`;
 const LINKED_CONDITIONS = `${TEST_DATA_PATH}activity-linkedConditions.html`;
 
@@ -83,6 +84,7 @@ describe('removeEntry', function () {
         { htmlPath: UNCOMMENTED, configOptions: { remove: { videos: true } }, expectedRemove: false },
         { htmlPath: IMAGES, configOptions: { remove: { videos: true } }, expectedRemove: false },
         { htmlPath: VIDEOS, configOptions: { remove: { videos: true } }, expectedRemove: true },
+        { htmlPath: VIDEOS_YOUTUBE, configOptions: { remove: { videos: true } }, expectedRemove: true },
         { htmlPath: CUSTOM_STRINGS, configOptions: { remove: { videos: true } }, expectedRemove: false },
         { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { videos: true } }, expectedRemove: false },
 
