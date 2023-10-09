@@ -34,6 +34,7 @@ describe('removeEntry', function() {
     testRemoveFunction('./tests/data/activity-images.html', { remove: { unliked: true, uncommented: false } }, false, 1);
     testRemoveFunction('./tests/data/activity-videos.html', { remove: { unliked: true, uncommented: false } }, false, 1);
     testRemoveFunction('./tests/data/activity-customStrings.html', { remove: { unliked: true, uncommented: false } }, false, 1);
+    testRemoveFunction('./tests/data/activity-linkedConditions.html', { remove: { unliked: true, uncommented: false } }, true, 0);
 
     // Tests for uncommented
     testRemoveFunction('./tests/data/activity-unliked.html', { remove: { uncommented: true } }, false, 1);
@@ -41,6 +42,7 @@ describe('removeEntry', function() {
     testRemoveFunction('./tests/data/activity-images.html', { remove: { uncommented: true } }, false, 1);
     testRemoveFunction('./tests/data/activity-videos.html', { remove: { uncommented: true } }, false, 1);
     testRemoveFunction('./tests/data/activity-customStrings.html', { remove: { uncommented: true } }, false, 1);
+    testRemoveFunction('./tests/data/activity-linkedConditions.html', { remove: { uncommented: true } }, false, 1);
 
     // Tests for images
     testRemoveFunction('./tests/data/activity-unliked.html', { remove: { images: true, uncommented: false } }, false, 1);
@@ -48,6 +50,7 @@ describe('removeEntry', function() {
     testRemoveFunction('./tests/data/activity-images.html', { remove: { images: true, uncommented: false } }, true, 0);
     testRemoveFunction('./tests/data/activity-videos.html', { remove: { images: true, uncommented: false } }, false, 1);
     testRemoveFunction('./tests/data/activity-customStrings.html', { remove: { images: true, uncommented: false } }, false, 1);
+    testRemoveFunction('./tests/data/activity-linkedConditions.html', { remove: { images: true, uncommented: false } }, true, 0);
 
     // Tests for videos
     testRemoveFunction('./tests/data/activity-unliked.html', { remove: { videos: true, uncommented: false } }, false, 1);
@@ -55,6 +58,7 @@ describe('removeEntry', function() {
     testRemoveFunction('./tests/data/activity-images.html', { remove: { videos: true, uncommented: false } }, false, 1);
     testRemoveFunction('./tests/data/activity-videos.html', { remove: { videos: true, uncommented: false } }, true, 0);
     testRemoveFunction('./tests/data/activity-customStrings.html', { remove: { videos: true, uncommented: false } }, false, 1);
+    testRemoveFunction('./tests/data/activity-linkedConditions.html', { remove: { videos: true, uncommented: false } }, false, 1);
 
     // Tests for customStrings
     testRemoveFunction('./tests/data/activity-unliked.html', { remove: { customStrings: ['custom string'], uncommented: false } }, false, 1);
@@ -62,6 +66,7 @@ describe('removeEntry', function() {
     testRemoveFunction('./tests/data/activity-images.html', { remove: { customStrings: ['custom string'], uncommented: false } }, false, 1);
     testRemoveFunction('./tests/data/activity-videos.html', { remove: { customStrings: ['custom string'], uncommented: false } }, false, 1);
     testRemoveFunction('./tests/data/activity-customStrings.html', { remove: { customStrings: ['custom string'], uncommented: false } }, true, 0);
+    testRemoveFunction('./tests/data/activity-linkedConditions.html', { remove: { customStrings: ['custom string'], uncommented: false } }, false, 1);
 
     // Tests for linkedConditions
     testRemoveFunction('./tests/data/activity-unliked.html', { remove: { uncommented: false }, linkedConditions: [['images', 'unliked']] }, false, 1);
