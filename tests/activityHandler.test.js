@@ -4,7 +4,7 @@ const { expect } = require('chai');
 const { ActivityHandler, config } = require('../src/hideUnwantedActivity.user');
 const { restore, spy } = require('sinon');
 
-function setupAndTest(filePath, testConfig, doneCallback) {
+function setupAndTestPositive(filePath, testConfig, doneCallback) {
     fs.readFile(filePath, 'utf8', function (err, htmlContent) {
         if (err) throw err;
 
@@ -28,41 +28,41 @@ describe('removeEntry', function () {
         restore();
     });
 
-    it('should remove node if it is unliked and remove.unliked is true', function (done) {
-        setupAndTest(
+    it('should remove unliked node if remove.unliked is true', function (done) {
+        setupAndTestPositive(
             './tests/data/activity-unliked.html',
             { uncommented: false, unliked: true },
             done
         );
     });
 
-    it('should remove node if it is uncommented and remove.uncommented is true', function (done) {
-        setupAndTest(
+    it('should remove uncommented node if remove.uncommented is true', function (done) {
+        setupAndTestPositive(
             './tests/data/activity-uncommented.html',
             { uncommented: true },
             done
         );
     });
 
-    it('should remove node if it contains images and remove.images is true', function (done) {
-        setupAndTest(
-            './tests/data/activity-with-images.html',
+    it('should remove image node if remove.images is true', function (done) {
+        setupAndTestPositive(
+            './tests/data/activity-images.html',
             { uncommented: false, images: true },
             done
         );
     });
 
-    it('should remove node if it contains videos and remove.videos is true', function (done) {
-        setupAndTest(
-            './tests/data/activity-with-videos.html',
+    it('should remove video node if remove.videos is true', function (done) {
+        setupAndTestPositive(
+            './tests/data/activity-videos.html',
             { uncommented: false, videos: true },
             done
         );
     });
 
-    it('should remove node if it contains a custom string and remove.customStrings is not empty', function (done) {
-        setupAndTest(
-            './tests/data/activity-with-custom-string.html',
+    it('should remove customString node if remove.customStrings is not empty', function (done) {
+        setupAndTestPositive(
+            './tests/data/activity-customString.html',
             {
                 uncommented: false,
                 customStrings: ['custom string'],
@@ -72,9 +72,9 @@ describe('removeEntry', function () {
         );
     });
 
-    it('should remove node if it satisfies linked conditions', function (done) {
-        setupAndTest(
-            './tests/data/activity-linked-conditions.html',
+    it('should node if it satisfies linked conditions', function (done) {
+        setupAndTestPositive(
+            './tests/data/activity-linkedConditions.html',
             { uncommented: false, linkedConditions: [['unliked', 'images']] },
             done
         );
