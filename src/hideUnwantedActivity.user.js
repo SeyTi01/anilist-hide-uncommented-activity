@@ -149,7 +149,24 @@ class ActivityHandler {
     }
 
     shouldRemoveText(node) {
-
+        if (node.classList.contains('activity-text')) {
+            let markdown = node.querySelector('.activity-markdown');
+            if (markdown.hasChildNodes()) {
+                let hasMedia = false;
+                if (this.shouldRemoveImage(node) || this.shouldRemoveVideo(node)) {
+                    hasMedia = true;
+                }
+                if (!hasMedia) {
+                    for (let child of markdown.childNodes) {
+                        if (child.nodeType === 3 && child.textContent.trim() !== "") {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     shouldRemoveImage(node) {
