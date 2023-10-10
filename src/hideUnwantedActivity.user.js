@@ -148,7 +148,7 @@ class ActivityHandler {
     }
 
     shouldRemoveText(node) {
-        return (node.classList.contains('activity-text') || node.classList.contains('activity-message'))
+        return (node.classList.contains(SELECTORS.activity.text) || node.classList.contains(SELECTORS.activity.message))
             && !(this.shouldRemoveImage(node) || this.shouldRemoveVideo(node));
     }
 
@@ -300,6 +300,10 @@ const SELECTORS = {
     span: {
         count: 'span.count',
         youTube: 'span.youtube',
+    },
+    activity: {
+        text: 'activity-text',
+        message: 'activity-message',
     },
     class: {
         image: 'img',
