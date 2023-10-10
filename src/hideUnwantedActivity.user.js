@@ -119,11 +119,8 @@ class ActivityHandler {
 
     shouldRemoveNode(node) {
         const checkCondition = (conditionName, predicate) => {
-            return (
-                config.remove[conditionName]
-                && predicate(node)
-                && !config.linkedConditions.some(innerArray => innerArray.includes(conditionName))
-            );
+            return config.remove[conditionName] && predicate(node)
+                && !config.linkedConditions.flat().includes(conditionName);
         };
 
         if (this.shouldRemoveLinkedConditions(node)) {
