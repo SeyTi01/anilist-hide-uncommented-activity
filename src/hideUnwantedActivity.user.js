@@ -102,7 +102,7 @@ class ActivityHandler {
         ['text', function(node) { return this.shouldRemoveText(node); }.bind(this)],
         ['images', function(node) { return this.shouldRemoveImage(node); }.bind(this)],
         ['videos', function(node) { return this.shouldRemoveVideo(node); }.bind(this)],
-        ['customStrings', function(node) { return this.shouldRemoveByCustomStrings(node); }.bind(this)]
+        ['customStrings', function(node) { return this.shouldRemoveCustomStrings(node); }.bind(this)]
     ]);
 
     removeEntry(node) {
@@ -126,7 +126,7 @@ class ActivityHandler {
             );
         };
 
-        if (this.shouldRemoveByLinkedConditions(node)) {
+        if (this.shouldRemoveLinkedConditions(node)) {
             return true;
         }
 
@@ -134,7 +134,7 @@ class ActivityHandler {
         return conditions.some(([name, predicate]) => checkCondition(name, predicate));
     }
 
-    shouldRemoveByLinkedConditions(node) {
+    shouldRemoveLinkedConditions(node) {
         return !config.linkedConditions.every(link => link.length === 0)
             && config.linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
     }
@@ -160,7 +160,7 @@ class ActivityHandler {
         return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
     }
 
-    shouldRemoveByCustomStrings(node) {
+    shouldRemoveCustomStrings(node) {
         return config.remove.customStrings.some((customString) =>
             (config.remove.caseSensitive
                 ? node.textContent.includes(customString)
