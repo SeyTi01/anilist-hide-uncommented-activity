@@ -97,12 +97,12 @@ class ActivityHandler {
     }
 
     conditionsMap = new Map([
-        ['uncommented', function(node) { return this.shouldRemoveUncommented(node); }.bind(this)],
-        ['unliked', function(node) { return this.shouldRemoveUnliked(node); }.bind(this)],
-        ['text', function(node) { return this.shouldRemoveText(node); }.bind(this)],
-        ['images', function(node) { return this.shouldRemoveImage(node); }.bind(this)],
-        ['videos', function(node) { return this.shouldRemoveVideo(node); }.bind(this)],
-        ['customStrings', function(node) { return this.shouldRemoveCustomStrings(node); }.bind(this)]
+        ['uncommented', node => this.shouldRemoveUncommented(node)],
+        ['unliked', node => this.shouldRemoveUnliked(node)],
+        ['text', node => this.shouldRemoveText(node)],
+        ['images', node => this.shouldRemoveImage(node)],
+        ['videos', node => this.shouldRemoveVideo(node)],
+        ['customStrings', node => this.shouldRemoveCustomStrings(node)]
     ]);
 
     removeEntry(node) {
