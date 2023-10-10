@@ -136,8 +136,8 @@ class ActivityHandler {
     }
 
     shouldRemoveByLinkedConditions(node) {
-        return !config.linkedConditions.every(link => link.length === 0) &&
-            config.linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
+        return !config.linkedConditions.every(link => link.length === 0)
+            && config.linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
     }
 
     shouldRemoveUncommented(node) {
