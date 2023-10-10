@@ -149,12 +149,8 @@ class ActivityHandler {
     }
 
     shouldRemoveText(node) {
-        if (node.classList.contains('activity-text')) {
-            if (!this.shouldRemoveImage(node) && !this.shouldRemoveVideo(node)) {
-                return true;
-            }
-        }
-        return false;
+        return node.classList.contains('activity-text') ?
+            (!this.shouldRemoveImage(node) && !this.shouldRemoveVideo(node)) : false;
     }
 
     shouldRemoveImage(node) {
