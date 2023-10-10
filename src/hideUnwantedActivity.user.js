@@ -105,7 +105,7 @@ class ActivityHandler {
         ['customStrings', node => this.shouldRemoveCustomStrings(node)]
     ]);
 
-    removeEntry(node) {
+    removeEntry = node => {
         if (this.shouldRemoveNode(node)) {
             node.remove();
         } else {
@@ -113,53 +113,52 @@ class ActivityHandler {
         }
     }
 
-    resetState() {
+    resetState = () => {
         this.currentLoadCount = 0;
     }
 
-    shouldRemoveNode(node) {
+    shouldRemoveNode = node => {
         const checkCondition = (conditionName, predicate) => {
-            return config.remove[conditionName] && predicate(node)
-                && !config.linkedConditions.flat().includes(conditionName);
+            const { remove, linkedConditions } = config;
+            return remove[conditionName] && predicate(node)
+                && !linkedConditions.flat().includes(conditionName);
         };
 
-        if (this.shouldRemoveLinkedConditions(node)) {
-            return true;
-        }
-
-        const conditions = Array.from(this.conditionsMap.entries());
-        return conditions.some(([name, predicate]) => checkCondition(name, predicate));
+        return this.shouldRemoveLinkedConditions(node)
+            || Array.from(this.conditionsMap.entries()).some(([name, predicate]) => checkCondition(name, predicate));
     }
 
-    shouldRemoveLinkedConditions(node) {
-        return !config.linkedConditions.every(link => link.length === 0)
-            && config.linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
+    shouldRemoveLinkedConditions = node => {
+        const { linkedConditions } = config;
+        return linkedConditions.some(link => link.length > 0)
+            && linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
     }
 
-    shouldRemoveUncommented(node) {
+    shouldRemoveUncommented = node => {
         return !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
     }
 
-    shouldRemoveUnliked(node) {
+    shouldRemoveUnliked = node => {
         return !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
     }
 
-    shouldRemoveText(node) {
+    shouldRemoveText = node => {
         return (node.classList.contains(SELECTORS.activity.text) || node.classList.contains(SELECTORS.activity.message))
             && !(this.shouldRemoveImage(node) || this.shouldRemoveVideo(node));
     }
 
-    shouldRemoveImage(node) {
+    shouldRemoveImage = node => {
         return node?.querySelector(SELECTORS.class.image);
     }
 
-    shouldRemoveVideo(node) {
+    shouldRemoveVideo = node => {
         return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
     }
 
-    shouldRemoveCustomStrings(node) {
-        return config.remove.customStrings.some(customString =>
-            config.remove.caseSensitive
+    shouldRemoveCustomStrings = node => {
+        const { remove: { customStrings, caseSensitive } } = config;
+        return customStrings.some(customString =>
+            caseSensitive
                 ? node.textContent.includes(customString)
                 : node.textContent.toLowerCase().includes(customString.toLowerCase())
         );
