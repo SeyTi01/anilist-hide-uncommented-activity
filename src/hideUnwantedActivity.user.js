@@ -70,12 +70,11 @@ class MainApp {
     }
 
     isAllowedUrl() {
-        const currentUrl = window.location.href;
         const allowedPatterns = Object.keys(this.URLS).filter(pattern => config.runOn[pattern]);
 
         return allowedPatterns.some(pattern => {
             const regex = new RegExp(this.URLS[pattern].replace('*', '.*'));
-            return regex.test(currentUrl);
+            return regex.test(window.location.href);
         });
     }
 
