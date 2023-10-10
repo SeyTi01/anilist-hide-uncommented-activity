@@ -324,4 +324,4 @@ if (require.main === module) {
     main();
 }
 
-module.exports = { ActivityHandler, config };
+module.exports = { MainApp, ActivityHandler, UIHandler, config, SELECTORS };
