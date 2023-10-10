@@ -141,23 +141,23 @@ class ActivityHandler {
     }
 
     shouldRemoveUncommented(node) {
-        return !this.hasElement(SELECTORS.span.count, node.querySelector(SELECTORS.div.replies));
+        return !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
     }
 
     shouldRemoveUnliked(node) {
-        return !this.hasElement(SELECTORS.span.count, node.querySelector(SELECTORS.div.likes));
+        return !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
     }
 
     shouldRemoveText(node) {
-        // todo: implement
+
     }
 
     shouldRemoveImage(node) {
-        return this.hasElement(SELECTORS.class.image, node);
+        return node?.querySelector(SELECTORS.class.image);
     }
 
     shouldRemoveVideo(node) {
-        return this.hasElement(SELECTORS.class.video, node) || this.hasElement(SELECTORS.span.youTube, node);
+        return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
     }
 
     shouldRemoveByCustomStrings(node) {
@@ -166,10 +166,6 @@ class ActivityHandler {
                 node.textContent.includes(customString) :
                 node.textContent.toLowerCase().includes(customString.toLowerCase()))
         );
-    }
-
-    hasElement(selector, node) {
-        return node?.querySelector(selector);
     }
 }
 
