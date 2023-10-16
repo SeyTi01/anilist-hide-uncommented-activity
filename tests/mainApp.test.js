@@ -1,4 +1,4 @@
-const { MainApp, SELECTORS } = require("../src/hideUnwantedActivity.user");
+const { MainApp } = require("../src/hideUnwantedActivity.user");
 const sinon = require('sinon');
 const expect = require('chai').expect;
 const { JSDOM } = require('jsdom');
