@@ -26,16 +26,14 @@ describe('MainApp', () => {
             resetState: () => {}
         };
 
-        const testConfig = {
+        mainApp = new MainApp(activityHandler, uiHandler, {
             targetLoadCount: 10,
             runOn: {
                 home: false,
                 social: false,
                 profile: false,
             }
-        };
-
-        mainApp = new MainApp(activityHandler, uiHandler, testConfig);
+        });
     });
 
     describe('observeMutations', () => {
@@ -113,7 +111,6 @@ describe('MainApp', () => {
         it('should call ui.clickLoadMore if currentLoadCount < targetLoadCount and userPressed is true', () => {
             mainApp.ac.currentLoadCount = 5;
             uiHandler.userPressed = true;
-
             const clickLoadMoreSpy = sinon.spy(mainApp.ui, 'clickLoadMore');
 
             mainApp.loadMoreOrReset();
@@ -126,7 +123,6 @@ describe('MainApp', () => {
         it('should call ac.resetState and ui.resetState if currentLoadCount is equal to targetLoadCount and userPressed is true', () => {
             activityHandler.currentLoadCount = 10;
             uiHandler.userPressed = true;
-
             const resetStateSpy = sinon.spy(mainApp.ac, 'resetState');
             const uiResetStateSpy = sinon.spy(mainApp.ui, 'resetState');
 
@@ -141,9 +137,7 @@ describe('MainApp', () => {
         it('should call ac.resetState and ui.resetState if currentLoadCount >= config.targetLoadCount or userPressed is false', () => {
             activityHandler.currentLoadCount = 10;
             uiHandler.userPressed = false;
-
             const resetStateMock = sinon.stub();
-
             mainApp.ac.resetState = resetStateMock;
             mainApp.ui.resetState = resetStateMock;
 
@@ -157,7 +151,6 @@ describe('MainApp', () => {
         it('should call ac.resetState and ui.resetState if userPressed is false, regardless of currentLoadCount', () => {
             activityHandler.currentLoadCount = 5;
             uiHandler.userPressed = false;
-
             const resetStateSpy = sinon.spy(mainApp.ac, 'resetState');
             const uiResetStateSpy = sinon.spy(mainApp.ui, 'resetState');
 
