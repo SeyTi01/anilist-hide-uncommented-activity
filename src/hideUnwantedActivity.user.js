@@ -106,7 +106,7 @@ class ActivityHandler {
         ['customStrings', node => this.shouldRemoveCustomStrings(node)]
     ]);
 
-    removeEntry = node => {
+    removeEntry = (node) => {
         if (this.shouldRemoveNode(node)) {
             node.remove();
         } else {
@@ -118,7 +118,7 @@ class ActivityHandler {
         this.currentLoadCount = 0;
     }
 
-    shouldRemoveNode = node => {
+    shouldRemoveNode = (node) => {
         const checkCondition = (conditionName, predicate) => {
             const { remove, linkedConditions } = this.config;
             // noinspection JSUnresolvedReference
@@ -130,34 +130,34 @@ class ActivityHandler {
             || Array.from(this.conditionsMap.entries()).some(([name, predicate]) => checkCondition(name, predicate));
     }
 
-    shouldRemoveLinkedConditions = node => {
+    shouldRemoveLinkedConditions = (node) => {
         const { linkedConditions } = this.config;
         return linkedConditions.some(link => link.length > 0)
             && linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
     }
 
-    shouldRemoveUncommented = node => {
+    shouldRemoveUncommented = (node) => {
         return !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
     }
 
-    shouldRemoveUnliked = node => {
+    shouldRemoveUnliked = (node) => {
         return !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
     }
 
-    shouldRemoveText = node => {
+    shouldRemoveText = (node) => {
         return (node.classList.contains(SELECTORS.activity.text) || node.classList.contains(SELECTORS.activity.message))
             && !(this.shouldRemoveImage(node) || this.shouldRemoveVideo(node));
     }
 
-    shouldRemoveImage = node => {
+    shouldRemoveImage = (node) => {
         return node?.querySelector(SELECTORS.class.image);
     }
 
-    shouldRemoveVideo = node => {
+    shouldRemoveVideo = (node) => {
         return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
     }
 
-    shouldRemoveCustomStrings = node => {
+    shouldRemoveCustomStrings = (node) => {
         const { remove: { customStrings, caseSensitive } } = this.config;
         return customStrings.some(customString =>
             caseSensitive
