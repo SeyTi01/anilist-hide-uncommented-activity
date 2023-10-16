@@ -95,6 +95,7 @@ class ActivityHandler {
 
     constructor() {
         this.currentLoadCount = 0;
+        this.config = config;
     }
 
     conditionsMap = new Map([
@@ -120,7 +121,8 @@ class ActivityHandler {
 
     shouldRemoveNode = node => {
         const checkCondition = (conditionName, predicate) => {
-            const { remove, linkedConditions } = config;
+            const { remove, linkedConditions } = this.config;
+            // noinspection JSUnresolvedReference
             return remove[conditionName] && predicate(node)
                 && !linkedConditions.flat().includes(conditionName);
         };
@@ -130,7 +132,7 @@ class ActivityHandler {
     }
 
     shouldRemoveLinkedConditions = node => {
-        const { linkedConditions } = config;
+        const { linkedConditions } = this.config;
         return linkedConditions.some(link => link.length > 0)
             && linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
     }
@@ -157,7 +159,7 @@ class ActivityHandler {
     }
 
     shouldRemoveCustomStrings = node => {
-        const { remove: { customStrings, caseSensitive } } = config;
+        const { remove: { customStrings, caseSensitive } } = this.config;
         return customStrings.some(customString =>
             caseSensitive
                 ? node.textContent.includes(customString)
@@ -314,7 +316,7 @@ function main() {
         return;
     }
 
-    const activityHandler = new ActivityHandler();
+    const activityHandler = new ActivityHandler(config);
     const uiHandler = new UIHandler();
     const mainApp = new MainApp(activityHandler, uiHandler, config);
 
