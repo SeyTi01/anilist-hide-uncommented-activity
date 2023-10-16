@@ -1,7 +1,8 @@
-const { MainApp } = require("../src/hideUnwantedActivity.user");
+const MainApp = require("../src/hideUnwantedActivity.user").MainApp;
 const sinon = require('sinon');
 const expect = require('chai').expect;
 const { JSDOM } = require('jsdom');
+
 const jsdom = new JSDOM('<!doctype html><html lang="en"><body></body></html>');
 global.window = jsdom.window;
 global.document = jsdom.window.document;
@@ -22,7 +23,8 @@ describe('MainApp', () => {
             setLoadMore: () => {},
             clickLoadMore: () => {},
             userPressed: true,
-            resetState: () => {} };
+            resetState: () => {}
+        };
 
         const testConfig = {
             targetLoadCount: 10,
@@ -30,7 +32,7 @@ describe('MainApp', () => {
                 home: false,
                 social: false,
                 profile: false,
-            },
+            }
         };
 
         mainApp = new MainApp(activityHandler, uiHandler, testConfig);
