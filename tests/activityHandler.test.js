@@ -15,7 +15,7 @@ const VIDEOS_YOUTUBE = `${TEST_DATA_PATH}activity-videosYoutube.html`;
 const CUSTOM_STRINGS = `${TEST_DATA_PATH}activity-customStrings.html`;
 const LINKED_CONDITIONS = `${TEST_DATA_PATH}activity-linkedConditions.html`;
 
-describe('removeEntry', function () {
+describe('removeEntry', () => {
     let activityHandler;
 
     beforeEach(function () {
