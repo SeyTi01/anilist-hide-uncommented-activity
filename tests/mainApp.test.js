@@ -2,9 +2,10 @@ const { MainApp, SELECTORS } = require("../src/hideUnwantedActivity.user");
 const sinon = require('sinon');
 const expect = require('chai').expect;
 const { JSDOM } = require('jsdom');
-const { document } = new JSDOM('<!doctype html><html><body></body></html>').window;
-
-global.HTMLElement = document.defaultView.HTMLElement;
+const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
+global.window = jsdom.window;
+global.document = jsdom.window.document;
+global.HTMLElement = jsdom.window.HTMLElement;
 
 describe('MainApp', () => {
     let mainApp;
@@ -20,6 +21,11 @@ describe('MainApp', () => {
 
         const testConfig = {
             targetLoadCount: 10,
+            runOn: {
+                home: false,
+                social: false,
+                profile: false,
+            },
         };
 
         mainApp = new MainApp(activityHandler, uiHandler, testConfig);
