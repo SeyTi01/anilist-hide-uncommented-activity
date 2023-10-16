@@ -33,9 +33,10 @@ const config = {
 
 class MainApp {
 
-    constructor(activityHandler, uiHandler) {
+    constructor(activityHandler, uiHandler, config) {
         this.ac = activityHandler;
         this.ui = uiHandler;
+        this.config = config;
     }
 
     observeMutations(mutations) {
@@ -61,7 +62,7 @@ class MainApp {
     }
 
     loadMoreOrReset() {
-        if (this.ac.currentLoadCount < config.targetLoadCount && this.ui.userPressed) {
+        if (this.ac.currentLoadCount < this.config.targetLoadCount && this.ui.userPressed) {
             this.ui.clickLoadMore();
         } else {
             this.ac.resetState();
@@ -70,7 +71,7 @@ class MainApp {
     }
 
     isAllowedUrl() {
-        const allowedPatterns = Object.keys(this.URLS).filter(pattern => config.runOn[pattern]);
+        const allowedPatterns = Object.keys(this.URLS).filter(pattern => this.config.runOn[pattern]);
 
         return allowedPatterns.some(pattern => {
             const regex = new RegExp(this.URLS[pattern].replace('*', '.*'));
@@ -315,7 +316,7 @@ function main() {
 
     const activityHandler = new ActivityHandler();
     const uiHandler = new UIHandler();
-    const mainApp = new MainApp(activityHandler, uiHandler);
+    const mainApp = new MainApp(activityHandler, uiHandler, config);
 
     mainApp.initializeObserver();
 }
