@@ -3,6 +3,7 @@ const sinon = require('sinon');
 const { expect } = chai;
 const { UIHandler } = require('../src/hideUnwantedActivity.user');
 const { JSDOM } = require('jsdom');
+
 const jsdom = new JSDOM('<!doctype html><html lang="en"><body></body></html>');
 global.window = jsdom.window;
 global.document = jsdom.window.document;
