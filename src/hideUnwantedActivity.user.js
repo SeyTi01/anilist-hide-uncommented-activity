@@ -32,13 +32,14 @@ const config = {
 };
 
 class MainApp {
+
     constructor(activityHandler, uiHandler, config) {
         this.ac = activityHandler;
         this.ui = uiHandler;
         this.config = config;
     }
 
-    observeMutations = (mutations) => {
+    observeMutations(mutations) {
         if (this.isAllowedUrl()) {
             for (const mutation of mutations) {
                 if (mutation.addedNodes.length > 0) {
@@ -50,7 +51,7 @@ class MainApp {
         }
     }
 
-    handleAddedNode = (node) => {
+    handleAddedNode(node) {
         if (node instanceof HTMLElement) {
             if (node.matches(SELECTORS.div.activity)) {
                 this.ac.removeEntry(node);
@@ -60,7 +61,7 @@ class MainApp {
         }
     }
 
-    loadMoreOrReset = () => {
+    loadMoreOrReset() {
         if (this.ac.currentLoadCount < this.config.targetLoadCount && this.ui.userPressed) {
             this.ui.clickLoadMore();
         } else {
@@ -69,7 +70,7 @@ class MainApp {
         }
     }
 
-    isAllowedUrl = () => {
+    isAllowedUrl() {
         const allowedPatterns = Object.keys(this.URLS).filter(pattern => this.config.runOn[pattern]);
 
         return allowedPatterns.some(pattern => {
@@ -78,9 +79,9 @@ class MainApp {
         });
     }
 
-    initializeObserver = () => {
-        this.observer = new MutationObserver(this.observeMutations);
-        this.observer.observe(document.body, { childList: true, subtree: true });
+    initializeObserver() {
+        this.observer = new MutationObserver(this.observeMutations.bind(this));
+        this.observer.observe(document.body, {childList: true, subtree: true});
     }
 
     URLS = {
