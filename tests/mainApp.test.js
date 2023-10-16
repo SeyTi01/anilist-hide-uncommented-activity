@@ -17,7 +17,12 @@ describe('MainApp', () => {
             resetState: () => {}
         };
         uiHandler = { setLoadMore: () => {}, clickLoadMore: () => {}, userPressed: true, resetState: () => {} };
-        mainApp = new MainApp(activityHandler, uiHandler);
+
+        const testConfig = {
+            targetLoadCount: 10,
+        };
+
+        mainApp = new MainApp(activityHandler, uiHandler, testConfig);
     });
 
     describe('observeMutations', () => {
@@ -92,9 +97,36 @@ describe('MainApp', () => {
     });
 
     describe('loadMoreOrReset', () => {
+        it('should call ui.clickLoadMore if currentLoadCount < targetLoadCount and userPressed is true', () => {
+            mainApp.ac.currentLoadCount = 5;
+            uiHandler.userPressed = true;
+
+            const clickLoadMoreSpy = sinon.spy(mainApp.ui, 'clickLoadMore');
+
+            mainApp.loadMoreOrReset();
+
+            expect(clickLoadMoreSpy.calledOnce).to.be.true;
+
+            sinon.restore();
+        });
+
+        it('should call ac.resetState and ui.resetState if currentLoadCount is equal to targetLoadCount and userPressed is true', () => {
+            activityHandler.currentLoadCount = 10;
+            uiHandler.userPressed = true;
+
+            const resetStateSpy = sinon.spy(mainApp.ac, 'resetState');
+            const uiResetStateSpy = sinon.spy(mainApp.ui, 'resetState');
+
+            mainApp.loadMoreOrReset();
+
+            expect(resetStateSpy.calledOnce).to.be.true;
+            expect(uiResetStateSpy.calledOnce).to.be.true;
+
+            sinon.restore();
+        });
+
         it('should call ac.resetState and ui.resetState if currentLoadCount >= config.targetLoadCount or userPressed is false', () => {
-            uiHandler.currentLoadCount = 10;
-            uiHandler.targetLoadCount = 10;
+            activityHandler.currentLoadCount = 10;
             uiHandler.userPressed = false;
 
             const resetStateMock = sinon.stub();
@@ -105,6 +137,21 @@ describe('MainApp', () => {
             mainApp.loadMoreOrReset();
 
             expect(resetStateMock.calledTwice).to.be.true;
+
+            sinon.restore();
+        });
+
+        it('should call ac.resetState and ui.resetState if userPressed is false, regardless of currentLoadCount', () => {
+            activityHandler.currentLoadCount = 5;
+            uiHandler.userPressed = false;
+
+            const resetStateSpy = sinon.spy(mainApp.ac, 'resetState');
+            const uiResetStateSpy = sinon.spy(mainApp.ui, 'resetState');
+
+            mainApp.loadMoreOrReset();
+
+            expect(resetStateSpy.calledOnce).to.be.true;
+            expect(uiResetStateSpy.calledOnce).to.be.true;
 
             sinon.restore();
         });
