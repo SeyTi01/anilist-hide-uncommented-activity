@@ -169,49 +169,47 @@ class ActivityHandler {
 
 class UIHandler {
 
-    constructor() {
-        this.userPressed = true;
-        this.cancel = null;
-        this.loadMore = null;
-    }
+    userPressed = true;
+    cancel = null;
+    loadMore = null;
 
-    setLoadMore(button) {
+    setLoadMore = (button) => {
         this.loadMore = button;
         this.loadMore.addEventListener('click', () => {
             this.userPressed = true;
             this.simulateDomEvents();
             this.showCancel();
         });
-    }
+    };
 
-    clickLoadMore() {
+    clickLoadMore = () => {
         if (this.loadMore) {
             this.loadMore.click();
             this.loadMore = null;
         }
-    }
+    };
 
-    resetState() {
+    resetState = () => {
         this.userPressed = false;
         this.hideCancel();
-    }
+    };
 
-    showCancel() {
+    showCancel = () => {
         if (!this.cancel) {
             this.createCancel();
         } else {
             this.cancel.style.display = 'block';
         }
-    }
+    };
 
-    hideCancel() {
+    hideCancel = () => {
         if (this.cancel) {
             this.cancel.style.display = 'none';
         }
-    }
+    };
 
-    simulateDomEvents() {
-        const domEvent = new Event('scroll', {bubbles: true});
+    simulateDomEvents = () => {
+        const domEvent = new Event('scroll', { bubbles: true });
         const intervalId = setInterval(() => {
             if (this.userPressed) {
                 window.dispatchEvent(domEvent);
@@ -219,9 +217,9 @@ class UIHandler {
                 clearInterval(intervalId);
             }
         }, 100);
-    }
+    };
 
-    createCancel() {
+    createCancel = () => {
         const BUTTON_STYLE = `
             position: fixed;
             bottom: 10px;
@@ -247,7 +245,7 @@ class UIHandler {
         });
 
         document.body.appendChild(this.cancel);
-    }
+    };
 }
 
 class ConfigValidator {
