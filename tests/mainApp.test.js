@@ -17,7 +17,12 @@ describe('MainApp', () => {
             removeEntry: () => {},
             resetState: () => {}
         };
-        uiHandler = { setLoadMore: () => {}, clickLoadMore: () => {}, userPressed: true, resetState: () => {} };
+
+        uiHandler = {
+            setLoadMore: () => {},
+            clickLoadMore: () => {},
+            userPressed: true,
+            resetState: () => {} };
 
         const testConfig = {
             targetLoadCount: 10,
