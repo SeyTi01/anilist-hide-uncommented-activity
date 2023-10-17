@@ -30,8 +30,7 @@ describe('ActivityHandler', () => {
             const { htmlPath, configOptions, expectedRemove } = testCase;
             const nodeType = htmlPath.split('-')[1].split('.')[0];
 
-            it(`should ${expectedRemove ? '' : 'not '}remove ${nodeType} 
-            node with config: ${JSON.stringify(configOptions)}`,
+            it(`should ${expectedRemove ? '' : 'not '}remove ${nodeType} node with config: ${JSON.stringify(configOptions)}`,
                 function (done) {
                     fs.readFile(htmlPath, 'utf8',
                         function (err, htmlContent) {
