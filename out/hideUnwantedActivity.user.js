@@ -8,7 +8,6 @@
 // @grant        none
 // @license      MIT
 // ==/UserScript==
-// noinspection JSPrimitiveTypeWrapperUsage
 
 const config = {
     targetLoadCount: 2, // Minimum number of activities to show per click on the "Load More" button
@@ -80,7 +79,7 @@ class MainApp {
 
     initializeObserver = () => {
         this.observer = new MutationObserver(this.observeMutations);
-        this.observer.observe(document.body, { childList: true, subtree: true });
+        this.observer.observe(document.body, {childList: true, subtree: true});
     }
 
     URLS = {
@@ -120,8 +119,7 @@ class ActivityHandler {
 
     shouldRemoveNode = (node) => {
         const checkCondition = (conditionName, predicate) => {
-            const { remove, linkedConditions } = this.config;
-            // noinspection JSUnresolvedReference
+            const {remove, linkedConditions} = this.config;
             return remove[conditionName] && predicate(node)
                 && !linkedConditions.flat().includes(conditionName);
         };
@@ -131,7 +129,7 @@ class ActivityHandler {
     }
 
     shouldRemoveLinkedConditions = (node) => {
-        const { linkedConditions } = this.config;
+        const {linkedConditions} = this.config;
         return linkedConditions.some(link => link.length > 0)
             && linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
     }
@@ -158,11 +156,10 @@ class ActivityHandler {
     }
 
     shouldRemoveCustomStrings = (node) => {
-        const { remove: { customStrings, caseSensitive } } = this.config;
-        return customStrings.some(customString =>
-            caseSensitive
-                ? node.textContent.includes(customString)
-                : node.textContent.toLowerCase().includes(customString.toLowerCase())
+        const {remove: {customStrings, caseSensitive}} = this.config;
+        return customStrings.some(customString => caseSensitive
+            ? node.textContent.includes(customString)
+            : node.textContent.toLowerCase().includes(customString.toLowerCase())
         );
     }
 }
@@ -209,7 +206,7 @@ class UIHandler {
     };
 
     simulateDomEvents = () => {
-        const domEvent = new Event('scroll', { bubbles: true });
+        const domEvent = new Event('scroll', {bubbles: true});
         const intervalId = setInterval(() => {
             if (this.userPressed) {
                 window.dispatchEvent(domEvent);
