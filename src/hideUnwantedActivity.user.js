@@ -20,7 +20,7 @@ const config = {
         videos: false, // Remove activities containing videos
         containsStrings: [], // Remove activities containing user defined strings
         notContainsStrings: [], // Remove activities not containing user defined strings
-        caseSensitive: false, // Whether string removal should be case-sensitive
+        caseSensitive: false, // Whether string-based removal should be case-sensitive
     },
     runOn: {
         home: true, // Run the script on the home feed
