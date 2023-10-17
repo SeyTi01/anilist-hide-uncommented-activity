@@ -30,7 +30,7 @@ const config = {
         profile: false, // Run the script on user profile feeds
     },
     linkedConditions: [
-        [] // Groups of conditions to be checked together (linked conditions are always considered 'true')
+        [], // Groups of conditions to be checked together (linked conditions are always considered 'true')
     ],
 };
 
@@ -83,7 +83,7 @@ class MainApp {
 
     initializeObserver = () => {
         this.observer = new MutationObserver(this.observeMutations);
-        this.observer.observe(document.body, {childList: true, subtree: true});
+        this.observer.observe(document.body, { childList: true, subtree: true });
     }
 
     URLS = {
@@ -107,7 +107,7 @@ class ActivityHandler {
         ['images', node => this.shouldRemoveImage(node)],
         ['videos', node => this.shouldRemoveVideo(node)],
         ['containsStrings', node => this.shouldRemoveContainsStrings(node)],
-        ['notContainsStrings', node => this.shouldRemoveNotContainsStrings(node)]
+        ['notContainsStrings', node => this.shouldRemoveNotContainsStrings(node)],
     ]);
 
     removeEntry = (node) => {
@@ -131,13 +131,13 @@ class ActivityHandler {
     }
 
     shouldRemoveLinkedConditions = (node) => {
-        const {linkedConditions} = this.config;
+        const { linkedConditions } = this.config;
         return linkedConditions.some(link => link.length > 0)
             && linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
     }
 
     shouldRemoveConditions = (conditionName, predicate, node) => {
-        const {remove, linkedConditions} = this.config;
+        const { remove, linkedConditions } = this.config;
         return remove[conditionName] && predicate(node) && !linkedConditions.flat().includes(conditionName);
     }
 
@@ -163,19 +163,19 @@ class ActivityHandler {
     }
 
     shouldRemoveContainsStrings = (node) => {
-        const {remove: {containsStrings}, options: {caseSensitive}} = this.config;
+        const { remove: { containsStrings }, options: { caseSensitive } } = this.config;
         return this.containsString(node.textContent, containsStrings, caseSensitive, true);
     }
 
     shouldRemoveNotContainsStrings = (node) => {
-        const {remove: {notContainsStrings}, options: {caseSensitive}} = this.config;
+        const { remove: { notContainsStrings }, options: { caseSensitive } } = this.config;
         return this.containsString(node.textContent, notContainsStrings, caseSensitive, false);
     }
 
     containsString(nodeText, strings, caseSensitive, inclusion) {
         return strings.some(str => caseSensitive
             ? inclusion ? nodeText.includes(str) : !nodeText.includes(str)
-            : inclusion ? nodeText.toLowerCase().includes(str.toLowerCase()) : !nodeText.toLowerCase().includes(str.toLowerCase())
+            : inclusion ? nodeText.toLowerCase().includes(str.toLowerCase()) : !nodeText.toLowerCase().includes(str.toLowerCase()),
         );
     }
 }
@@ -222,7 +222,7 @@ class UIHandler {
     };
 
     simulateDomEvents = () => {
-        const domEvent = new Event('scroll', {bubbles: true});
+        const domEvent = new Event('scroll', { bubbles: true });
         const intervalId = setInterval(() => {
             if (this.userPressed) {
                 window.dispatchEvent(domEvent);
@@ -317,7 +317,7 @@ const SELECTORS = {
     class: {
         image: 'img',
         video: 'video',
-    }
+    },
 };
 
 function main() {
@@ -337,4 +337,4 @@ if (require.main === module) {
     main();
 }
 
-module.exports = {MainApp, ActivityHandler, UIHandler, config, SELECTORS};
+module.exports = { MainApp, ActivityHandler, UIHandler, config, SELECTORS };
