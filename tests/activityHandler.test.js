@@ -124,6 +124,8 @@ describe('ActivityHandler', () => {
         { htmlPath: CONTAINS_STRING1, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: true },
         { htmlPath: CONTAINS_STRING1, configOptions: { remove: { containsStrings: ['string1'] }, options: { caseSensitive: true } }, expectedRemove: false },
         { htmlPath: CONTAINS_STRING1, configOptions: { remove: { containsStrings: ['String1'] }, options: { caseSensitive: true } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING2, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: true },
         { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
 
         // Tests for notContainsStrings
@@ -136,6 +138,8 @@ describe('ActivityHandler', () => {
         { htmlPath: CONTAINS_STRING1, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: false },
         { htmlPath: CONTAINS_STRING1, configOptions: { remove: { notContainsStrings: ['string1'] }, options: { caseSensitive: true } }, expectedRemove: true },
         { htmlPath: CONTAINS_STRING1, configOptions: { remove: { notContainsStrings: ['String1'] }, options: { caseSensitive: true } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING2, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: false },
         { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
 
         // Tests for linkedConditions
