@@ -12,7 +12,7 @@ const MESSAGE = `${TEST_DATA_PATH}activity-message.html`;
 const IMAGES = `${TEST_DATA_PATH}activity-images.html`;
 const VIDEOS = `${TEST_DATA_PATH}activity-videos.html`;
 const VIDEOS_YOUTUBE = `${TEST_DATA_PATH}activity-videosYoutube.html`;
-const CONTAINS_STRINGS = `${TEST_DATA_PATH}activity-containsStrings.html`;
+const CONTAINS_STRINGS = `${TEST_DATA_PATH}activity-containsStrings.html`
 const LINKED_CONDITIONS = `${TEST_DATA_PATH}activity-linkedConditions.html`;
 
 describe('ActivityHandler', () => {
@@ -28,6 +28,7 @@ describe('ActivityHandler', () => {
                 images: false,
                 videos: false,
                 containsStrings: [],
+                notContainsStrings: [],
                 caseSensitive: false,
             },
             linkedConditions: [[]]
@@ -110,16 +111,28 @@ describe('ActivityHandler', () => {
         { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { videos: true } }, expectedRemove: false },
 
         // Tests for containsStrings
-        { htmlPath: UNLIKED, configOptions: { remove: { containsStrings: ['contains string'] } }, expectedRemove: false },
-        { htmlPath: UNCOMMENTED, configOptions: { remove: { containsStrings: ['contains string'] } }, expectedRemove: false },
-        { htmlPath: TEXT, configOptions: { remove: { containsStrings: ['contains string'] } }, expectedRemove: false },
-        { htmlPath: MESSAGE, configOptions: { remove: { containsStrings: ['contains string'] } }, expectedRemove: false },
-        { htmlPath: IMAGES, configOptions: { remove: { containsStrings: ['contains string'] } }, expectedRemove: false },
-        { htmlPath: VIDEOS, configOptions: { remove: { containsStrings: ['contains string'] } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { containsStrings: ['contains string'] } }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { containsStrings: ['contains string'], caseSensitive: true } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { containsStrings: ['Contains String'], caseSensitive: true } }, expectedRemove: true },
-        { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { containsStrings: ['contains string'] } }, expectedRemove: false },
+        { htmlPath: UNLIKED, configOptions: { remove: { containsStrings: ['string'] } }, expectedRemove: false },
+        { htmlPath: UNCOMMENTED, configOptions: { remove: { containsStrings: ['string'] } }, expectedRemove: false },
+        { htmlPath: TEXT, configOptions: { remove: { containsStrings: ['string'] } }, expectedRemove: false },
+        { htmlPath: MESSAGE, configOptions: { remove: { containsStrings: ['string'] } }, expectedRemove: false },
+        { htmlPath: IMAGES, configOptions: { remove: { containsStrings: ['string'] } }, expectedRemove: false },
+        { htmlPath: VIDEOS, configOptions: { remove: { containsStrings: ['string'] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { containsStrings: ['string'] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { containsStrings: ['string'], caseSensitive: true } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { containsStrings: ['String'], caseSensitive: true } }, expectedRemove: true },
+        { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { containsStrings: ['string'] } }, expectedRemove: false },
+
+        // Tests for notContainsStrings
+        { htmlPath: UNLIKED, configOptions: { remove: { notContainsStrings: ['string'] } }, expectedRemove: true },
+        { htmlPath: UNCOMMENTED, configOptions: { remove: { notContainsStrings: ['string'] } }, expectedRemove: true },
+        { htmlPath: TEXT, configOptions: { remove: { notContainsStrings: ['string'] } }, expectedRemove: true },
+        { htmlPath: MESSAGE, configOptions: { remove: { notContainsStrings: ['string'] } }, expectedRemove: true },
+        { htmlPath: IMAGES, configOptions: { remove: { notContainsStrings: ['string'] } }, expectedRemove: true },
+        { htmlPath: VIDEOS, configOptions: { remove: { notContainsStrings: ['string'] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { notContainsStrings: ['string'] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { notContainsStrings: ['string'], caseSensitive: true } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { notContainsStrings: ['String'], caseSensitive: true } }, expectedRemove: false },
+        { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { notContainsStrings: ['string'] } }, expectedRemove: true },
 
         // Tests for linkedConditions
         { htmlPath: UNLIKED, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
@@ -130,6 +143,7 @@ describe('ActivityHandler', () => {
         { htmlPath: VIDEOS, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
         { htmlPath: CONTAINS_STRINGS, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
         { htmlPath: LINKED_CONDITIONS, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: true },
+
     ];
 
     runTestCases(testCases);
