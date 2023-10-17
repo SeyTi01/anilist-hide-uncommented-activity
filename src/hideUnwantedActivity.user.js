@@ -18,7 +18,7 @@ const config = {
         text: false, // Remove activities containing only text
         images: false, // Remove activities containing images
         videos: false, // Remove activities containing videos
-        customStrings: [], // Remove activities with user-defined strings
+        containsStrings: [], // Remove activities with user-defined strings
         caseSensitive: false, // Whether string removal should be case-sensitive
     },
     runOn: {
@@ -103,7 +103,7 @@ class ActivityHandler {
         ['text', node => this.shouldRemoveText(node)],
         ['images', node => this.shouldRemoveImage(node)],
         ['videos', node => this.shouldRemoveVideo(node)],
-        ['customStrings', node => this.shouldRemoveCustomStrings(node)]
+        ['containsStrings', node => this.shouldRemoveContainsStrings(node)]
     ]);
 
     removeEntry = (node) => {
@@ -157,11 +157,11 @@ class ActivityHandler {
         return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
     }
 
-    shouldRemoveCustomStrings = (node) => {
-        const { remove: { customStrings, caseSensitive } } = this.config;
-        return customStrings.some(customString => caseSensitive
-                ? node.textContent.includes(customString)
-                : node.textContent.toLowerCase().includes(customString.toLowerCase())
+    shouldRemoveContainsStrings = (node) => {
+        const { remove: { containsStrings, caseSensitive } } = this.config;
+        return containsStrings.some(containsString => caseSensitive
+                ? node.textContent.includes(containsString)
+                : node.textContent.toLowerCase().includes(containsString.toLowerCase())
         );
     }
 }
@@ -259,8 +259,8 @@ class ConfigValidator {
             typeof config.runOn.home !== 'boolean' && 'runOn.home must be a boolean',
             typeof config.runOn.profile !== 'boolean' && 'runOn.profile must be a boolean',
             typeof config.runOn.social !== 'boolean' && 'runOn.social must be a boolean',
-            !Array.isArray(config.remove.customStrings) && 'remove.customStrings must be an array',
-            config.remove.customStrings.some((str) => typeof str !== 'string') && 'remove.customStrings must only contain strings',
+            !Array.isArray(config.remove.containsStrings) && 'remove.containsStrings must be an array',
+            config.remove.containsStrings.some((str) => typeof str !== 'string') && 'remove.containsStrings must only contain strings',
             typeof config.remove.caseSensitive !== 'boolean' && 'remove.caseSensitive must be a boolean',
             !Array.isArray(config.linkedConditions) && 'linkedConditions must be an array',
             config.linkedConditions.some((conditionGroup) => {
@@ -268,9 +268,9 @@ class ConfigValidator {
                 return conditionGroup.some((condition) => {
                     if (typeof condition !== 'string' && !Array.isArray(condition)) return true;
                     if (Array.isArray(condition)) {
-                        return condition.some((item) => !['uncommented', 'unliked', 'images', 'videos', 'customStrings'].includes(item));
+                        return condition.some((item) => !['uncommented', 'unliked', 'images', 'videos', 'containsStrings'].includes(item));
                     }
-                    return !['uncommented', 'unliked', 'images', 'videos', 'customStrings'].includes(condition);
+                    return !['uncommented', 'unliked', 'images', 'videos', 'containsStrings'].includes(condition);
                 });
             }) && 'linkedConditions must only contain arrays with valid strings',
         ].filter(Boolean);
