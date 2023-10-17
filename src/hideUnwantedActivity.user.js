@@ -18,7 +18,8 @@ const config = {
         text: false, // Remove activities containing only text
         images: false, // Remove activities containing images
         videos: false, // Remove activities containing videos
-        containsStrings: [], // Remove activities with user-defined strings
+        containsStrings: [], // Remove activities containing user defined strings
+        notContainsStrings: [], // Remove activities not containing user defined strings
         caseSensitive: false, // Whether string removal should be case-sensitive
     },
     runOn: {
