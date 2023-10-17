@@ -81,7 +81,7 @@ class MainApp {
 
     initializeObserver = () => {
         this.observer = new MutationObserver(this.observeMutations);
-        this.observer.observe(document.body, { childList: true, subtree: true });
+        this.observer.observe(document.body, {childList: true, subtree: true});
     }
 
     URLS = {
@@ -122,7 +122,7 @@ class ActivityHandler {
 
     shouldRemoveNode = (node) => {
         const checkCondition = (conditionName, predicate) => {
-            const { remove, linkedConditions } = this.config;
+            const {remove, linkedConditions} = this.config;
             // noinspection JSUnresolvedReference
             return remove[conditionName] && predicate(node)
                 && !linkedConditions.flat().includes(conditionName);
@@ -133,7 +133,7 @@ class ActivityHandler {
     }
 
     shouldRemoveLinkedConditions = (node) => {
-        const { linkedConditions } = this.config;
+        const {linkedConditions} = this.config;
         return linkedConditions.some(link => link.length > 0)
             && linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
     }
@@ -160,15 +160,15 @@ class ActivityHandler {
     }
 
     shouldRemoveContainsStrings = (node) => {
-        const { remove: { containsStrings, caseSensitive } } = this.config;
+        const {remove: {containsStrings, caseSensitive}} = this.config;
         return containsStrings.some(containsString => caseSensitive
-                ? node.textContent.includes(containsString)
-                : node.textContent.toLowerCase().includes(containsString.toLowerCase())
+            ? node.textContent.includes(containsString)
+            : node.textContent.toLowerCase().includes(containsString.toLowerCase())
         );
     }
 
     shouldRemoveNotContainsStrings = (node) => {
-        const { remove: { notContainsStrings, caseSensitive } } = this.config;
+        const {remove: {notContainsStrings, caseSensitive}} = this.config;
         return notContainsStrings.some(notContainsString => caseSensitive
             ? !node.textContent.includes(notContainsString)
             : !node.textContent.toLowerCase().includes(notContainsString.toLowerCase())
@@ -218,7 +218,7 @@ class UIHandler {
     };
 
     simulateDomEvents = () => {
-        const domEvent = new Event('scroll', { bubbles: true });
+        const domEvent = new Event('scroll', {bubbles: true});
         const intervalId = setInterval(() => {
             if (this.userPressed) {
                 window.dispatchEvent(domEvent);
@@ -333,4 +333,4 @@ if (require.main === module) {
     main();
 }
 
-module.exports = { MainApp, ActivityHandler, UIHandler, config, SELECTORS };
+module.exports = {MainApp, ActivityHandler, UIHandler, config, SELECTORS};
