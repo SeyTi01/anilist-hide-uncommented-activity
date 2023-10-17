@@ -159,8 +159,7 @@ class ActivityHandler {
 
     shouldRemoveCustomStrings = (node) => {
         const { remove: { customStrings, caseSensitive } } = this.config;
-        return customStrings.some(customString =>
-            caseSensitive
+        return customStrings.some(customString => caseSensitive
                 ? node.textContent.includes(customString)
                 : node.textContent.toLowerCase().includes(customString.toLowerCase())
         );
