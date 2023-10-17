@@ -161,18 +161,19 @@ class ActivityHandler {
     }
 
     shouldRemoveContainsStrings = (node) => {
-        const {remove: {containsStrings, caseSensitive}} = this.config;
-        return containsStrings.some(containsString => caseSensitive
-            ? node.textContent.includes(containsString)
-            : node.textContent.toLowerCase().includes(containsString.toLowerCase())
-        );
+        const { remove: { containsStrings, caseSensitive } } = this.config;
+        return this.containsString(node.textContent, containsStrings, caseSensitive, true);
     }
 
     shouldRemoveNotContainsStrings = (node) => {
-        const {remove: {notContainsStrings, caseSensitive}} = this.config;
-        return notContainsStrings.some(notContainsString => caseSensitive
-            ? !node.textContent.includes(notContainsString)
-            : !node.textContent.toLowerCase().includes(notContainsString.toLowerCase())
+        const { remove: { notContainsStrings, caseSensitive } } = this.config;
+        return this.containsString(node.textContent, notContainsStrings, caseSensitive, false);
+    }
+
+    containsString(nodeText, strings, caseSensitive, inclusion) {
+        return strings.some(str => caseSensitive
+            ? inclusion ? nodeText.includes(str) : !nodeText.includes(str)
+            : inclusion ? nodeText.toLowerCase().includes(str.toLowerCase()) : !nodeText.toLowerCase().includes(str.toLowerCase())
         );
     }
 }
