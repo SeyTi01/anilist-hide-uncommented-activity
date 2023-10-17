@@ -121,21 +121,22 @@ class ActivityHandler {
     }
 
     shouldRemoveNode = (node) => {
-        const checkCondition = (conditionName, predicate) => {
-            const {remove, linkedConditions} = this.config;
-            // noinspection JSUnresolvedReference
-            return remove[conditionName] && predicate(node)
-                && !linkedConditions.flat().includes(conditionName);
-        };
+        const shouldRemoveLinkedConditions = this.shouldRemoveLinkedConditions(node);
+        const shouldRemoveByConditions = Array.from(this.conditionsMap.entries())
+            .some(([name, predicate]) => this.shouldRemoveConditions(name, predicate, node));
 
-        return this.shouldRemoveLinkedConditions(node)
-            || Array.from(this.conditionsMap.entries()).some(([name, predicate]) => checkCondition(name, predicate));
+        return shouldRemoveLinkedConditions || shouldRemoveByConditions;
     }
 
     shouldRemoveLinkedConditions = (node) => {
         const {linkedConditions} = this.config;
-        return linkedConditions.some(link => link.length > 0)
-            && linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
+        return linkedConditions.some(link => link.length > 0) &&
+            linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
+    }
+
+    shouldRemoveConditions = (conditionName, predicate, node) => {
+        const {remove, linkedConditions} = this.config;
+        return remove[conditionName] && predicate(node) && !linkedConditions.flat().includes(conditionName);
     }
 
     shouldRemoveUncommented = (node) => {
