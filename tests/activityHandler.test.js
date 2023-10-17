@@ -20,9 +20,13 @@ const LINKED_CONDITIONS = `${TEST_DATA_PATH}activity-linkedConditions.html`;
 describe('ActivityHandler', () => {
     let activityHandler;
 
-    beforeEach(function () {
+    beforeEach(function() {
         const config = { remove: {}, options: {}, linkedConditions: [[]] };
         activityHandler = new ActivityHandler(config);
+    });
+
+    afterEach(function() {
+        restore();
     });
 
     function runTestCases(testCases) {
@@ -31,9 +35,9 @@ describe('ActivityHandler', () => {
             const nodeType = htmlPath.split('-')[1].split('.')[0];
 
             it(`should ${expectedRemove ? '' : 'not '}remove ${nodeType} node with config: ${JSON.stringify(configOptions)}`,
-                function (done) {
+                function(done) {
                     fs.readFile(htmlPath, 'utf8',
-                        function (err, htmlContent) {
+                        function(err, htmlContent) {
                             if (err) throw err;
 
                             Object.assign(activityHandler.config, configOptions);
@@ -48,11 +52,6 @@ describe('ActivityHandler', () => {
                 });
         });
     }
-
-    afterEach(function () {
-        activityHandler.resetState();
-        restore();
-    });
 
     const testCases = [
         // Tests for unliked
