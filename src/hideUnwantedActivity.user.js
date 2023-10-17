@@ -104,7 +104,8 @@ class ActivityHandler {
         ['text', node => this.shouldRemoveText(node)],
         ['images', node => this.shouldRemoveImage(node)],
         ['videos', node => this.shouldRemoveVideo(node)],
-        ['containsStrings', node => this.shouldRemoveContainsStrings(node)]
+        ['containsStrings', node => this.shouldRemoveContainsStrings(node)],
+        ['notContainsStrings', node => this.shouldRemoveNotContainsStrings(node)]
     ]);
 
     removeEntry = (node) => {
@@ -164,6 +165,14 @@ class ActivityHandler {
                 ? node.textContent.includes(containsString)
                 : node.textContent.toLowerCase().includes(containsString.toLowerCase())
         );
+    }
+
+    shouldRemoveNotContainsStrings = (node) => {
+        const { remove: { notContainsStrings, caseSensitive } } = this.config;
+        return notContainsStrings.some(notContainsString => {
+            const text = caseSensitive ? node.textContent : node.textContent.toLowerCase();
+            return !text.includes(caseSensitive ? notContainsString : notContainsString.toLowerCase());
+        });
     }
 }
 
