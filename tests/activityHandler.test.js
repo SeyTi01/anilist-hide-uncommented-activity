@@ -1,7 +1,7 @@
 const fs = require('fs');
 const jsdom = require('jsdom');
 const { expect } = require('chai');
-const { ActivityHandler, config } = require('../src/hideUnwantedActivity.user');
+const { ActivityHandler } = require('../src/hideUnwantedActivity.user');
 const { restore, spy } = require("sinon");
 
 const TEST_DATA_PATH = './tests/data/';
@@ -12,8 +12,8 @@ const MESSAGE = `${TEST_DATA_PATH}activity-message.html`;
 const IMAGES = `${TEST_DATA_PATH}activity-images.html`;
 const VIDEOS = `${TEST_DATA_PATH}activity-videos.html`;
 const VIDEOS_YOUTUBE = `${TEST_DATA_PATH}activity-videosYoutube.html`;
-const CONTAINS_STRING1 = `${TEST_DATA_PATH}activity-containsString1.html`
-const CONTAINS_STRING2 = `${TEST_DATA_PATH}activity-containsString2.html`
+const CONTAINS_STRING_1 = `${TEST_DATA_PATH}activity-containsString1.html`
+const CONTAINS_STRING_2 = `${TEST_DATA_PATH}activity-containsString2.html`
 const CONTAINS_STRINGS = `${TEST_DATA_PATH}activity-containsStrings.html`
 const LINKED_CONDITIONS = `${TEST_DATA_PATH}activity-linkedConditions.html`;
 
@@ -21,22 +21,8 @@ describe('ActivityHandler', () => {
     let activityHandler;
 
     beforeEach(function () {
-        activityHandler = new ActivityHandler();
-        Object.assign(config, {
-            remove: {
-                uncommented: false,
-                unliked: false,
-                text: false,
-                images: false,
-                videos: false,
-                containsStrings: [],
-                notContainsStrings: [],
-            },
-            options: {
-                caseSensitive: false,
-            },
-            linkedConditions: [[]]
-        });
+        const config = { remove: {}, options: {}, linkedConditions: [[]] };
+        activityHandler = new ActivityHandler(config);
     });
 
     function runTestCases(testCases) {
@@ -44,23 +30,30 @@ describe('ActivityHandler', () => {
             const { htmlPath, configOptions, expectedRemove } = testCase;
             const nodeType = htmlPath.split('-')[1].split('.')[0];
 
-            it(`should ${expectedRemove ? '' : 'not '}remove ${nodeType} node with config: ${JSON.stringify(configOptions)}`, function (done) {
-                fs.readFile(htmlPath, 'utf8', function (err, htmlContent) {
-                    if (err) throw err;
+            it(`should ${expectedRemove ? '' : 'not '}remove ${nodeType} 
+            node with config: ${JSON.stringify(configOptions)}`,
+                function (done) {
+                    fs.readFile(htmlPath, 'utf8',
+                        function (err, htmlContent) {
+                            if (err) throw err;
 
-                    const mergedConfig = Object.assign({}, config, configOptions);
-                    Object.assign(config, mergedConfig);
-                    const dom = new jsdom.JSDOM(htmlContent);
-                    const node = dom.window.document.body.firstChild;
-                    const removeSpy = spy(node, 'remove');
-                    activityHandler.removeEntry(node);
+                            Object.assign(activityHandler.config, configOptions);
+                            const dom = new jsdom.JSDOM(htmlContent);
+                            const node = dom.window.document.body.firstChild;
+                            const removeSpy = spy(node, 'remove');
+                            activityHandler.removeEntry(node);
 
-                    expect(removeSpy.calledOnce).to.equal(expectedRemove);
-                    done();
+                            expect(removeSpy.calledOnce).to.equal(expectedRemove);
+                            done();
+                        });
                 });
-            });
         });
     }
+
+    afterEach(function () {
+        activityHandler.resetState();
+        restore();
+    });
 
     const testCases = [
         // Tests for unliked
@@ -70,7 +63,7 @@ describe('ActivityHandler', () => {
         { htmlPath: MESSAGE, configOptions: { remove: { unliked: true } }, expectedRemove: false },
         { htmlPath: IMAGES, configOptions: { remove: { unliked: true } }, expectedRemove: false },
         { htmlPath: VIDEOS, configOptions: { remove: { unliked: true } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING1, configOptions: { remove: { unliked: true } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { unliked: true } }, expectedRemove: false },
         { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { unliked: true } }, expectedRemove: true },
 
         // Tests for uncommented
@@ -80,7 +73,7 @@ describe('ActivityHandler', () => {
         { htmlPath: MESSAGE, configOptions: { remove: { uncommented: true } }, expectedRemove: false },
         { htmlPath: IMAGES, configOptions: { remove: { uncommented: true } }, expectedRemove: false },
         { htmlPath: VIDEOS, configOptions: { remove: { uncommented: true } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING1, configOptions: { remove: { uncommented: true } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { uncommented: true } }, expectedRemove: false },
         { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { uncommented: true } }, expectedRemove: false },
 
         // Tests for text
@@ -90,7 +83,7 @@ describe('ActivityHandler', () => {
         { htmlPath: MESSAGE, configOptions: { remove: { text: true } }, expectedRemove: true },
         { htmlPath: IMAGES, configOptions: { remove: { text: true } }, expectedRemove: false },
         { htmlPath: VIDEOS, configOptions: { remove: { text: true } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING1, configOptions: { remove: { text: true } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { text: true } }, expectedRemove: false },
         { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { text: true } }, expectedRemove: false },
 
         // Tests for images
@@ -100,7 +93,7 @@ describe('ActivityHandler', () => {
         { htmlPath: MESSAGE, configOptions: { remove: { images: true } }, expectedRemove: false },
         { htmlPath: IMAGES, configOptions: { remove: { images: true } }, expectedRemove: true },
         { htmlPath: VIDEOS, configOptions: { remove: { images: true } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING1, configOptions: { remove: { images: true } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { images: true } }, expectedRemove: false },
         { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { images: true } }, expectedRemove: true },
 
         // Tests for videos
@@ -111,7 +104,7 @@ describe('ActivityHandler', () => {
         { htmlPath: IMAGES, configOptions: { remove: { videos: true } }, expectedRemove: false },
         { htmlPath: VIDEOS, configOptions: { remove: { videos: true } }, expectedRemove: true },
         { htmlPath: VIDEOS_YOUTUBE, configOptions: { remove: { videos: true } }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRING1, configOptions: { remove: { videos: true } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { videos: true } }, expectedRemove: false },
         { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { videos: true } }, expectedRemove: false },
 
         // Tests for containsStrings
@@ -121,10 +114,10 @@ describe('ActivityHandler', () => {
         { htmlPath: MESSAGE, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
         { htmlPath: IMAGES, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
         { htmlPath: VIDEOS, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING1, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRING1, configOptions: { remove: { containsStrings: ['string1'] }, options: { caseSensitive: true } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING1, configOptions: { remove: { containsStrings: ['String1'] }, options: { caseSensitive: true } }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRING2, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: ['string1'] }, options: { caseSensitive: true } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: ['String1'] }, options: { caseSensitive: true } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
         { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: true },
         { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
 
@@ -135,10 +128,10 @@ describe('ActivityHandler', () => {
         { htmlPath: MESSAGE, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
         { htmlPath: IMAGES, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
         { htmlPath: VIDEOS, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRING1, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING1, configOptions: { remove: { notContainsStrings: ['string1'] }, options: { caseSensitive: true } }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRING1, configOptions: { remove: { notContainsStrings: ['String1'] }, options: { caseSensitive: true } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING2, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { notContainsStrings: ['string1'] }, options: { caseSensitive: true } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { notContainsStrings: ['String1'] }, options: { caseSensitive: true } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
         { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: false },
         { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
 
@@ -149,15 +142,10 @@ describe('ActivityHandler', () => {
         { htmlPath: MESSAGE, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
         { htmlPath: IMAGES, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
         { htmlPath: VIDEOS, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING1, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
         { htmlPath: LINKED_CONDITIONS, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: true },
 
     ];
 
     runTestCases(testCases);
-
-    afterEach(function () {
-        activityHandler.resetState();
-        restore();
-    });
 });
