@@ -8,7 +8,7 @@
 // @grant        none
 // @license      MIT
 // ==/UserScript==
-// noinspection JSPrimitiveTypeWrapperUsage
+// noinspection JSPrimitiveTypeWrapperUsage,JSUnusedGlobalSymbols
 
 const config = {
     targetLoadCount: 2, // Minimum number of activities to show per click on the "Load More" button
@@ -95,7 +95,7 @@ class MainApp {
 
 class ActivityHandler {
 
-    constructor() {
+    constructor(config) {
         this.currentLoadCount = 0;
         this.config = config;
     }
@@ -132,8 +132,8 @@ class ActivityHandler {
 
     shouldRemoveLinkedConditions = (node) => {
         const {linkedConditions} = this.config;
-        return linkedConditions.some(link => link.length > 0) &&
-            linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
+        return linkedConditions.some(link => link.length > 0)
+            && linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
     }
 
     shouldRemoveConditions = (conditionName, predicate, node) => {
