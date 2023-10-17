@@ -13,6 +13,8 @@ const IMAGES = `${TEST_DATA_PATH}activity-images.html`;
 const VIDEOS = `${TEST_DATA_PATH}activity-videos.html`;
 const VIDEOS_YOUTUBE = `${TEST_DATA_PATH}activity-videosYoutube.html`;
 const CONTAINS_STRING1 = `${TEST_DATA_PATH}activity-containsString1.html`
+const CONTAINS_STRING2 = `${TEST_DATA_PATH}activity-containsString2.html`
+const CONTAINS_STRINGS = `${TEST_DATA_PATH}activity-containsStrings.html`
 const LINKED_CONDITIONS = `${TEST_DATA_PATH}activity-linkedConditions.html`;
 
 describe('ActivityHandler', () => {
