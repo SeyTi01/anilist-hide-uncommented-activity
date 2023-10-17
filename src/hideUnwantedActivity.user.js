@@ -20,6 +20,8 @@ const config = {
         videos: false, // Remove activities containing videos
         containsStrings: [], // Remove activities containing user defined strings
         notContainsStrings: [], // Remove activities not containing user defined strings
+    },
+    options: {
         caseSensitive: false, // Whether string-based removal should be case-sensitive
     },
     runOn: {
@@ -161,12 +163,12 @@ class ActivityHandler {
     }
 
     shouldRemoveContainsStrings = (node) => {
-        const {remove: {containsStrings, caseSensitive}} = this.config;
+        const {remove: {containsStrings}, options: {caseSensitive}} = this.config;
         return this.containsString(node.textContent, containsStrings, caseSensitive, true);
     }
 
     shouldRemoveNotContainsStrings = (node) => {
-        const {remove: {notContainsStrings, caseSensitive}} = this.config;
+        const {remove: {notContainsStrings}, options: {caseSensitive}} = this.config;
         return this.containsString(node.textContent, notContainsStrings, caseSensitive, false);
     }
 
@@ -273,16 +275,16 @@ class ConfigValidator {
             typeof config.runOn.social !== 'boolean' && 'runOn.social must be a boolean',
             !Array.isArray(config.remove.containsStrings) && 'remove.containsStrings must be an array',
             config.remove.containsStrings.some((str) => typeof str !== 'string') && 'remove.containsStrings must only contain strings',
-            typeof config.remove.caseSensitive !== 'boolean' && 'remove.caseSensitive must be a boolean',
+            typeof config.options.caseSensitive !== 'boolean' && 'options.caseSensitive must be a boolean',
             !Array.isArray(config.linkedConditions) && 'linkedConditions must be an array',
             config.linkedConditions.some((conditionGroup) => {
                 if (!Array.isArray(conditionGroup)) return true;
                 return conditionGroup.some((condition) => {
                     if (typeof condition !== 'string' && !Array.isArray(condition)) return true;
                     if (Array.isArray(condition)) {
-                        return condition.some((item) => !['uncommented', 'unliked', 'images', 'videos', 'containsStrings'].includes(item));
+                        return condition.some((item) => !['uncommented', 'unliked', 'images', 'videos', 'containsStrings', 'notContainsStrings'].includes(item));
                     }
-                    return !['uncommented', 'unliked', 'images', 'videos', 'containsStrings'].includes(condition);
+                    return !['uncommented', 'unliked', 'images', 'videos', 'containsStrings', 'notContainsStrings'].includes(condition);
                 });
             }) && 'linkedConditions must only contain arrays with valid strings',
         ].filter(Boolean);
