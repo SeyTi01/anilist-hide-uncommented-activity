@@ -169,10 +169,10 @@ class ActivityHandler {
 
     shouldRemoveNotContainsStrings = (node) => {
         const { remove: { notContainsStrings, caseSensitive } } = this.config;
-        return notContainsStrings.some(notContainsString => {
-            const text = caseSensitive ? node.textContent : node.textContent.toLowerCase();
-            return !text.includes(caseSensitive ? notContainsString : notContainsString.toLowerCase());
-        });
+        return notContainsStrings.some(notContainsString => caseSensitive
+            ? !node.textContent.includes(notContainsString)
+            : !node.textContent.toLowerCase().includes(notContainsString.toLowerCase())
+        );
     }
 }
 
