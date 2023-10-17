@@ -3,6 +3,7 @@ const sinon = require('sinon');
 const { expect } = chai;
 const { UIHandler } = require('../src/hideUnwantedActivity.user');
 const { JSDOM } = require('jsdom');
+const { restore } = require('sinon');
 
 const jsdom = new JSDOM('<!doctype html><html lang="en"><body></body></html>');
 global.window = jsdom.window;
@@ -17,7 +18,7 @@ describe('UIHandler', () => {
     });
 
     afterEach(() => {
-        uiHandler = null;
+        restore();
     });
 
     it('should set loadMore button and handle click', () => {
@@ -39,6 +40,7 @@ describe('UIHandler', () => {
     });
 
     it('should reset the state', () => {
+        uiHandler.userPressed = true;
         uiHandler.resetState();
 
         expect(uiHandler.userPressed).to.be.false;
