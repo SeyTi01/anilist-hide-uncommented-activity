@@ -94,7 +94,6 @@ class MainApp {
 }
 
 class ActivityHandler {
-
     constructor(config) {
         this.currentLoadCount = 0;
         this.config = config;
@@ -181,10 +180,11 @@ class ActivityHandler {
 }
 
 class UIHandler {
-
-    userPressed = true;
-    cancel = null;
-    loadMore = null;
+    constructor() {
+        this.userPressed = true;
+        this.cancel = null;
+        this.loadMore = null;
+    }
 
     setLoadMore = (button) => {
         this.loadMore = button;
