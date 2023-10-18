@@ -360,21 +360,24 @@ class ConfigValidator {
             if (!Array.isArray(value)) {
                 this.errors.push(`${key} should be an array`);
             } else {
-                for (const element of value) {
-                    if (typeof element !== 'string' && !Array.isArray(element)) {
-                        this.errors.push(`${key} should only contain strings`);
-                        break;
-                    } else if (Array.isArray(element)) {
-                        for (const innerElement of element) {
-                            if (typeof innerElement !== 'string') {
-                                this.errors.push(`${key} should only contain strings`);
-                                break;
-                            }
-                        }
-                    }
+                if (!this.validateArrayContents(value)) {
+                    this.errors.push(`${key} should only contain strings`);
                 }
             }
         }
+    }
+
+    validateArrayContents(arr) {
+        for (const element of arr) {
+            if (Array.isArray(element)) {
+                if (!this.validateArrayContents(element)) {
+                    return false;
+                }
+            } else if (typeof element !== 'string') {
+                return false;
+            }
+        }
+        return true;
     }
 
     validateLinkedConditions(key) {
