@@ -179,30 +179,31 @@ class ActivityHandler {
     shouldRemoveStrings = (node, shouldContain) => {
         const { remove: { containsStrings, notContainsStrings }, options: { caseSensitive } } = this.config;
 
-        if (shouldContain) {
-            return containsStrings.some(strings => {
-                const checkString = (str) => this.containsString(node.textContent, str, caseSensitive, true);
-                return Array.isArray(strings) ? strings.every(checkString) : checkString(strings);
-            });
-        } else {
-            return !notContainsStrings.some(strings => {
-                const checkString = (str) => this.containsString(node.textContent, str, caseSensitive, true);
-                return Array.isArray(strings) ? strings.every(checkString) : checkString(strings);
-            });
-        }
-    }
+        const checkStrings = (strings) => {
+            const checkString = str => this.containsString(node.textContent, str, caseSensitive, true);
+            return Array.isArray(strings) ? strings.every(checkString) : checkString(strings);
+        };
 
-    containsString(nodeText, strings, caseSensitive, shouldContain) {
-        if (Array.isArray(strings)) {
-            return strings.some(str => {
-                const includesCheck = caseSensitive ? nodeText.includes(str) : nodeText.toLowerCase().includes(str.toLowerCase());
-                return shouldContain ? includesCheck : !includesCheck;
-            });
+        if (shouldContain) {
+            return containsStrings.some(strings => checkStrings(strings, true));
         } else {
-            const includesCheck = caseSensitive ? nodeText.includes(strings) : nodeText.toLowerCase().includes(strings.toLowerCase());
-            return shouldContain ? includesCheck : !includesCheck;
+            return !notContainsStrings.some(strings => checkStrings(strings, false));
         }
-    }
+    };
+
+    containsString = (nodeText, strings, caseSensitive, shouldContain) => {
+        const checkIncludes = str => {
+            const text = caseSensitive ? nodeText : nodeText.toLowerCase();
+            const string = caseSensitive ? str : str.toLowerCase();
+            return text.includes(string);
+        };
+
+        if (Array.isArray(strings)) {
+            return strings.some(str => shouldContain ? checkIncludes(str) : !checkIncludes(str));
+        } else {
+            return shouldContain ? checkIncludes(strings) : !checkIncludes(strings);
+        }
+    };
 }
 
 class UIHandler {
