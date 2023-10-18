@@ -130,29 +130,19 @@ class ActivityHandler {
     shouldRemoveLinkedConditions = (node) => {
         const { options: { linkedConditions } } = this.config;
 
-        if (!linkedConditions || !Array.isArray(linkedConditions)) {
+        if (!linkedConditions) {
             return false;
         }
 
         const conditionsArray = linkedConditions.map(link => (Array.isArray(link) ? link : [link]));
-
-        if (conditionsArray.length === 0) {
-            return false;
-        }
 
         return conditionsArray.some(link => link.length > 0)
             && conditionsArray.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
     }
 
     shouldRemoveConditions = (conditionName, predicate, node) => {
-        const { remove, options: linkedConditions } = this.config;
-        const conditionsArray = Array.isArray(linkedConditions) ? linkedConditions : [linkedConditions];
-
-        if (remove && conditionsArray && conditionsArray.length > 0) {
-            return remove[conditionName] && predicate(node);
-        } else {
-            return false;
-        }
+        const { remove } = this.config;
+        return remove[conditionName] && predicate(node);
     }
 
     shouldRemoveUncommented = (node) => {
@@ -180,8 +170,8 @@ class ActivityHandler {
         const { remove: { containsStrings, notContainsStrings }, options: { caseSensitive } } = this.config;
         const isEmptyArray = arr => Array.isArray(arr) && arr.length === 0;
 
-        if ((!notContainsStrings || isEmptyArray(notContainsStrings) || notContainsStrings.every(isEmptyArray))
-            && (!shouldContain || isEmptyArray(containsStrings) || containsStrings.every(isEmptyArray))) {
+        if ((!notContainsStrings || isEmptyArray(notContainsStrings))
+            && (!shouldContain || containsStrings.every(isEmptyArray))) {
             return false;
         }
 
