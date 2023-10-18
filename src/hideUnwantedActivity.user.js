@@ -197,12 +197,12 @@ class ActivityHandler {
             if (Array.isArray(notContainsStrings[0])) {
                 return !notContainsStrings.some(subArray =>
                     subArray.every(str =>
-                        this.containsString(node.textContent, str, caseSensitive, true)
-                    )
+                        this.containsString(node.textContent, str, caseSensitive, true),
+                    ),
                 );
             } else {
                 return !notContainsStrings.every(str =>
-                    this.containsString(node.textContent, str, caseSensitive, true)
+                    this.containsString(node.textContent, str, caseSensitive, true),
                 );
             }
         }
