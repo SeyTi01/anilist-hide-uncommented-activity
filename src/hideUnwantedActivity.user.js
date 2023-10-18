@@ -29,9 +29,7 @@ const config = {
         social: true, // Run the script on social feeds
         profile: false, // Run the script on user profile feeds
     },
-    linkedConditions: [
-        [], // Groups of conditions to be checked together (linked conditions are always considered 'true')
-    ],
+    linkedConditions: [], // Groups of conditions to be checked together (linked conditions are always considered 'true')
 };
 
 class MainApp {
@@ -131,8 +129,9 @@ class ActivityHandler {
 
     shouldRemoveLinkedConditions = (node) => {
         const { linkedConditions } = this.config;
-        return linkedConditions.some(link => link.length > 0)
-            && linkedConditions.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
+        const conditionsArray = Array.isArray(linkedConditions[0]) ? linkedConditions : [linkedConditions];
+        return conditionsArray.some(link => link.length > 0)
+            && conditionsArray.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
     }
 
     shouldRemoveConditions = (conditionName, predicate, node) => {
