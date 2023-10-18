@@ -298,9 +298,7 @@ class ConfigValidator {
     }
 
     validate() {
-        const { options } = this.config;
-
-        const booleanKeys = [
+        this.validateBooleans([
             'remove.uncommented',
             'remove.unliked',
             'remove.text',
@@ -310,20 +308,17 @@ class ConfigValidator {
             'runOn.home',
             'runOn.social',
             'runOn.profile',
-        ];
+        ]);
 
-        const arrayKeys = [
+        this.validatePositiveNonZeroInteger('options.targetLoadCount', 'options.targetLoadCount');
+        this.validateArrays([
             'remove.containsStrings',
             'remove.notContainsStrings',
             'options.linkedConditions',
-        ];
+        ]);
 
-        this.validateBooleans(booleanKeys);
-        this.validatePositiveNonZeroInteger('options.targetLoadCount', options.targetLoadCount);
-        this.validateArrays(arrayKeys);
         this.validateLinkedConditions('options.linkedConditions');
-        const stringArrayKeys = ['remove.containsStrings', 'remove.notContainsStrings'];
-        this.validateStringArrays(stringArrayKeys);
+        this.validateStringArrays(['remove.containsStrings', 'remove.notContainsStrings']);
 
         if (this.errors.length > 0) {
             const errorMessage = `Script disabled due to configuration errors: ${this.errors.join(', ')}`;
@@ -333,13 +328,15 @@ class ConfigValidator {
 
     validateBooleans(keys) {
         for (const key of keys) {
-            if (typeof this.getConfigValue(key) !== 'boolean') {
+            const value = this.getConfigValue(key);
+            if (typeof value !== 'boolean') {
                 this.errors.push(`${key} should be a boolean`);
             }
         }
     }
 
-    validatePositiveNonZeroInteger(key, value) {
+    validatePositiveNonZeroInteger(key, configKey) {
+        const value = this.getConfigValue(configKey);
         if (typeof value !== 'number' || !Number.isInteger(value) || value <= 0) {
             this.errors.push(`${key} should be a positive non-zero integer`);
         }
@@ -380,8 +377,8 @@ class ConfigValidator {
         return true;
     }
 
-    validateLinkedConditions(key) {
-        const linkedConditions = this.getConfigValue(key);
+    validateLinkedConditions(configKey) {
+        const linkedConditions = this.getConfigValue(configKey);
 
         const allowedConditions = [
             'uncommented',
@@ -394,13 +391,13 @@ class ConfigValidator {
         ];
 
         if (!Array.isArray(linkedConditions)) {
-            this.errors.push(`${key} should be an array`);
+            this.errors.push(`${configKey} should be an array`);
             return;
         }
 
         for (const condition of linkedConditions.flat()) {
             if (typeof condition !== 'string' || !allowedConditions.includes(condition)) {
-                this.errors.push(`${key} should only contain the following strings: ${allowedConditions.join(', ')}`);
+                this.errors.push(`${configKey} should only contain the following strings: ${allowedConditions.join(', ')}`);
                 return;
             }
         }
