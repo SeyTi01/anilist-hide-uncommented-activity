@@ -299,7 +299,7 @@ class UIHandler {
     };
 }
 
-class ConfigValidator {
+/*class ConfigValidator {
 
     static validate(config) {
         const errors = [
@@ -335,7 +335,7 @@ class ConfigValidator {
 
         return true;
     }
-}
+}*/
 
 const SELECTORS = {
     div: {
