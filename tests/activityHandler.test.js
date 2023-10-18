@@ -119,6 +119,8 @@ describe('ActivityHandler', () => {
         { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: true },
         { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
         { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [['string1']] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [['string1', 'string2']] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { containsStrings: [['string1', 'string2']] } }, expectedRemove: true },
 
         // Tests for notContainsStrings
         { htmlPath: UNLIKED, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
