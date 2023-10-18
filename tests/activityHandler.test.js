@@ -137,6 +137,8 @@ describe('ActivityHandler', () => {
         { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: false },
         { htmlPath: LINKED_CONDITIONS, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
         { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { notContainsStrings: [['string1']] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { notContainsStrings: [['string1', 'string2']] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { notContainsStrings: [['string1', 'string2']] } }, expectedRemove: false },
 
         // Tests for linkedConditions
         { htmlPath: UNLIKED, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
