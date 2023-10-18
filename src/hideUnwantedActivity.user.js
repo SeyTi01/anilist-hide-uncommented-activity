@@ -178,7 +178,6 @@ class ActivityHandler {
 
     shouldRemoveStrings = (node, shouldContain) => {
         const { remove: { containsStrings, notContainsStrings }, options: { caseSensitive } } = this.config;
-
         const isEmptyArray = arr => Array.isArray(arr) && arr.length === 0;
 
         if ((!notContainsStrings || isEmptyArray(notContainsStrings) || notContainsStrings.every(isEmptyArray))
@@ -187,28 +186,25 @@ class ActivityHandler {
         }
 
         const checkStrings = (strings) => {
-            const checkString = str => this.containsString(node.textContent, str, caseSensitive, true);
-            return Array.isArray(strings) ? strings.every(checkString) : checkString(strings);
+            return Array.isArray(strings) ? strings.every(str => this.containsString(node.textContent, str, caseSensitive)) :
+                this.containsString(node.textContent, strings, caseSensitive);
         };
 
-        if (shouldContain) {
-            return containsStrings.some(strings => checkStrings(strings, true));
-        } else {
-            return !notContainsStrings.some(strings => checkStrings(strings, false));
-        }
+        return shouldContain ? containsStrings.some(checkStrings) :
+            !notContainsStrings.some(strings => checkStrings(strings));
     };
 
-    containsString = (nodeText, strings, caseSensitive, shouldContain) => {
+    containsString = (nodeText, strings, caseSensitive) => {
+        const text = caseSensitive ? nodeText : nodeText.toLowerCase();
         const checkIncludes = str => {
-            const text = caseSensitive ? nodeText : nodeText.toLowerCase();
             const string = caseSensitive ? str : str.toLowerCase();
             return text.includes(string);
         };
 
         if (Array.isArray(strings)) {
-            return strings.some(str => shouldContain ? checkIncludes(str) : !checkIncludes(str));
+            return strings.every(str => checkIncludes(str));
         } else {
-            return shouldContain ? checkIncludes(strings) : !checkIncludes(strings);
+            return checkIncludes(strings);
         }
     };
 }
