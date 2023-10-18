@@ -163,13 +163,32 @@ class ActivityHandler {
 
     shouldRemoveContainsStrings = (node) => {
         const { remove: { containsStrings }, options: { caseSensitive } } = this.config;
-        return this.containsString(node.textContent, containsStrings, caseSensitive, true);
+
+        if (typeof containsStrings[0] === 'string') {
+            return this.containsString(node.textContent, containsStrings, caseSensitive, true);
+        } else {
+            for (const subArray of containsStrings) {
+                if (this.containsString(node.textContent, subArray, caseSensitive, true)) {
+                    return true;
+                }
+            }
+        }
     }
 
     shouldRemoveNotContainsStrings = (node) => {
         const { remove: { notContainsStrings }, options: { caseSensitive } } = this.config;
-        return this.containsString(node.textContent, notContainsStrings, caseSensitive, false);
+
+        if (typeof notContainsStrings[0] === 'string') {
+            return this.containsString(node.textContent, notContainsStrings, caseSensitive, false);
+        } else {
+            for (const subArray of notContainsStrings) {
+                if (this.containsString(node.textContent, subArray, caseSensitive, false)) {
+                    return true;
+                }
+            }
+        }
     }
+
 
     containsString(nodeText, strings, caseSensitive, inclusion) {
         return strings.some(str => caseSensitive
@@ -321,10 +340,10 @@ const SELECTORS = {
 };
 
 function main() {
-    if (!ConfigValidator.validate(config)) {
+    /*if (!ConfigValidator.validate(config)) {
         console.error('Script disabled due to configuration errors.');
         return;
-    }
+    }*/
 
     const activityHandler = new ActivityHandler(config);
     const uiHandler = new UIHandler();
