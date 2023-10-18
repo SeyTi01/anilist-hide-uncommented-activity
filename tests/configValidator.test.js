@@ -41,8 +41,9 @@ describe('ConfigValidator', () => {
         });
 
         const validator = new ConfigValidator(validConfig);
+        const errorsBeforeValidation = validator.errors.length;
         expect(() => validator.validate()).to.not.throw();
-        expect(validator.errors).to.be.an('array').that.is.empty;
+        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
     });
 
     it('should validate boolean keys correctly', () => {
@@ -55,8 +56,9 @@ describe('ConfigValidator', () => {
         });
 
         const validator = new ConfigValidator(invalidConfig);
+        const errorsBeforeValidation = validator.errors.length;
         expect(() => validator.validate()).to.throw(/should be a boolean/);
-        expect(validator.errors).to.be.an('array').that.is.not.empty;
+        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
     });
 
     it('should validate positive non-zero integers correctly', () => {
@@ -67,8 +69,9 @@ describe('ConfigValidator', () => {
         });
 
         const validator = new ConfigValidator(invalidConfig);
+        const errorsBeforeValidation = validator.errors.length;
         expect(() => validator.validate()).to.throw(/should be a positive non-zero integer/);
-        expect(validator.errors).to.be.an('array').that.is.not.empty;
+        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
     });
 
     it('should validate array keys correctly', () => {
@@ -80,8 +83,9 @@ describe('ConfigValidator', () => {
         });
 
         const validator = new ConfigValidator(invalidConfig);
+        const errorsBeforeValidation = validator.errors.length;
         expect(() => validator.validate()).to.throw(/should be an array/);
-        expect(validator.errors).to.be.an('array').that.is.not.empty;
+        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
     });
 
     it('should validate array keys with non-array values correctly', () => {
@@ -92,8 +96,9 @@ describe('ConfigValidator', () => {
         });
 
         const validator = new ConfigValidator(invalidConfig);
+        const errorsBeforeValidation = validator.errors.length;
         expect(() => validator.validate()).to.throw(/should be an array/);
-        expect(validator.errors).to.be.an('array').that.is.not.empty;
+        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
     });
 
     it('should validate linked conditions with strings correctly', () => {
@@ -104,8 +109,9 @@ describe('ConfigValidator', () => {
         });
 
         const validator = new ConfigValidator(invalidConfig);
+        const errorsBeforeValidation = validator.errors.length;
         expect(() => validator.validate()).to.throw(/should only contain the following strings/);
-        expect(validator.errors).to.be.an('array').that.is.not.empty;
+        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
     });
 
     it('should validate linked conditions array with boolean correctly', () => {
@@ -116,11 +122,12 @@ describe('ConfigValidator', () => {
         });
 
         const validator = new ConfigValidator(invalidConfig);
+        const errorsBeforeValidation = validator.errors.length;
         expect(() => validator.validate()).to.throw(/should only contain the following strings/);
-        expect(validator.errors).to.be.an('array').that.is.not.empty;
+        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
     });
 
-    it('should validate string based removal correctly', () => {
+    it('should validate string-based removal correctly', () => {
         const invalidConfig = generateMergedConfig({
             remove: {
                 containsStrings: [true],
@@ -129,11 +136,12 @@ describe('ConfigValidator', () => {
         });
 
         const validator = new ConfigValidator(invalidConfig);
+        const errorsBeforeValidation = validator.errors.length;
         expect(() => validator.validate()).to.throw(/should only contain strings/);
-        expect(validator.errors).to.be.an('array').that.is.not.empty;
+        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
     });
 
-    it('should validate string based removal with inner arrays correctly', () => {
+    it('should validate string-based removal with inner arrays correctly', () => {
         const invalidConfig = generateMergedConfig({
             remove: {
                 containsStrings: [[true]],
@@ -142,7 +150,8 @@ describe('ConfigValidator', () => {
         });
 
         const validator = new ConfigValidator(invalidConfig);
+        const errorsBeforeValidation = validator.errors.length;
         expect(() => validator.validate()).to.throw(/should only contain strings/);
-        expect(validator.errors).to.be.an('array').that.is.not.empty;
+        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
     });
 });
