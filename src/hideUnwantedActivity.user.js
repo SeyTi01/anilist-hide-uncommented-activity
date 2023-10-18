@@ -324,7 +324,8 @@ class ConfigValidator {
 
         this.validateBooleans(booleanKeys);
         this.validatePositiveNonZeroInteger('options.targetLoadCount', options.targetLoadCount);
-        this.validateArraysOfStrings(arrayKeys);
+        this.validateArrays(arrayKeys);
+        this.validateLinkedConditions('options.linkedConditions');
 
         if (this.errors.length > 0) {
             const errorMessage = `Script disabled due to configuration errors: ${this.errors.join(', ')}`;
@@ -346,17 +347,39 @@ class ConfigValidator {
         }
     }
 
-    validateArraysOfStrings(keys) {
+    validateArrays(keys) {
         for (const key of keys) {
             const value = this.getConfigValue(key);
-            if (!Array.isArray(value) || !value.every(item => this.isArrayOfStrings(item))) {
-                this.errors.push(`${key} should be an array of strings or an array of arrays of strings`);
+            if (!Array.isArray(value)) {
+                this.errors.push(`${key} should be an array`);
             }
         }
     }
 
-    isArrayOfStrings(arr) {
-        return Array.isArray(arr) && arr.every(item => typeof item === 'string');
+    validateLinkedConditions(key) {
+        const linkedConditions = this.getConfigValue(key);
+
+        const allowedConditions = [
+            'uncommented',
+            'unliked',
+            'text',
+            'images',
+            'videos',
+            'containsStrings',
+            'notContainsStrings',
+        ];
+
+        if (!Array.isArray(linkedConditions)) {
+            this.errors.push(`${key} should be an array`);
+            return;
+        }
+
+        for (const condition of linkedConditions.flat()) {
+            if (typeof condition !== 'string' || !allowedConditions.includes(condition)) {
+                this.errors.push(`${key} should only contain the following strings: ${allowedConditions.join(', ')}`);
+                return;
+            }
+        }
     }
 
     getConfigValue(key) {
