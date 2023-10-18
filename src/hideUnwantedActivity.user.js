@@ -11,7 +11,6 @@
 // noinspection JSPrimitiveTypeWrapperUsage,JSUnusedGlobalSymbols
 
 const config = {
-    targetLoadCount: 2, // Minimum number of activities to show per click on the "Load More" button
     remove: {
         uncommented: true, // Remove activities that have no comments
         unliked: false, // Remove activities that have no likes
@@ -22,6 +21,7 @@ const config = {
         notContainsStrings: [], // Remove activities not containing user defined strings
     },
     options: {
+        targetLoadCount: 2, // Minimum number of activities to show per click on the "Load More" button
         caseSensitive: false, // Whether string-based removal should be case-sensitive
     },
     runOn: {
@@ -64,7 +64,7 @@ class MainApp {
     }
 
     loadMoreOrReset = () => {
-        if (this.ac.currentLoadCount < this.config.targetLoadCount && this.ui.userPressed) {
+        if (this.ac.currentLoadCount < this.config.options.targetLoadCount && this.ui.userPressed) {
             this.ui.clickLoadMore();
         } else {
             this.ac.resetState();
@@ -269,7 +269,7 @@ class ConfigValidator {
             typeof config.remove.unliked !== 'boolean' && 'remove.unliked must be a boolean',
             typeof config.remove.images !== 'boolean' && 'remove.images must be a boolean',
             typeof config.remove.videos !== 'boolean' && 'remove.videos must be a boolean',
-            (!Number.isInteger(config.targetLoadCount) || config.targetLoadCount < 1) && 'targetLoadCount must be a positive non-zero integer',
+            (!Number.isInteger(config.options.targetLoadCount) || config.options.targetLoadCount < 1) && 'options.targetLoadCount must be a positive non-zero integer',
             typeof config.runOn.home !== 'boolean' && 'runOn.home must be a boolean',
             typeof config.runOn.profile !== 'boolean' && 'runOn.profile must be a boolean',
             typeof config.runOn.social !== 'boolean' && 'runOn.social must be a boolean',

@@ -28,7 +28,9 @@ describe('MainApp', () => {
         };
 
         mainApp = new MainApp(activityHandler, uiHandler, {
-            targetLoadCount: 10,
+            options: {
+                targetLoadCount: 10,
+            },
             runOn: {
                 home: false,
                 social: false,
