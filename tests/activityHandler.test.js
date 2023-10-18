@@ -16,6 +16,7 @@ const CONTAINS_STRING_1 = `${TEST_DATA_PATH}activity-containsString1.html`
 const CONTAINS_STRING_2 = `${TEST_DATA_PATH}activity-containsString2.html`
 const CONTAINS_STRINGS = `${TEST_DATA_PATH}activity-containsStrings.html`
 const IMAGES_UNLIKED = `${TEST_DATA_PATH}activity-imagesUnliked.html`;
+const VIDEOS_UNCOMMENTED = `${TEST_DATA_PATH}activity-videosUncommented.html`;
 
 describe('ActivityHandler', () => {
     let activityHandler;
@@ -154,6 +155,9 @@ describe('ActivityHandler', () => {
         { htmlPath: CONTAINS_STRING_1, configOptions: { options: { linkedConditions: ['images', 'unliked'] } }, expectedRemove: false },
         { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: true },
         { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: ['images', 'unliked'] } }, expectedRemove: true },
+        { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['videos', 'uncommented'], ['images', 'unliked']] } }, expectedRemove: true },
+        { htmlPath: VIDEOS_UNCOMMENTED, configOptions: { options: { linkedConditions: [['videos', 'uncommented']] } }, expectedRemove: true },
+        { htmlPath: VIDEOS_UNCOMMENTED, configOptions: { options: { linkedConditions: [['videos', 'images']] } }, expectedRemove: false },
     ];
 
     runTestCases(testCases);
