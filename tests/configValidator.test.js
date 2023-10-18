@@ -25,9 +25,14 @@ describe('ConfigValidator', () => {
         },
     };
 
-    function generateMergedConfig(configOverrides) {
-        return merge({}, defaultConfig, configOverrides);
-    }
+    const generateMergedConfig = (configOverrides) => merge({}, defaultConfig, configOverrides);
+
+    const validateAndCheckErrors = (config, errorMessage) => {
+        const validator = new ConfigValidator(config);
+        const errorsBeforeValidation = validator.errors.length;
+        expect(() => validator.validate()).to.throw(errorMessage);
+        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
+    };
 
     it('should validate a valid configuration without errors', () => {
         const validConfig = generateMergedConfig({
@@ -39,11 +44,8 @@ describe('ConfigValidator', () => {
                 linkedConditions: ['text'],
             },
         });
-
         const validator = new ConfigValidator(validConfig);
-        const errorsBeforeValidation = validator.errors.length;
         expect(() => validator.validate()).to.not.throw();
-        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
     });
 
     it('should validate boolean keys correctly', () => {
@@ -54,11 +56,7 @@ describe('ConfigValidator', () => {
                 text: 'invalid',
             },
         });
-
-        const validator = new ConfigValidator(invalidConfig);
-        const errorsBeforeValidation = validator.errors.length;
-        expect(() => validator.validate()).to.throw(/should be a boolean/);
-        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
+        validateAndCheckErrors(invalidConfig, /should be a boolean/);
     });
 
     it('should validate positive non-zero integers correctly', () => {
@@ -67,11 +65,7 @@ describe('ConfigValidator', () => {
                 targetLoadCount: 0,
             },
         });
-
-        const validator = new ConfigValidator(invalidConfig);
-        const errorsBeforeValidation = validator.errors.length;
-        expect(() => validator.validate()).to.throw(/should be a positive non-zero integer/);
-        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
+        validateAndCheckErrors(invalidConfig, /should be a positive non-zero integer/);
     });
 
     it('should validate array keys correctly', () => {
@@ -81,11 +75,7 @@ describe('ConfigValidator', () => {
                 notContainsStrings: 'invalid',
             },
         });
-
-        const validator = new ConfigValidator(invalidConfig);
-        const errorsBeforeValidation = validator.errors.length;
-        expect(() => validator.validate()).to.throw(/should be an array/);
-        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
+        validateAndCheckErrors(invalidConfig, /should be an array/);
     });
 
     it('should validate array keys with non-array values correctly', () => {
@@ -94,11 +84,7 @@ describe('ConfigValidator', () => {
                 notContainsStrings: true,
             },
         });
-
-        const validator = new ConfigValidator(invalidConfig);
-        const errorsBeforeValidation = validator.errors.length;
-        expect(() => validator.validate()).to.throw(/should be an array/);
-        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
+        validateAndCheckErrors(invalidConfig, /should be an array/);
     });
 
     it('should validate linked conditions with strings correctly', () => {
@@ -107,11 +93,7 @@ describe('ConfigValidator', () => {
                 linkedConditions: ['invalid', 'unliked'],
             },
         });
-
-        const validator = new ConfigValidator(invalidConfig);
-        const errorsBeforeValidation = validator.errors.length;
-        expect(() => validator.validate()).to.throw(/should only contain the following strings/);
-        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
+        validateAndCheckErrors(invalidConfig, /should only contain the following strings/);
     });
 
     it('should validate linked conditions array with boolean correctly', () => {
@@ -120,11 +102,7 @@ describe('ConfigValidator', () => {
                 linkedConditions: [true],
             },
         });
-
-        const validator = new ConfigValidator(invalidConfig);
-        const errorsBeforeValidation = validator.errors.length;
-        expect(() => validator.validate()).to.throw(/should only contain the following strings/);
-        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
+        validateAndCheckErrors(invalidConfig, /should only contain the following strings/);
     });
 
     it('should validate string-based removal correctly', () => {
@@ -134,11 +112,7 @@ describe('ConfigValidator', () => {
                 notContainsStrings: [true],
             },
         });
-
-        const validator = new ConfigValidator(invalidConfig);
-        const errorsBeforeValidation = validator.errors.length;
-        expect(() => validator.validate()).to.throw(/should only contain strings/);
-        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
+        validateAndCheckErrors(invalidConfig, /should only contain strings/);
     });
 
     it('should validate string-based removal with inner arrays correctly', () => {
@@ -148,10 +122,6 @@ describe('ConfigValidator', () => {
                 notContainsStrings: [[true]],
             },
         });
-
-        const validator = new ConfigValidator(invalidConfig);
-        const errorsBeforeValidation = validator.errors.length;
-        expect(() => validator.validate()).to.throw(/should only contain strings/);
-        expect(validator.errors).to.have.length.at.least(errorsBeforeValidation);
+        validateAndCheckErrors(invalidConfig, /should only contain strings/);
     });
 });
