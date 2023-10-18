@@ -179,14 +179,14 @@ class ActivityHandler {
     shouldRemoveContainsStrings = (node) => {
         const { remove: { containsStrings }, options: { caseSensitive } } = this.config;
 
-        if (typeof containsStrings[0] === 'string') {
-            return this.containsString(node.textContent, containsStrings, caseSensitive, true);
-        } else {
-            for (const subArray of containsStrings) {
-                if (this.containsString(node.textContent, subArray, caseSensitive, true)) {
+        if (containsStrings.every(Array.isArray)) {
+            return containsStrings.some(subArray => {
+                if (subArray.every(str => this.containsString(node.textContent, str, caseSensitive, true))) {
                     return true;
                 }
-            }
+            });
+        } else {
+            return containsStrings.some(str => this.containsString(node.textContent, str, caseSensitive, true));
         }
     }
 
@@ -205,10 +205,15 @@ class ActivityHandler {
     }
 
     containsString(nodeText, strings, caseSensitive, shouldContain) {
-        return strings.some(str => caseSensitive
-            ? shouldContain ? nodeText.includes(str) : !nodeText.includes(str)
-            : shouldContain ? nodeText.toLowerCase().includes(str.toLowerCase()) : !nodeText.toLowerCase().includes(str.toLowerCase()),
-        );
+        if (Array.isArray(strings)) {
+            return strings.some(str => {
+                const includesCheck = caseSensitive ? nodeText.includes(str) : nodeText.toLowerCase().includes(str.toLowerCase());
+                return shouldContain ? includesCheck : !includesCheck;
+            });
+        } else {
+            const includesCheck = caseSensitive ? nodeText.includes(strings) : nodeText.toLowerCase().includes(strings.toLowerCase());
+            return shouldContain ? includesCheck : !includesCheck;
+        }
     }
 }
 
