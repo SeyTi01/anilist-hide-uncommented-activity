@@ -179,6 +179,12 @@ class ActivityHandler {
     shouldRemoveStrings = (node, shouldContain) => {
         const { remove: { containsStrings, notContainsStrings }, options: { caseSensitive } } = this.config;
 
+        const isEmptyArray = arr => Array.isArray(arr) && arr.length === 0;
+
+        if ((!notContainsStrings || isEmptyArray(notContainsStrings) || notContainsStrings.every(isEmptyArray)) && !shouldContain) {
+            return false;
+        }
+
         const checkStrings = (strings) => {
             const checkString = str => this.containsString(node.textContent, str, caseSensitive, true);
             return Array.isArray(strings) ? strings.every(checkString) : checkString(strings);
@@ -288,44 +294,6 @@ class UIHandler {
     };
 }
 
-/*class ConfigValidator {
-
-    static validate(config) {
-        const errors = [
-            typeof config.remove.uncommented !== 'boolean' && 'remove.uncommented must be a boolean',
-            typeof config.remove.unliked !== 'boolean' && 'remove.unliked must be a boolean',
-            typeof config.remove.images !== 'boolean' && 'remove.images must be a boolean',
-            typeof config.remove.videos !== 'boolean' && 'remove.videos must be a boolean',
-            (!Number.isInteger(config.options.targetLoadCount) || config.options.targetLoadCount < 1) && 'options.targetLoadCount must be a positive non-zero integer',
-            typeof config.runOn.home !== 'boolean' && 'runOn.home must be a boolean',
-            typeof config.runOn.profile !== 'boolean' && 'runOn.profile must be a boolean',
-            typeof config.runOn.social !== 'boolean' && 'runOn.social must be a boolean',
-            !Array.isArray(config.remove.containsStrings) && 'remove.containsStrings must be an array',
-            config.remove.containsStrings.some((str) => typeof str !== 'string') && 'remove.containsStrings must only contain strings',
-            typeof config.options.caseSensitive !== 'boolean' && 'options.caseSensitive must be a boolean',
-            !Array.isArray(config.options.linkedConditions) && 'options.linkedConditions must be an array',
-            config.options.linkedConditions.some((conditionGroup) => {
-                if (!Array.isArray(conditionGroup)) return true;
-                return conditionGroup.some((condition) => {
-                    if (typeof condition !== 'string' && !Array.isArray(condition)) return true;
-                    if (Array.isArray(condition)) {
-                        return condition.some((item) => !['uncommented', 'unliked', 'images', 'videos', 'containsStrings', 'notContainsStrings'].includes(item));
-                    }
-                    return !['uncommented', 'unliked', 'images', 'videos', 'containsStrings', 'notContainsStrings'].includes(condition);
-                });
-            }) && 'options.linkedConditions must only contain arrays with valid strings',
-        ].filter(Boolean);
-
-        if (errors.length > 0) {
-            console.error('Script configuration errors:');
-            errors.forEach((error) => console.error(error));
-            return false;
-        }
-
-        return true;
-    }
-}*/
-
 const SELECTORS = {
     div: {
         button: 'div.load-more',
@@ -348,11 +316,6 @@ const SELECTORS = {
 };
 
 function main() {
-    /*if (!ConfigValidator.validate(config)) {
-        console.error('Script disabled due to configuration errors.');
-        return;
-    }*/
-
     const activityHandler = new ActivityHandler(config);
     const uiHandler = new UIHandler();
     const mainApp = new MainApp(activityHandler, uiHandler, config);
