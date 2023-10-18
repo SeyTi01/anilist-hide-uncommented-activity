@@ -128,8 +128,7 @@ class ActivityHandler {
     }
 
     shouldRemoveLinkedConditions = (node) => {
-        const { options } = this.config;
-        const linkedConditions = options && options.linkedConditions;
+        const { options: { linkedConditions } } = this.config;
 
         if (!linkedConditions || !Array.isArray(linkedConditions)) {
             return false;
@@ -146,8 +145,7 @@ class ActivityHandler {
     }
 
     shouldRemoveConditions = (conditionName, predicate, node) => {
-        const { remove, options } = this.config;
-        const linkedConditions = options && options.linkedConditions;
+        const { remove, options: linkedConditions } = this.config;
         const conditionsArray = Array.isArray(linkedConditions) ? linkedConditions : [linkedConditions];
 
         if (remove && conditionsArray && conditionsArray.length > 0) {
