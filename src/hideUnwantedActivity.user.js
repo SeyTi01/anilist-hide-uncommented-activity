@@ -191,11 +191,7 @@ class ActivityHandler {
             return text.includes(string);
         };
 
-        if (Array.isArray(strings)) {
-            return strings.every(str => checkIncludes(str));
-        } else {
-            return checkIncludes(strings);
-        }
+        return checkIncludes(strings);
     };
 }
 
@@ -380,11 +376,6 @@ class ConfigValidator {
             'notContainsStrings',
         ];
 
-        if (!Array.isArray(linkedConditions)) {
-            this.errors.push(`${configKey} should be an array`);
-            return;
-        }
-
         for (const condition of linkedConditions.flat()) {
             if (typeof condition !== 'string' || !allowedConditions.includes(condition)) {
                 this.errors.push(`${configKey} should only contain the following strings: ${allowedConditions.join(', ')}`);
@@ -398,9 +389,6 @@ class ConfigValidator {
         let value = this.config;
         for (const k of keys) {
             value = value[k];
-            if (value === undefined) {
-                return undefined;
-            }
         }
         return value;
     }
