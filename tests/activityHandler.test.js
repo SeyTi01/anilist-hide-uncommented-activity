@@ -21,7 +21,7 @@ describe('ActivityHandler', () => {
     let activityHandler;
 
     beforeEach(function() {
-        const config = { remove: {}, options: {}, linkedConditions: [[]] };
+        const config = { remove: {}, options: {} };
         activityHandler = new ActivityHandler(config);
     });
 
@@ -136,16 +136,16 @@ describe('ActivityHandler', () => {
         { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { notContainsStrings: [['string1']] } }, expectedRemove: true },
 
         // Tests for linkedConditions
-        { htmlPath: UNLIKED, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
-        { htmlPath: UNCOMMENTED, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
-        { htmlPath: TEXT, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
-        { htmlPath: MESSAGE, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
-        { htmlPath: IMAGES, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
-        { htmlPath: VIDEOS, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: false },
-        { htmlPath: LINKED_CONDITIONS, configOptions: { linkedConditions: [['images', 'unliked']] }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { linkedConditions: ['images', 'unliked'] }, expectedRemove: false },
-        { htmlPath: LINKED_CONDITIONS, configOptions: { linkedConditions: ['images', 'unliked'] }, expectedRemove: true },
+        { htmlPath: UNLIKED, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
+        { htmlPath: UNCOMMENTED, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
+        { htmlPath: TEXT, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
+        { htmlPath: MESSAGE, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
+        { htmlPath: IMAGES, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
+        { htmlPath: VIDEOS, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
+        { htmlPath: LINKED_CONDITIONS, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { options: { linkedConditions: ['images', 'unliked'] } }, expectedRemove: false },
+        { htmlPath: LINKED_CONDITIONS, configOptions: { options: { linkedConditions: ['images', 'unliked'] } }, expectedRemove: true },
     ];
 
     runTestCases(testCases);

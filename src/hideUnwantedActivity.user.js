@@ -23,13 +23,13 @@ const config = {
     options: {
         targetLoadCount: 2, // Minimum number of activities to show per click on the "Load More" button
         caseSensitive: false, // Whether string-based removal should be case-sensitive
+        linkedConditions: [], // Groups of conditions to be checked together (linked conditions are always considered 'true')
     },
     runOn: {
         home: true, // Run the script on the home feed
         social: true, // Run the script on social feeds
         profile: false, // Run the script on user profile feeds
     },
-    linkedConditions: [], // Groups of conditions to be checked together (linked conditions are always considered 'true')
 };
 
 class MainApp {
@@ -128,15 +128,33 @@ class ActivityHandler {
     }
 
     shouldRemoveLinkedConditions = (node) => {
-        const { linkedConditions } = this.config;
-        const conditionsArray = Array.isArray(linkedConditions[0]) ? linkedConditions : [linkedConditions];
+        const { options } = this.config;
+        const linkedConditions = options && options.linkedConditions;
+
+        if (!linkedConditions || !Array.isArray(linkedConditions)) {
+            return false;
+        }
+
+        const conditionsArray = linkedConditions.map(link => (Array.isArray(link) ? link : [link]));
+
+        if (conditionsArray.length === 0) {
+            return false;
+        }
+
         return conditionsArray.some(link => link.length > 0)
             && conditionsArray.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
     }
 
     shouldRemoveConditions = (conditionName, predicate, node) => {
-        const { remove, linkedConditions } = this.config;
-        return remove[conditionName] && predicate(node) && !linkedConditions.flat().includes(conditionName);
+        const { remove, options } = this.config;
+        const linkedConditions = options && options.linkedConditions;
+        const conditionsArray = Array.isArray(linkedConditions) ? linkedConditions : [linkedConditions];
+
+        if (remove && conditionsArray && conditionsArray.length > 0) {
+            return remove[conditionName] && predicate(node);
+        } else {
+            return false;
+        }
     }
 
     shouldRemoveUncommented = (node) => {
@@ -294,8 +312,8 @@ class ConfigValidator {
             !Array.isArray(config.remove.containsStrings) && 'remove.containsStrings must be an array',
             config.remove.containsStrings.some((str) => typeof str !== 'string') && 'remove.containsStrings must only contain strings',
             typeof config.options.caseSensitive !== 'boolean' && 'options.caseSensitive must be a boolean',
-            !Array.isArray(config.linkedConditions) && 'linkedConditions must be an array',
-            config.linkedConditions.some((conditionGroup) => {
+            !Array.isArray(config.options.linkedConditions) && 'options.linkedConditions must be an array',
+            config.options.linkedConditions.some((conditionGroup) => {
                 if (!Array.isArray(conditionGroup)) return true;
                 return conditionGroup.some((condition) => {
                     if (typeof condition !== 'string' && !Array.isArray(condition)) return true;
@@ -304,7 +322,7 @@ class ConfigValidator {
                     }
                     return !['uncommented', 'unliked', 'images', 'videos', 'containsStrings', 'notContainsStrings'].includes(condition);
                 });
-            }) && 'linkedConditions must only contain arrays with valid strings',
+            }) && 'options.linkedConditions must only contain arrays with valid strings',
         ].filter(Boolean);
 
         if (errors.length > 0) {
