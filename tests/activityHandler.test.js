@@ -23,28 +23,7 @@ describe('ActivityHandler', () => {
     let activityHandler;
 
     beforeEach(function() {
-        const config = {
-            remove: {
-                uncommented: false,
-                unliked: false,
-                text: false,
-                images: false,
-                videos: false,
-                containsStrings: [],
-                notContainsStrings: [],
-            },
-            options: {
-                targetLoadCount: 10,
-                caseSensitive: false,
-                linkedConditions: [],
-            },
-            runOn: {
-                home: false,
-                social: false,
-                profile: false,
-            },
-        };
-
+        const config = { remove: {}, options: {} };
         activityHandler = new ActivityHandler(config);
     });
 
