@@ -193,10 +193,10 @@ class ActivityHandler {
         return false;
     }
 
-    containsString(nodeText, strings, caseSensitive, inclusion) {
+    containsString(nodeText, strings, caseSensitive, shouldContain) {
         return strings.some(str => caseSensitive
-            ? inclusion ? nodeText.includes(str) : !nodeText.includes(str)
-            : inclusion ? nodeText.toLowerCase().includes(str.toLowerCase()) : !nodeText.toLowerCase().includes(str.toLowerCase()),
+            ? shouldContain ? nodeText.includes(str) : !nodeText.includes(str)
+            : shouldContain ? nodeText.toLowerCase().includes(str.toLowerCase()) : !nodeText.toLowerCase().includes(str.toLowerCase()),
         );
     }
 }
