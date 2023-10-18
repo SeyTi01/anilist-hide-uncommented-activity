@@ -181,7 +181,8 @@ class ActivityHandler {
 
         const isEmptyArray = arr => Array.isArray(arr) && arr.length === 0;
 
-        if ((!notContainsStrings || isEmptyArray(notContainsStrings) || notContainsStrings.every(isEmptyArray)) && !shouldContain) {
+        if ((!notContainsStrings || isEmptyArray(notContainsStrings) || notContainsStrings.every(isEmptyArray))
+            && (!shouldContain || isEmptyArray(containsStrings) || containsStrings.every(isEmptyArray))) {
             return false;
         }
 
