@@ -103,8 +103,8 @@ class ActivityHandler {
         ['text', node => this.shouldRemoveText(node)],
         ['images', node => this.shouldRemoveImage(node)],
         ['videos', node => this.shouldRemoveVideo(node)],
-        ['containsStrings', node => this.shouldRemoveContainsStrings(node)],
-        ['notContainsStrings', node => this.shouldRemoveNotContainsStrings(node)],
+        ['containsStrings', node => this.shouldRemoveStrings(node, true)],
+        ['notContainsStrings', node => this.shouldRemoveStrings(node, false)],
     ]);
 
     removeEntry = (node) => {
@@ -176,22 +176,20 @@ class ActivityHandler {
         return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
     }
 
-    shouldRemoveContainsStrings = (node) => {
-        const { remove: { containsStrings }, options: { caseSensitive } } = this.config;
+    shouldRemoveStrings = (node, shouldContain) => {
+        const { remove: { containsStrings, notContainsStrings }, options: { caseSensitive } } = this.config;
 
-        return containsStrings.some(strings => {
-            const checkString = (str) => this.containsString(node.textContent, str, caseSensitive, true);
-            return Array.isArray(strings) ? strings.every(checkString) : checkString(strings);
-        });
-    }
-
-    shouldRemoveNotContainsStrings = (node) => {
-        const { remove: { notContainsStrings }, options: { caseSensitive } } = this.config;
-
-        return !notContainsStrings.some(strings => {
+        if (shouldContain) {
+            return containsStrings.some(strings => {
                 const checkString = (str) => this.containsString(node.textContent, str, caseSensitive, true);
                 return Array.isArray(strings) ? strings.every(checkString) : checkString(strings);
             });
+        } else {
+            return !notContainsStrings.some(strings => {
+                const checkString = (str) => this.containsString(node.textContent, str, caseSensitive, true);
+                return Array.isArray(strings) ? strings.every(checkString) : checkString(strings);
+            });
+        }
     }
 
     containsString(nodeText, strings, caseSensitive, shouldContain) {
