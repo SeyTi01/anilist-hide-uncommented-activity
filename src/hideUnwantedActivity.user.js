@@ -323,7 +323,7 @@ class ConfigValidator {
         this.validateArrays(arrayKeys);
         this.validateLinkedConditions('options.linkedConditions');
         const stringArrayKeys = ['remove.containsStrings', 'remove.notContainsStrings'];
-        this.validateStringArrays(stringArrayKeys); // Add this line
+        this.validateStringArrays(stringArrayKeys);
 
         if (this.errors.length > 0) {
             const errorMessage = `Script disabled due to configuration errors: ${this.errors.join(', ')}`;
@@ -361,9 +361,16 @@ class ConfigValidator {
                 this.errors.push(`${key} should be an array`);
             } else {
                 for (const element of value) {
-                    if (typeof element !== 'string') {
+                    if (typeof element !== 'string' && !Array.isArray(element)) {
                         this.errors.push(`${key} should only contain strings`);
                         break;
+                    } else if (Array.isArray(element)) {
+                        for (const innerElement of element) {
+                            if (typeof innerElement !== 'string') {
+                                this.errors.push(`${key} should only contain strings`);
+                                break;
+                            }
+                        }
                     }
                 }
             }
