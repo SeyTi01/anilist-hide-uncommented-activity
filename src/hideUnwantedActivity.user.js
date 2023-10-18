@@ -193,15 +193,20 @@ class ActivityHandler {
     shouldRemoveNotContainsStrings = (node) => {
         const { remove: { notContainsStrings }, options: { caseSensitive } } = this.config;
 
-        if (typeof notContainsStrings[0] === 'string') {
-            return this.containsString(node.textContent, notContainsStrings, caseSensitive, false);
-        } else {
-            for (const subArray of notContainsStrings) {
-                if (this.containsString(node.textContent, subArray, caseSensitive, false)) {
-                    return true;
-                }
+        if (Array.isArray(notContainsStrings) && notContainsStrings.length > 0) {
+            if (Array.isArray(notContainsStrings[0])) {
+                return !notContainsStrings.some(subArray =>
+                    subArray.every(str =>
+                        this.containsString(node.textContent, str, caseSensitive, true)
+                    )
+                );
+            } else {
+                return !notContainsStrings.every(str =>
+                    this.containsString(node.textContent, str, caseSensitive, true)
+                );
             }
         }
+        return false;
     }
 
     containsString(nodeText, strings, caseSensitive, shouldContain) {
