@@ -3,6 +3,7 @@ const jsdom = require('jsdom');
 const { expect } = require('chai');
 const { ActivityHandler } = require('../src/hideUnwantedActivity.user');
 const { restore, spy } = require("sinon");
+const merge = require('lodash.merge');
 
 const TEST_DATA_PATH = './tests/data/';
 const UNLIKED = `${TEST_DATA_PATH}activity-unliked.html`;
@@ -22,7 +23,28 @@ describe('ActivityHandler', () => {
     let activityHandler;
 
     beforeEach(function() {
-        const config = { remove: {}, options: {} };
+        const config = {
+            remove: {
+                uncommented: false,
+                unliked: false,
+                text: false,
+                images: false,
+                videos: false,
+                containsStrings: [],
+                notContainsStrings: [],
+            },
+            options: {
+                targetLoadCount: 10,
+                caseSensitive: false,
+                linkedConditions: [],
+            },
+            runOn: {
+                home: false,
+                social: false,
+                profile: false,
+            },
+        };
+
         activityHandler = new ActivityHandler(config);
     });
 
@@ -41,7 +63,7 @@ describe('ActivityHandler', () => {
                         function(err, htmlContent) {
                             if (err) throw err;
 
-                            Object.assign(activityHandler.config, configOptions);
+                            merge(activityHandler.config, configOptions);
                             const dom = new jsdom.JSDOM(htmlContent);
                             const node = dom.window.document.body.firstChild;
                             const removeSpy = spy(node, 'remove');
@@ -53,6 +75,10 @@ describe('ActivityHandler', () => {
                 });
         });
     }
+
+    const STRING_1 = 'string1';
+    const STRING_1_B = 'String1';
+    const STRING_2 = 'string2';
 
     const testCases = [
         // Tests for unliked
@@ -107,46 +133,46 @@ describe('ActivityHandler', () => {
         { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { videos: true } }, expectedRemove: false },
 
         // Tests for containsStrings
-        { htmlPath: UNLIKED, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
-        { htmlPath: UNCOMMENTED, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
-        { htmlPath: TEXT, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
-        { htmlPath: MESSAGE, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
-        { htmlPath: IMAGES, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
-        { htmlPath: VIDEOS, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: ['string1'] }, options: { caseSensitive: true } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: ['String1'] }, options: { caseSensitive: true } }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [['string1']] } }, expectedRemove: true },
+        { htmlPath: UNLIKED, configOptions: { remove: { containsStrings: [STRING_1] } }, expectedRemove: false },
+        { htmlPath: UNCOMMENTED, configOptions: { remove: { containsStrings: [STRING_1] } }, expectedRemove: false },
+        { htmlPath: TEXT, configOptions: { remove: { containsStrings: [STRING_1] } }, expectedRemove: false },
+        { htmlPath: MESSAGE, configOptions: { remove: { containsStrings: [STRING_1] } }, expectedRemove: false },
+        { htmlPath: IMAGES, configOptions: { remove: { containsStrings: [STRING_1] } }, expectedRemove: false },
+        { htmlPath: VIDEOS, configOptions: { remove: { containsStrings: [STRING_1] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [STRING_1] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [STRING_1] }, options: { caseSensitive: true } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [STRING_1_B] }, options: { caseSensitive: true } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [[STRING_1]] } }, expectedRemove: true },
         { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [] } }, expectedRemove: false },
         { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [[]] } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [['string1', 'string2']] } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [['string1'], ['string2']] } }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [['string1', 'string2'], ['string2']] } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { containsStrings: [['string1', 'string2']] } }, expectedRemove: true },
-        { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { containsStrings: ['string1'] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [[STRING_1, STRING_2]] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [[STRING_1], [STRING_2]] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [[STRING_1, STRING_2], [STRING_2]] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { containsStrings: [STRING_1] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { containsStrings: [STRING_1] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { containsStrings: [[STRING_1, STRING_2]] } }, expectedRemove: true },
+        { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { containsStrings: [STRING_1] } }, expectedRemove: false },
 
         // Tests for notContainsStrings
-        { htmlPath: UNLIKED, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
-        { htmlPath: UNCOMMENTED, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
-        { htmlPath: TEXT, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
-        { htmlPath: MESSAGE, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
-        { htmlPath: IMAGES, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
-        { htmlPath: VIDEOS, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { notContainsStrings: ['string1'] }, options: { caseSensitive: true } }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { notContainsStrings: ['String1'] }, options: { caseSensitive: true } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { notContainsStrings: [['string1']] } }, expectedRemove: true },
+        { htmlPath: UNLIKED, configOptions: { remove: { notContainsStrings: [STRING_1] } }, expectedRemove: true },
+        { htmlPath: UNCOMMENTED, configOptions: { remove: { notContainsStrings: [STRING_1] } }, expectedRemove: true },
+        { htmlPath: TEXT, configOptions: { remove: { notContainsStrings: [STRING_1] } }, expectedRemove: true },
+        { htmlPath: MESSAGE, configOptions: { remove: { notContainsStrings: [STRING_1] } }, expectedRemove: true },
+        { htmlPath: IMAGES, configOptions: { remove: { notContainsStrings: [STRING_1] } }, expectedRemove: true },
+        { htmlPath: VIDEOS, configOptions: { remove: { notContainsStrings: [STRING_1] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { notContainsStrings: [STRING_1] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { notContainsStrings: [STRING_1] }, options: { caseSensitive: true } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { notContainsStrings: [STRING_1_B] }, options: { caseSensitive: true } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { notContainsStrings: [STRING_1] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { notContainsStrings: [[STRING_1]] } }, expectedRemove: true },
         { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { notContainsStrings: [] } }, expectedRemove: false },
         { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { notContainsStrings: [[]] } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { notContainsStrings: [['string1', 'string2']] } }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { notContainsStrings: [['string1'], ['string2']] } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { notContainsStrings: [['string1', 'string2'], ['string1']] } }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { notContainsStrings: [['string1', 'string2']] } }, expectedRemove: false },
-        { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { notContainsStrings: ['string1'] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { notContainsStrings: [[STRING_1, STRING_2]] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { notContainsStrings: [[STRING_1], [STRING_2]] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { notContainsStrings: [[STRING_1, STRING_2], [STRING_1]] } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { notContainsStrings: [STRING_1] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { notContainsStrings: [[STRING_1, STRING_2]] } }, expectedRemove: false },
+        { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { notContainsStrings: [STRING_1] } }, expectedRemove: true },
 
         // Tests for linkedConditions
         { htmlPath: UNLIKED, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
