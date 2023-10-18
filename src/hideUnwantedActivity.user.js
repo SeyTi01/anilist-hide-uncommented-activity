@@ -103,8 +103,8 @@ class ActivityHandler {
         ['text', node => this.shouldRemoveText(node)],
         ['images', node => this.shouldRemoveImage(node)],
         ['videos', node => this.shouldRemoveVideo(node)],
-        ['containsStrings', node => this.shouldRemoveStrings(node, true)],
-        ['notContainsStrings', node => this.shouldRemoveStrings(node, false)],
+        ['containsStrings', node => this.shouldRemoveContainsStrings(node)],
+        ['notContainsStrings', node => this.shouldRemoveNotContainsStrings(node)],
     ]);
 
     removeEntry = (node) => {
@@ -176,21 +176,32 @@ class ActivityHandler {
         return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
     }
 
-    shouldRemoveStrings = (node, shouldContain) => {
-        const { remove: { containsStrings, notContainsStrings }, options: { caseSensitive } } = this.config;
-        const targetStrings = shouldContain ? containsStrings : notContainsStrings;
+    shouldRemoveContainsStrings = (node) => {
+        const { remove: { containsStrings }, options: { caseSensitive } } = this.config;
 
-        if (typeof targetStrings[0] === 'string') {
-            return this.containsString(node.textContent, targetStrings, caseSensitive, shouldContain);
-        }
-
-        for (const subArray of targetStrings) {
-            if (this.containsString(node.textContent, subArray, caseSensitive, shouldContain)) {
-                return true;
+        if (typeof containsStrings[0] === 'string') {
+            return this.containsString(node.textContent, containsStrings, caseSensitive, true);
+        } else {
+            for (const subArray of containsStrings) {
+                if (this.containsString(node.textContent, subArray, caseSensitive, true)) {
+                    return true;
+                }
             }
         }
+    }
 
-        return false;
+    shouldRemoveNotContainsStrings = (node) => {
+        const { remove: { notContainsStrings }, options: { caseSensitive } } = this.config;
+
+        if (typeof notContainsStrings[0] === 'string') {
+            return this.containsString(node.textContent, notContainsStrings, caseSensitive, false);
+        } else {
+            for (const subArray of notContainsStrings) {
+                if (this.containsString(node.textContent, subArray, caseSensitive, false)) {
+                    return true;
+                }
+            }
+        }
     }
 
     containsString(nodeText, strings, caseSensitive, shouldContain) {
