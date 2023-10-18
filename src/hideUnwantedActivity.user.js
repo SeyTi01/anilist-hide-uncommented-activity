@@ -295,6 +295,83 @@ class UIHandler {
     };
 }
 
+class ConfigValidator {
+    constructor(config) {
+        this.config = config;
+        this.errors = [];
+    }
+
+    validate() {
+        const { options } = this.config;
+
+        const booleanKeys = [
+            'remove.uncommented',
+            'remove.unliked',
+            'remove.text',
+            'remove.images',
+            'remove.videos',
+            'options.caseSensitive',
+            'runOn.home',
+            'runOn.social',
+            'runOn.profile',
+        ];
+
+        const arrayKeys = [
+            'remove.containsStrings',
+            'remove.notContainsStrings',
+            'options.linkedConditions',
+        ];
+
+        this.validateBooleans(booleanKeys);
+        this.validatePositiveNonZeroInteger('options.targetLoadCount', options.targetLoadCount);
+        this.validateArraysOfStrings(arrayKeys);
+
+        if (this.errors.length > 0) {
+            const errorMessage = `Script disabled due to configuration errors: ${this.errors.join(', ')}`;
+            throw new Error(errorMessage);
+        }
+    }
+
+    validateBooleans(keys) {
+        for (const key of keys) {
+            if (typeof this.getConfigValue(key) !== 'boolean') {
+                this.errors.push(`${key} should be a boolean`);
+            }
+        }
+    }
+
+    validatePositiveNonZeroInteger(key, value) {
+        if (typeof value !== 'number' || !Number.isInteger(value) || value <= 0) {
+            this.errors.push(`${key} should be a positive non-zero integer`);
+        }
+    }
+
+    validateArraysOfStrings(keys) {
+        for (const key of keys) {
+            const value = this.getConfigValue(key);
+            if (!Array.isArray(value) || !value.every(item => this.isArrayOfStrings(item))) {
+                this.errors.push(`${key} should be an array of strings or an array of arrays of strings`);
+            }
+        }
+    }
+
+    isArrayOfStrings(arr) {
+        return Array.isArray(arr) && arr.every(item => typeof item === 'string');
+    }
+
+    getConfigValue(key) {
+        const keys = key.split('.');
+        let value = this.config;
+        for (const k of keys) {
+            value = value[k];
+            if (value === undefined) {
+                return undefined;
+            }
+        }
+        return value;
+    }
+}
+
 const SELECTORS = {
     div: {
         button: 'div.load-more',
@@ -317,6 +394,13 @@ const SELECTORS = {
 };
 
 function main() {
+    try {
+        new ConfigValidator(config).validate();
+    } catch (error) {
+        console.error(error.message);
+        return;
+    }
+
     const activityHandler = new ActivityHandler(config);
     const uiHandler = new UIHandler();
     const mainApp = new MainApp(activityHandler, uiHandler, config);
