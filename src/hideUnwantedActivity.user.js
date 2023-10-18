@@ -179,34 +179,19 @@ class ActivityHandler {
     shouldRemoveContainsStrings = (node) => {
         const { remove: { containsStrings }, options: { caseSensitive } } = this.config;
 
-        if (containsStrings.every(Array.isArray)) {
-            return containsStrings.some(subArray => {
-                if (subArray.every(str => this.containsString(node.textContent, str, caseSensitive, true))) {
-                    return true;
-                }
-            });
-        } else {
-            return containsStrings.some(str => this.containsString(node.textContent, str, caseSensitive, true));
-        }
+        return containsStrings.some(strings => {
+            const checkString = (str) => this.containsString(node.textContent, str, caseSensitive, true);
+            return Array.isArray(strings) ? strings.every(checkString) : checkString(strings);
+        });
     }
 
     shouldRemoveNotContainsStrings = (node) => {
         const { remove: { notContainsStrings }, options: { caseSensitive } } = this.config;
 
-        if (Array.isArray(notContainsStrings) && notContainsStrings.length > 0) {
-            if (Array.isArray(notContainsStrings[0])) {
-                return !notContainsStrings.some(subArray =>
-                    subArray.every(str =>
-                        this.containsString(node.textContent, str, caseSensitive, true),
-                    ),
-                );
-            } else {
-                return !notContainsStrings.every(str =>
-                    this.containsString(node.textContent, str, caseSensitive, true),
-                );
-            }
-        }
-        return false;
+        return !notContainsStrings.some(strings => {
+                const checkString = (str) => this.containsString(node.textContent, str, caseSensitive, true);
+                return Array.isArray(strings) ? strings.every(checkString) : checkString(strings);
+            });
     }
 
     containsString(nodeText, strings, caseSensitive, shouldContain) {
