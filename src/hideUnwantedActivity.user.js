@@ -107,11 +107,11 @@ class ActivityHandler {
     ]);
 
     conditionsMapReversed = new Map([
-        ['uncommented', node => this.shouldRemoveUncommented(node, true)],
-        ['unliked', node => this.shouldRemoveUnliked(node, true)],
-        //  ['text', node => this.shouldRemoveText(node, true)],
-        ['images', node => this.shouldRemoveImage(node, true)],
-        ['videos', node => this.shouldRemoveVideo(node, true)],
+        ['uncommented', node => !this.shouldRemoveUncommented(node)],
+        ['unliked', node => !this.shouldRemoveUnliked(node)],
+        ['text', node => !this.shouldRemoveText(node)],
+        ['images', node => !this.shouldRemoveImage(node)],
+        ['videos', node => !this.shouldRemoveVideo(node)],
         ['containsStrings', node => this.shouldRemoveStrings(node, true)],
     ]);
 
@@ -170,28 +170,20 @@ class ActivityHandler {
         return this.config.remove[conditionName] && predicate(node);
     }
 
-    shouldRemoveUncommented = (node, reversed) => {
-        return reversed
-            ? node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count)
-            : !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
+    shouldRemoveUncommented = (node) => {
+        return !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
     }
 
-    shouldRemoveUnliked = (node, reversed) => {
-        return reversed
-            ? node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count)
-            : !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
+    shouldRemoveUnliked = (node) => {
+        return !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
     }
 
-    shouldRemoveImage = (node, reversed) => {
-        return reversed
-            ? !node?.querySelector(SELECTORS.class.image)
-            : node?.querySelector(SELECTORS.class.image);
+    shouldRemoveImage = (node) => {
+        return node?.querySelector(SELECTORS.class.image);
     }
 
-    shouldRemoveVideo = (node, reversed) => {
-        return reversed
-            ? !node?.querySelector(SELECTORS.class.video) && !node?.querySelector(SELECTORS.span.youTube)
-            : node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
+    shouldRemoveVideo = (node) => {
+        return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
     }
 
     shouldRemoveText = (node) => {
