@@ -147,16 +147,18 @@ class ActivityHandler {
 
         if (!linkedConditions) return false;
 
-        const conditionsMapToUse = reversedConditions ? this.conditionsMapReversed : this.conditionsMap;
+        const conditionsMap = reversedConditions
+            ? this.conditionsMapReversed
+            : this.conditionsMap;
 
         for (const linkedCondition of linkedConditions) {
             const conditionList = Array.isArray(linkedCondition) ? linkedCondition : [linkedCondition];
 
             if (reversedConditions) {
-                if (conditionList.some(condition => conditionsMapToUse.get(condition)(node))) {
+                if (conditionList.some(condition => conditionsMap.get(condition)(node))) {
                     return true;
                 }
-            } else if (conditionList.every(condition => conditionsMapToUse.get(condition)(node))) {
+            } else if (conditionList.every(condition => conditionsMap.get(condition)(node))) {
                 return true;
             }
         }
@@ -169,23 +171,27 @@ class ActivityHandler {
     }
 
     shouldRemoveUncommented = (node, reversed) => {
-        return reversed ? node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count) :
-            !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
+        return reversed
+            ? node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count)
+            : !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
     }
 
     shouldRemoveUnliked = (node, reversed) => {
-        return reversed ? node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count) :
-            !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
+        return reversed
+            ? node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count)
+            : !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
     }
 
     shouldRemoveImage = (node, reversed) => {
-        return reversed ? !node?.querySelector(SELECTORS.class.image) :
-            node?.querySelector(SELECTORS.class.image);
+        return reversed
+            ? !node?.querySelector(SELECTORS.class.image)
+            : node?.querySelector(SELECTORS.class.image);
     }
 
     shouldRemoveVideo = (node, reversed) => {
-        return reversed ? !node?.querySelector(SELECTORS.class.video) && !node?.querySelector(SELECTORS.span.youTube) :
-            node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
+        return reversed
+            ? !node?.querySelector(SELECTORS.class.video) && !node?.querySelector(SELECTORS.span.youTube)
+            : node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
     }
 
     shouldRemoveText = (node) => {
@@ -209,7 +215,9 @@ class ActivityHandler {
 
     containsString(nodeText, strings) {
         const { options: { caseSensitive } } = this.config;
-        return !caseSensitive ? nodeText.toLowerCase().includes(strings.toLowerCase()) : nodeText.includes(strings);
+        return !caseSensitive
+            ? nodeText.toLowerCase().includes(strings.toLowerCase())
+            : nodeText.includes(strings);
     }
 }
 
