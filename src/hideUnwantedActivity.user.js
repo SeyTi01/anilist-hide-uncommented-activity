@@ -154,10 +154,8 @@ class ActivityHandler {
                 if (conditionArray.some(condition => conditionsMapToUse.get(condition)(node))) {
                     return true;
                 }
-            } else {
-                if (conditionArray.every(condition => conditionsMapToUse.get(condition)(node))) {
-                    return true;
-                }
+            } else if (conditionArray.every(condition => conditionsMapToUse.get(condition)(node))) {
+                return true;
             }
         }
 
