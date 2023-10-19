@@ -81,7 +81,7 @@ describe('ConfigValidator', () => {
     it('should validate array keys with non-array values correctly', () => {
         const invalidConfig = generateMergedConfig({
             remove: {
-                notContainsStrings: true,
+                containsStrings: true,
             },
         });
         validateAndCheckErrors(invalidConfig, /should be an array/);
