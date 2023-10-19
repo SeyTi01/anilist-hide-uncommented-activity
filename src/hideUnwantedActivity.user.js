@@ -137,14 +137,14 @@ class ActivityHandler {
     }
 
     shouldRemoveLinkedConditions = (node) => {
-        const { options: { linkedConditions } } = this.config;
+        const { options: { linkedConditions, reversedConditions } } = this.config;
 
         if (!linkedConditions) {
             return false;
         }
 
         const conditionsArray = linkedConditions.map(link => (Array.isArray(link) ? link : [link]));
-        const conditionsMap = this.config.options.reversedConditions ? this.conditionsMapReversed : this.conditionsMap;
+        const conditionsMap = reversedConditions ? this.conditionsMapReversed : this.conditionsMap;
 
         return conditionsArray.some(link => link.length > 0)
             && conditionsArray.some(link => link.every(condition => conditionsMap.get(condition)(node)));
