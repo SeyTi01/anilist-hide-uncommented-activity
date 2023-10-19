@@ -145,13 +145,12 @@ class ActivityHandler {
             return false;
         }
 
-        const conditionsArray = linkedConditions.map(link => {
-            if (Array.isArray(link)) {
-                return link;
-            } else {
-                return [link];
-            }
-        });
+        let conditionsArray = [];
+        if (Array.isArray(linkedConditions[0])) {
+            conditionsArray = linkedConditions;
+        } else {
+            conditionsArray = linkedConditions.map(x => [x]);
+        }
 
         let conditionsMapToUse;
         if (reversedConditions) {
@@ -167,14 +166,28 @@ class ActivityHandler {
             if (link.length > 0) {
                 hasAtLeastOneCondition = true;
             }
-            let allConditionsInLinkTrue = true;
-            for (const condition of link) {
-                if (!conditionsMapToUse.get(condition)(node)) {
-                    allConditionsInLinkTrue = false;
-                    break;
+
+            if (reversedConditions) {
+                var allConditionsInLinkTrue = false;
+                for (const condition of link) {
+                    if (conditionsMapToUse.get(condition)(node)) {
+                        allConditionsInLinkTrue = true;
+                        break;
+                    }
                 }
             }
-            if (allConditionsInLinkTrue) {
+
+            if (!reversedConditions) {
+                var allConditionsInLinkFalse = true;
+                for (const condition of link) {
+                    if (!conditionsMapToUse.get(condition)(node)) {
+                        allConditionsInLinkFalse = false;
+                        break;
+                    }
+                }
+            }
+
+            if (allConditionsInLinkTrue || allConditionsInLinkFalse) {
                 allConditionsTrue = true;
                 break;
             }
