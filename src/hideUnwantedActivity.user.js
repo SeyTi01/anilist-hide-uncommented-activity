@@ -288,26 +288,12 @@ class ConfigValidator {
     }
 
     validate() {
-        this.validateBooleans([
-            'remove.uncommented',
-            'remove.unliked',
-            'remove.text',
-            'remove.images',
-            'remove.videos',
-            'options.caseSensitive',
-            'runOn.home',
-            'runOn.social',
-            'runOn.profile',
-        ]);
-
         this.validatePositiveNonZeroInteger('options.targetLoadCount', 'options.targetLoadCount');
-        this.validateArrays([
-            'remove.containsStrings',
-            'options.linkedConditions',
-        ]);
-
+        this.validateArrays(['remove.containsStrings', 'options.linkedConditions']);
         this.validateLinkedConditions('options.linkedConditions');
         this.validateStringArrays(['remove.containsStrings']);
+        this.validateBooleans(['remove.uncommented', 'remove.unliked', 'remove.text', 'remove.images',
+            'remove.videos', 'options.caseSensitive', 'runOn.home', 'runOn.social', 'runOn.profile']);
 
         if (this.errors.length > 0) {
             const errorMessage = `Script disabled due to configuration errors: ${this.errors.join(', ')}`;
@@ -368,15 +354,7 @@ class ConfigValidator {
 
     validateLinkedConditions(configKey) {
         const linkedConditions = this.getConfigValue(configKey);
-
-        const allowedConditions = [
-            'uncommented',
-            'unliked',
-            'text',
-            'images',
-            'videos',
-            'containsStrings',
-        ];
+        const allowedConditions = ['uncommented', 'unliked', 'text', 'images', 'videos', 'containsStrings'];
 
         for (const condition of linkedConditions.flat()) {
             if (typeof condition !== 'string' || !allowedConditions.includes(condition)) {
