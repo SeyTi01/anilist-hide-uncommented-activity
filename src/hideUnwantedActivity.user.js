@@ -137,16 +137,20 @@ class ActivityHandler {
         for (const linkedCondition of linkedConditions) {
             const conditionList = Array.isArray(linkedCondition) ? linkedCondition : [linkedCondition];
 
-            if (reversedConditions) {
-                if (conditionList.some(condition => this.conditionsMap.get(condition)(node, reversedConditions))) {
-                    return true;
-                }
-            } else if (conditionList.every(condition => this.conditionsMap.get(condition)(node, reversedConditions))) {
+            if (this.checkConditions(node, conditionList, reversedConditions)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    checkConditions = (node, conditionList, reversedConditions) => {
+        if (reversedConditions) {
+            return conditionList.some(condition => this.conditionsMap.get(condition)(node, reversedConditions));
+        } else {
+            return conditionList.every(condition => this.conditionsMap.get(condition)(node, reversedConditions));
+        }
     }
 
     shouldRemoveConditions = (conditionName, predicate, node) => {
