@@ -132,7 +132,23 @@ describe('ActivityHandler', () => {
         { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { containsStrings: [[STRING_1, STRING_2]] } }, expectedRemove: true },
         { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { containsStrings: [STRING_1] } }, expectedRemove: false },
 
-        // Tests for notContainsStrings
+        // Tests for linkedConditions
+        { htmlPath: UNLIKED, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
+        { htmlPath: UNCOMMENTED, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
+        { htmlPath: TEXT, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
+        { htmlPath: MESSAGE, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
+        { htmlPath: IMAGES, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
+        { htmlPath: VIDEOS, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { options: { linkedConditions: ['images', 'unliked'] } }, expectedRemove: false },
+        { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: true },
+        { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: ['images', 'unliked'] } }, expectedRemove: true },
+        { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['videos', 'uncommented'], ['images', 'unliked']] } }, expectedRemove: true },
+        { htmlPath: VIDEOS_UNCOMMENTED, configOptions: { options: { linkedConditions: [['videos', 'uncommented']] } }, expectedRemove: true },
+        { htmlPath: VIDEOS_UNCOMMENTED, configOptions: { options: { linkedConditions: [['videos', 'images']] } }, expectedRemove: false },
+
+        // Reversed conditions
+        // Tests for containsStrings
         { htmlPath: UNLIKED, configOptions: { remove: { containsStrings: [STRING_1] }, options: { reversedConditions: true } }, expectedRemove: true },
         { htmlPath: UNCOMMENTED, configOptions: { remove: { containsStrings: [STRING_1] }, options: { reversedConditions: true } }, expectedRemove: true },
         { htmlPath: TEXT, configOptions: { remove: { containsStrings: [STRING_1] }, options: { reversedConditions: true } }, expectedRemove: true },
@@ -153,20 +169,7 @@ describe('ActivityHandler', () => {
         { htmlPath: CONTAINS_STRINGS, configOptions: { remove: { containsStrings: [[STRING_1, STRING_2]] }, options: { reversedConditions: true } }, expectedRemove: false },
         { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { containsStrings: [STRING_1] }, options: { reversedConditions: true } }, expectedRemove: true },
 
-        // Tests for linkedConditions
-        { htmlPath: UNLIKED, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
-        { htmlPath: UNCOMMENTED, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
-        { htmlPath: TEXT, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
-        { htmlPath: MESSAGE, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
-        { htmlPath: IMAGES, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
-        { htmlPath: VIDEOS, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { options: { linkedConditions: ['images', 'unliked'] } }, expectedRemove: false },
-        { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: true },
-        { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: ['images', 'unliked'] } }, expectedRemove: true },
-        { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['videos', 'uncommented'], ['images', 'unliked']] } }, expectedRemove: true },
-        { htmlPath: VIDEOS_UNCOMMENTED, configOptions: { options: { linkedConditions: [['videos', 'uncommented']] } }, expectedRemove: true },
-        { htmlPath: VIDEOS_UNCOMMENTED, configOptions: { options: { linkedConditions: [['videos', 'images']] } }, expectedRemove: false },
+
     ];
 
     runTestCases(testCases);
