@@ -23,7 +23,7 @@ const config = {
         targetLoadCount: 2, // Minimum number of activities to show per click on the "Load More" button
         caseSensitive: false, // Whether string-based removal should be case-sensitive
         linkedConditions: [], // Groups of conditions to be checked together (linked conditions are always considered 'true')
-        reversedConditions: true,
+        reversedConditions: false,
     },
     runOn: {
         home: true, // Run the script on the home feed
