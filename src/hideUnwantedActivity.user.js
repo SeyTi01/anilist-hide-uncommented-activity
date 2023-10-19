@@ -120,13 +120,12 @@ class ActivityHandler {
 
     shouldRemoveNode = (node) => {
         const { options: { reversedConditions } } = this.config;
-        const shouldRemoveByLinkedConditions = this.shouldRemoveLinkedConditions(node);
 
-        const shouldRemoveByConditions = Array.from(this.conditionsMap.entries()).some(
+        const shouldRemoveConditions = Array.from(this.conditionsMap.entries()).some(
             ([name, predicate]) => this.shouldRemoveConditions(name, node => predicate(node, reversedConditions), node),
         );
 
-        return shouldRemoveByLinkedConditions || shouldRemoveByConditions;
+        return this.shouldRemoveLinkedConditions(node) || shouldRemoveConditions;
     }
 
     shouldRemoveLinkedConditions = (node) => {
