@@ -18,12 +18,12 @@ const config = {
         images: false, // Remove activities containing images
         videos: false, // Remove activities containing videos
         containsStrings: [], // Remove activities containing user defined strings
-        notContainsStrings: [], // Remove activities not containing user defined strings
     },
     options: {
         targetLoadCount: 2, // Minimum number of activities to show per click on the "Load More" button
         caseSensitive: false, // Whether string-based removal should be case-sensitive
         linkedConditions: [], // Groups of conditions to be checked together (linked conditions are always considered 'true')
+        reversedConditions: true,
     },
     runOn: {
         home: true, // Run the script on the home feed
@@ -104,7 +104,10 @@ class ActivityHandler {
         ['images', node => this.shouldRemoveImage(node)],
         ['videos', node => this.shouldRemoveVideo(node)],
         ['containsStrings', node => this.shouldRemoveStrings(node, true)],
-        ['notContainsStrings', node => this.shouldRemoveStrings(node, false)],
+    ]);
+
+    conditionsMapReversed = new Map([
+        ['containsStrings', node => this.shouldRemoveStrings(node, false)],
     ]);
 
     removeEntry = (node) => {
@@ -121,7 +124,8 @@ class ActivityHandler {
 
     shouldRemoveNode = (node) => {
         const shouldRemoveByLinkedConditions = this.shouldRemoveLinkedConditions(node);
-        const shouldRemoveByConditions = Array.from(this.conditionsMap.entries())
+        const conditionsMap = this.config.options.reversedConditions ? this.conditionsMapReversed : this.conditionsMap;
+        const shouldRemoveByConditions = Array.from(conditionsMap.entries())
             .some(([name, predicate]) => this.shouldRemoveConditions(name, predicate, node));
 
         return shouldRemoveByLinkedConditions || shouldRemoveByConditions;
@@ -135,9 +139,10 @@ class ActivityHandler {
         }
 
         const conditionsArray = linkedConditions.map(link => (Array.isArray(link) ? link : [link]));
+        const conditionsMap = this.config.options.reversedConditions ? this.conditionsMapReversed : this.conditionsMap;
 
         return conditionsArray.some(link => link.length > 0)
-            && conditionsArray.some(link => link.every(condition => this.conditionsMap.get(condition)(node)));
+            && conditionsArray.some(link => link.every(condition => conditionsMap.get(condition)(node)));
     }
 
     shouldRemoveConditions = (conditionName, predicate, node) => {
@@ -168,12 +173,11 @@ class ActivityHandler {
 
     shouldRemoveStrings = (node, shouldContain) => {
         const containsStrings = this.config.remove.containsStrings;
-        const notContainsStrings = this.config.remove.notContainsStrings;
         const caseSensitive = this.config.options.caseSensitive;
 
-        const isEmptyArray = arr => Array.isArray(arr) && arr.length === 0;
+        const isEmptyArray = arr => Array.isArray(arr) && arr.every(item => isEmptyArray(item));
 
-        if ((!notContainsStrings || isEmptyArray(notContainsStrings)) && (!shouldContain || containsStrings.every(isEmptyArray))) {
+        if (isEmptyArray(containsStrings)) {
             return false;
         }
 
@@ -185,21 +189,22 @@ class ActivityHandler {
             }
         };
 
-        if (shouldContain) {
+        if (!shouldContain) {
             for (let i = 0; i < containsStrings.length; i++) {
                 if (checkStrings(containsStrings[i])) {
-                    return true;
-                }
-            }
-            return false;
-        } else {
-            for (let i = 0; i < notContainsStrings.length; i++) {
-                if (checkStrings(notContainsStrings[i])) {
                     return false;
                 }
             }
             return true;
         }
+
+        for (let i = 0; i < containsStrings.length; i++) {
+            if (checkStrings(containsStrings[i])) {
+                return true;
+            }
+        }
+
+        return false;
     };
 
     containsString(nodeText, strings, caseSensitive) {
