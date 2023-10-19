@@ -103,7 +103,7 @@ class ActivityHandler {
         ['text', node => this.shouldRemoveText(node)],
         ['images', node => this.shouldRemoveImage(node)],
         ['videos', node => this.shouldRemoveVideo(node)],
-        ['containsStrings', node => this.shouldRemoveStrings(node)],
+        ['containsStrings', node => this.shouldRemoveStrings(node, false)],
     ]);
 
     conditionsMapReversed = new Map([
