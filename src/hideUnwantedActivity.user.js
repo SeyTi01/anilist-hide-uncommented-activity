@@ -98,21 +98,12 @@ class ActivityHandler {
     }
 
     conditionsMap = new Map([
-        ['uncommented', node => this.shouldRemoveUncommented(node)],
-        ['unliked', node => this.shouldRemoveUnliked(node)],
-        ['text', node => this.shouldRemoveText(node)],
-        ['images', node => this.shouldRemoveImage(node)],
-        ['videos', node => this.shouldRemoveVideo(node)],
-        ['containsStrings', node => this.shouldRemoveStrings(node, false)],
-    ]);
-
-    conditionsMapReversed = new Map([
-        ['uncommented', node => !this.shouldRemoveUncommented(node)],
-        ['unliked', node => !this.shouldRemoveUnliked(node)],
-        ['text', node => !this.shouldRemoveText(node)],
-        ['images', node => !this.shouldRemoveImage(node)],
-        ['videos', node => !this.shouldRemoveVideo(node)],
-        ['containsStrings', node => this.shouldRemoveStrings(node, true)],
+        ['uncommented', (node, reverse) => reverse ? !this.shouldRemoveUncommented(node) : this.shouldRemoveUncommented(node)],
+        ['unliked', (node, reverse) => reverse ? !this.shouldRemoveUnliked(node) : this.shouldRemoveUnliked(node)],
+        ['text', (node, reverse) => reverse ? !this.shouldRemoveText(node) : this.shouldRemoveText(node)],
+        ['images', (node, reverse) => reverse ? !this.shouldRemoveImage(node) : this.shouldRemoveImage(node)],
+        ['videos', (node, reverse) => reverse ? !this.shouldRemoveVideo(node) : this.shouldRemoveVideo(node)],
+        ['containsStrings', (node, reverse) => this.shouldRemoveStrings(node, reverse)],
     ]);
 
     removeEntry = (node) => {
@@ -131,12 +122,8 @@ class ActivityHandler {
         const { options: { reversedConditions } } = this.config;
         const shouldRemoveByLinkedConditions = this.shouldRemoveLinkedConditions(node);
 
-        const conditionsMap = reversedConditions
-            ? this.conditionsMapReversed
-            : this.conditionsMap;
-
-        const shouldRemoveByConditions = Array.from(conditionsMap.entries()).some(
-            ([name, predicate]) => this.shouldRemoveConditions(name, predicate, node),
+        const shouldRemoveByConditions = Array.from(this.conditionsMap.entries()).some(
+            ([name, predicate]) => this.shouldRemoveConditions(name, node => predicate(node, reversedConditions), node),
         );
 
         return shouldRemoveByLinkedConditions || shouldRemoveByConditions;
@@ -147,18 +134,14 @@ class ActivityHandler {
 
         if (!linkedConditions) return false;
 
-        const conditionsMap = reversedConditions
-            ? this.conditionsMapReversed
-            : this.conditionsMap;
-
         for (const linkedCondition of linkedConditions) {
             const conditionList = Array.isArray(linkedCondition) ? linkedCondition : [linkedCondition];
 
             if (reversedConditions) {
-                if (conditionList.some(condition => conditionsMap.get(condition)(node))) {
+                if (conditionList.some(condition => this.conditionsMap.get(condition)(node, reversedConditions))) {
                     return true;
                 }
-            } else if (conditionList.every(condition => conditionsMap.get(condition)(node))) {
+            } else if (conditionList.every(condition => this.conditionsMap.get(condition)(node, reversedConditions))) {
                 return true;
             }
         }
