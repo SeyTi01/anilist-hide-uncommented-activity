@@ -109,7 +109,7 @@ class ActivityHandler {
     conditionsMapReversed = new Map([
         ['uncommented', node => this.shouldRemoveUncommented(node, true)],
         ['unliked', node => this.shouldRemoveUnliked(node, true)],
-    //  ['text', node => this.shouldRemoveText(node, true)],
+        //  ['text', node => this.shouldRemoveText(node, true)],
         ['images', node => this.shouldRemoveImage(node, true)],
         ['videos', node => this.shouldRemoveVideo(node, true)],
         ['containsStrings', node => this.shouldRemoveStrings(node, true)],
@@ -145,11 +145,42 @@ class ActivityHandler {
             return false;
         }
 
-        const conditionsArray = linkedConditions.map(link => (Array.isArray(link) ? link : [link]));
-        const conditionsMap = reversedConditions ? this.conditionsMapReversed : this.conditionsMap;
+        const conditionsArray = linkedConditions.map(link => {
+            if (Array.isArray(link)) {
+                return link;
+            } else {
+                return [link];
+            }
+        });
 
-        return conditionsArray.some(link => link.length > 0)
-            && conditionsArray.some(link => link.every(condition => conditionsMap.get(condition)(node)));
+        let conditionsMapToUse;
+        if (reversedConditions) {
+            conditionsMapToUse = this.conditionsMapReversed;
+        } else {
+            conditionsMapToUse = this.conditionsMap;
+        }
+
+        let hasAtLeastOneCondition = false;
+        let allConditionsTrue = false;
+
+        for (const link of conditionsArray) {
+            if (link.length > 0) {
+                hasAtLeastOneCondition = true;
+            }
+            let allConditionsInLinkTrue = true;
+            for (const condition of link) {
+                if (!conditionsMapToUse.get(condition)(node)) {
+                    allConditionsInLinkTrue = false;
+                    break;
+                }
+            }
+            if (allConditionsInLinkTrue) {
+                allConditionsTrue = true;
+                break;
+            }
+        }
+
+        return hasAtLeastOneCondition && allConditionsTrue;
     }
 
     shouldRemoveConditions = (conditionName, predicate, node) => {
