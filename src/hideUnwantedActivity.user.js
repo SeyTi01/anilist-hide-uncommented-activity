@@ -108,7 +108,7 @@ class ActivityHandler {
 
     conditionsMapReversed = new Map([
     //  ['uncommented', node => this.shouldRemoveUncommented(node, true)],
-    //  ['unliked', node => this.shouldRemoveUnliked(node, true)],
+        ['unliked', node => this.shouldRemoveUnliked(node, true)],
     //  ['text', node => this.shouldRemoveText(node, true)],
         ['images', node => this.shouldRemoveImage(node, true)],
         ['videos', node => this.shouldRemoveVideo(node, true)],
@@ -159,7 +159,11 @@ class ActivityHandler {
         return !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
     }
 
-    shouldRemoveUnliked = (node) => {
+    shouldRemoveUnliked = (node, reversed) => {
+        if (reversed) {
+            return node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
+        }
+
         return !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
     }
 
