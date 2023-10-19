@@ -103,11 +103,11 @@ class ActivityHandler {
         ['text', node => this.shouldRemoveText(node)],
         ['images', node => this.shouldRemoveImage(node)],
         ['videos', node => this.shouldRemoveVideo(node)],
-        ['containsStrings', node => this.shouldRemoveStrings(node, true)],
+        ['containsStrings', node => this.shouldRemoveStrings(node, false)],
     ]);
 
     conditionsMapReversed = new Map([
-        ['containsStrings', node => this.shouldRemoveStrings(node, false)],
+        ['containsStrings', node => this.shouldRemoveStrings(node, true)],
     ]);
 
     removeEntry = (node) => {
@@ -171,7 +171,7 @@ class ActivityHandler {
         return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
     }
 
-    shouldRemoveStrings = (node, shouldContain) => {
+    shouldRemoveStrings = (node, reverse) => {
         const { remove, options } = this.config;
         const containsStrings = remove.containsStrings;
 
@@ -187,11 +187,11 @@ class ActivityHandler {
             }
         };
 
-        if (shouldContain) {
-            return containsStrings.some(checkStrings);
+        if (reverse) {
+            return !containsStrings.some(checkStrings);
         }
 
-        return !containsStrings.some(checkStrings);
+        return containsStrings.some(checkStrings);
     };
 
     containsString(nodeText, strings, caseSensitive) {
