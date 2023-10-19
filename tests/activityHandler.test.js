@@ -228,14 +228,14 @@ describe('ActivityHandler', () => {
         { htmlPath: IMAGES_VIDEOS, configOptions: { options: { linkedConditions: [['images', 'videos']] , reversedConditions: true } }, expectedRemove: false },
 
         // Tests for reversed text
-        /*{ htmlPath: UNLIKED, configOptions: { remove: { text: true }, options: { reversedConditions: true } }, expectedRemove: true },
+        { htmlPath: UNLIKED, configOptions: { remove: { text: true }, options: { reversedConditions: true } }, expectedRemove: true },
         { htmlPath: UNCOMMENTED, configOptions: { remove: { text: true }, options: { reversedConditions: true } }, expectedRemove: true },
         { htmlPath: TEXT, configOptions: { remove: { text: true }, options: { reversedConditions: true } }, expectedRemove: false },
         { htmlPath: MESSAGE, configOptions: { remove: { text: true }, options: { reversedConditions: true } }, expectedRemove: false },
         { htmlPath: IMAGES, configOptions: { remove: { text: true }, options: { reversedConditions: true } }, expectedRemove: true },
         { htmlPath: VIDEOS, configOptions: { remove: { text: true }, options: { reversedConditions: true } }, expectedRemove: true },
         { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { text: true }, options: { reversedConditions: true } }, expectedRemove: true },
-        { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { text: true }, options: { reversedConditions: true } }, expectedRemove: true },*/
+        { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { text: true }, options: { reversedConditions: true } }, expectedRemove: true },
 
         // Tests for multiple unlinked reversed conditions
         /*{ htmlPath: IMAGES, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: false },
