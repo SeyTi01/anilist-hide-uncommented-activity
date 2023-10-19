@@ -107,6 +107,9 @@ class ActivityHandler {
     ]);
 
     conditionsMapReversed = new Map([
+    //  ['uncommented', node => this.shouldRemoveUncommented(node, true)],
+    //  ['unliked', node => this.shouldRemoveUnliked(node, true)],
+    //  ['text', node => this.shouldRemoveText(node, true)],
         ['images', node => this.shouldRemoveImage(node, true)],
         ['videos', node => this.shouldRemoveVideo(node, true)],
         ['containsStrings', node => this.shouldRemoveStrings(node, true)],
