@@ -148,6 +148,17 @@ describe('ActivityHandler', () => {
         { htmlPath: VIDEOS_UNCOMMENTED, configOptions: { options: { linkedConditions: [['videos', 'images']] } }, expectedRemove: false },
 
         // Reversed conditions
+        // Tests for videos
+        { htmlPath: UNLIKED, configOptions: { remove: { videos: true }, options: { reversedConditions: true } }, expectedRemove: true },
+        { htmlPath: UNCOMMENTED, configOptions: { remove: { videos: true }, options: { reversedConditions: true } }, expectedRemove: true },
+        { htmlPath: TEXT, configOptions: { remove: { videos: true }, options: { reversedConditions: true } }, expectedRemove: true },
+        { htmlPath: MESSAGE, configOptions: { remove: { videos: true }, options: { reversedConditions: true } }, expectedRemove: true },
+        { htmlPath: IMAGES, configOptions: { remove: { videos: true }, options: { reversedConditions: true } }, expectedRemove: true },
+        { htmlPath: VIDEOS, configOptions: { remove: { videos: true }, options: { reversedConditions: true } }, expectedRemove: false },
+        { htmlPath: VIDEOS_YOUTUBE, configOptions: { remove: { videos: true }, options: { reversedConditions: true } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { videos: true }, options: { reversedConditions: true } }, expectedRemove: true },
+        { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { videos: true }, options: { reversedConditions: true } }, expectedRemove: true },
+
         // Tests for containsStrings
         { htmlPath: UNLIKED, configOptions: { remove: { containsStrings: [STRING_1] }, options: { reversedConditions: true } }, expectedRemove: true },
         { htmlPath: UNCOMMENTED, configOptions: { remove: { containsStrings: [STRING_1] }, options: { reversedConditions: true } }, expectedRemove: true },

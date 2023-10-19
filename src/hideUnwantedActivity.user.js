@@ -107,6 +107,7 @@ class ActivityHandler {
     ]);
 
     conditionsMapReversed = new Map([
+        ['videos', node => this.shouldRemoveVideo(node, true)],
         ['containsStrings', node => this.shouldRemoveStrings(node, true)],
     ]);
 
@@ -167,8 +168,12 @@ class ActivityHandler {
         return node?.querySelector(SELECTORS.class.image);
     }
 
-    shouldRemoveVideo = (node) => {
-        return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
+    shouldRemoveVideo = (node, reversed) => {
+        if (reversed) {
+            return !node?.querySelector(SELECTORS.class.video) && !node?.querySelector(SELECTORS.span.youTube);
+        } else {
+            return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
+        }
     }
 
     shouldRemoveStrings = (node, reverse) => {
