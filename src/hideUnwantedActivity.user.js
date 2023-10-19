@@ -103,10 +103,11 @@ class ActivityHandler {
         ['text', node => this.shouldRemoveText(node)],
         ['images', node => this.shouldRemoveImage(node)],
         ['videos', node => this.shouldRemoveVideo(node)],
-        ['containsStrings', node => this.shouldRemoveStrings(node, false)],
+        ['containsStrings', node => this.shouldRemoveStrings(node)],
     ]);
 
     conditionsMapReversed = new Map([
+        ['images', node => this.shouldRemoveImage(node, true)],
         ['videos', node => this.shouldRemoveVideo(node, true)],
         ['containsStrings', node => this.shouldRemoveStrings(node, true)],
     ]);
@@ -164,8 +165,12 @@ class ActivityHandler {
             && !(this.shouldRemoveImage(node) || this.shouldRemoveVideo(node));
     }
 
-    shouldRemoveImage = (node) => {
-        return node?.querySelector(SELECTORS.class.image);
+    shouldRemoveImage = (node, reversed) => {
+        if (reversed) {
+            return !node?.querySelector(SELECTORS.class.image);
+        } else {
+            return node?.querySelector(SELECTORS.class.image);
+        }
     }
 
     shouldRemoveVideo = (node, reversed) => {
@@ -176,7 +181,7 @@ class ActivityHandler {
         }
     }
 
-    shouldRemoveStrings = (node, reverse) => {
+    shouldRemoveStrings = (node, reversed) => {
         const { remove: { containsStrings }, options: { caseSensitive } } = this.config;
 
         if (!containsStrings.flat().length) return false;
@@ -185,7 +190,7 @@ class ActivityHandler {
             ? strings.every(str => this.containsString(node.textContent, str, caseSensitive))
             : this.containsString(node.textContent, strings, caseSensitive);
 
-        return reverse
+        return reversed
             ? !containsStrings.some(checkStrings)
             : containsStrings.some(checkStrings);
     };
