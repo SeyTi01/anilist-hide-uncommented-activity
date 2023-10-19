@@ -141,59 +141,27 @@ class ActivityHandler {
     shouldRemoveLinkedConditions = (node) => {
         const { options: { linkedConditions, reversedConditions } } = this.config;
 
-        if (!linkedConditions) {
+        if (!linkedConditions || linkedConditions.length === 0) {
             return false;
         }
 
-        let conditionsArray = [];
-        if (Array.isArray(linkedConditions[0])) {
-            conditionsArray = linkedConditions;
-        } else {
-            conditionsArray = linkedConditions.map(x => [x]);
-        }
+        const conditionsMapToUse = reversedConditions ? this.conditionsMapReversed : this.conditionsMap;
 
-        let conditionsMapToUse;
-        if (reversedConditions) {
-            conditionsMapToUse = this.conditionsMapReversed;
-        } else {
-            conditionsMapToUse = this.conditionsMap;
-        }
-
-        let hasAtLeastOneCondition = false;
-        let allConditionsTrue = false;
-
-        for (const link of conditionsArray) {
-            if (link.length > 0) {
-                hasAtLeastOneCondition = true;
-            }
+        for (const link of linkedConditions) {
+            const conditionArray = Array.isArray(link) ? link : [link]; // Ensure it's an array
 
             if (reversedConditions) {
-                var allConditionsInLinkTrue = false;
-                for (const condition of link) {
-                    if (conditionsMapToUse.get(condition)(node)) {
-                        allConditionsInLinkTrue = true;
-                        break;
-                    }
+                if (conditionArray.some(condition => conditionsMapToUse.get(condition)(node))) {
+                    return true;
                 }
-            }
-
-            if (!reversedConditions) {
-                var allConditionsInLinkFalse = true;
-                for (const condition of link) {
-                    if (!conditionsMapToUse.get(condition)(node)) {
-                        allConditionsInLinkFalse = false;
-                        break;
-                    }
+            } else {
+                if (conditionArray.every(condition => conditionsMapToUse.get(condition)(node))) {
+                    return true;
                 }
-            }
-
-            if (allConditionsInLinkTrue || allConditionsInLinkFalse) {
-                allConditionsTrue = true;
-                break;
             }
         }
 
-        return hasAtLeastOneCondition && allConditionsTrue;
+        return false;
     }
 
     shouldRemoveConditions = (conditionName, predicate, node) => {
