@@ -129,11 +129,15 @@ class ActivityHandler {
 
     shouldRemoveNode = (node) => {
         const { options: { reversedConditions } } = this.config;
-
         const shouldRemoveByLinkedConditions = this.shouldRemoveLinkedConditions(node);
-        const conditionsMap = reversedConditions ? this.conditionsMapReversed : this.conditionsMap;
-        const shouldRemoveByConditions = Array.from(conditionsMap.entries())
-            .some(([name, predicate]) => this.shouldRemoveConditions(name, predicate, node));
+
+        const conditionsMap = reversedConditions
+            ? this.conditionsMapReversed
+            : this.conditionsMap;
+
+        const shouldRemoveByConditions = Array.from(conditionsMap.entries()).some(
+            ([name, predicate]) => this.shouldRemoveConditions(name, predicate, node),
+        );
 
         return shouldRemoveByLinkedConditions || shouldRemoveByConditions;
     }
@@ -141,20 +145,18 @@ class ActivityHandler {
     shouldRemoveLinkedConditions = (node) => {
         const { options: { linkedConditions, reversedConditions } } = this.config;
 
-        if (!linkedConditions || !linkedConditions.length) {
-            return false;
-        }
+        if (!linkedConditions) return false;
 
         const conditionsMapToUse = reversedConditions ? this.conditionsMapReversed : this.conditionsMap;
 
-        for (const link of linkedConditions) {
-            const conditionArray = Array.isArray(link) ? link : [link];
+        for (const linkedCondition of linkedConditions) {
+            const conditionList = Array.isArray(linkedCondition) ? linkedCondition : [linkedCondition];
 
             if (reversedConditions) {
-                if (conditionArray.some(condition => conditionsMapToUse.get(condition)(node))) {
+                if (conditionList.some(condition => conditionsMapToUse.get(condition)(node))) {
                     return true;
                 }
-            } else if (conditionArray.every(condition => conditionsMapToUse.get(condition)(node))) {
+            } else if (conditionList.every(condition => conditionsMapToUse.get(condition)(node))) {
                 return true;
             }
         }
@@ -163,45 +165,32 @@ class ActivityHandler {
     }
 
     shouldRemoveConditions = (conditionName, predicate, node) => {
-        const { remove } = this.config;
-        return remove[conditionName] && predicate(node);
+        return this.config.remove[conditionName] && predicate(node);
     }
 
     shouldRemoveUncommented = (node, reversed) => {
-        if (reversed) {
-            return node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
-        }
-
-        return !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
+        return reversed ? node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count) :
+            !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
     }
 
     shouldRemoveUnliked = (node, reversed) => {
-        if (reversed) {
-            return node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
-        }
+        return reversed ? node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count) :
+            !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
+    }
 
-        return !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
+    shouldRemoveImage = (node, reversed) => {
+        return reversed ? !node?.querySelector(SELECTORS.class.image) :
+            node?.querySelector(SELECTORS.class.image);
+    }
+
+    shouldRemoveVideo = (node, reversed) => {
+        return reversed ? !node?.querySelector(SELECTORS.class.video) && !node?.querySelector(SELECTORS.span.youTube) :
+            node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
     }
 
     shouldRemoveText = (node) => {
         return (node.classList.contains(SELECTORS.activity.text) || node.classList.contains(SELECTORS.activity.message))
             && !(this.shouldRemoveImage(node) || this.shouldRemoveVideo(node));
-    }
-
-    shouldRemoveImage = (node, reversed) => {
-        if (reversed) {
-            return !node?.querySelector(SELECTORS.class.image);
-        }
-
-        return node?.querySelector(SELECTORS.class.image);
-    }
-
-    shouldRemoveVideo = (node, reversed) => {
-        if (reversed) {
-            return !node?.querySelector(SELECTORS.class.video) && !node?.querySelector(SELECTORS.span.youTube);
-        }
-
-        return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
     }
 
     shouldRemoveStrings = (node, reversed) => {
