@@ -175,17 +175,17 @@ class ActivityHandler {
     shouldRemoveImage = (node, reversed) => {
         if (reversed) {
             return !node?.querySelector(SELECTORS.class.image);
-        } else {
-            return node?.querySelector(SELECTORS.class.image);
         }
+
+        return node?.querySelector(SELECTORS.class.image);
     }
 
     shouldRemoveVideo = (node, reversed) => {
         if (reversed) {
             return !node?.querySelector(SELECTORS.class.video) && !node?.querySelector(SELECTORS.span.youTube);
-        } else {
-            return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
         }
+
+        return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
     }
 
     shouldRemoveStrings = (node, reversed) => {
