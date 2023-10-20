@@ -236,6 +236,9 @@ describe('ActivityHandler', () => {
         { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { text: true }, options: { reversedConditions: true } }, expectedRemove: true },
         { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { text: true }, options: { reversedConditions: true } }, expectedRemove: true },
 
+        // Tests for linked conditions + regular conditions
+        /*{ htmlPath: IMAGES, configOptions: { remove: { images: true }, options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },*/
+
         // Tests for multiple unlinked reversed conditions
         /*{ htmlPath: IMAGES, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: false },
         { htmlPath: VIDEOS, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: false },*/
