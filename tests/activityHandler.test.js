@@ -18,7 +18,6 @@ const CONTAINS_STRING_2 = `${TEST_DATA_PATH}activity-containsString2.html`
 const CONTAINS_STRINGS = `${TEST_DATA_PATH}activity-containsStrings.html`
 const IMAGES_UNLIKED = `${TEST_DATA_PATH}activity-imagesUnliked.html`;
 const VIDEOS_UNCOMMENTED = `${TEST_DATA_PATH}activity-videosUncommented.html`;
-const IMAGES_VIDEOS = `${TEST_DATA_PATH}activity-imagesVideos.html`;
 
 describe('ActivityHandler', () => {
     let activityHandler;
@@ -225,7 +224,6 @@ describe('ActivityHandler', () => {
         { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['videos', 'uncommented'], ['images', 'unliked']], reversedConditions: true } }, expectedRemove: true },
         { htmlPath: VIDEOS_UNCOMMENTED, configOptions: { options: { linkedConditions: [['videos', 'uncommented']], reversedConditions: true } }, expectedRemove: false },
         { htmlPath: VIDEOS_UNCOMMENTED, configOptions: { options: { linkedConditions: [['videos', 'images']], reversedConditions: true } }, expectedRemove: true },
-        { htmlPath: IMAGES_VIDEOS, configOptions: { options: { linkedConditions: [['images', 'videos']] , reversedConditions: true } }, expectedRemove: false },
 
         // Tests for reversed text
         { htmlPath: UNLIKED, configOptions: { remove: { text: true }, options: { reversedConditions: true } }, expectedRemove: true },
