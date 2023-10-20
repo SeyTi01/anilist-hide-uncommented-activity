@@ -238,6 +238,7 @@ describe('ActivityHandler', () => {
 
         // Tests for linked conditions + regular conditions
         { htmlPath: IMAGES, configOptions: { remove: { images: true }, options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
+        { htmlPath: IMAGES, configOptions: { remove: { images: true }, options: { linkedConditions: ['images', 'unliked'] } }, expectedRemove: false },
 
         // Tests for multiple unlinked reversed conditions
         /*{ htmlPath: IMAGES, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: false },
