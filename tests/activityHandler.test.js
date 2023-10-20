@@ -221,6 +221,7 @@ describe('ActivityHandler', () => {
         { htmlPath: CONTAINS_STRING_1, configOptions: { options: { linkedConditions: [['images', 'unliked']], reversedConditions: true } }, expectedRemove: true },
         { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['images', 'unliked']], reversedConditions: true } }, expectedRemove: false },
         { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: ['images', 'unliked'], reversedConditions: true } }, expectedRemove: false },
+        { htmlPath: IMAGES, configOptions: { options: { linkedConditions: ['images', 'unliked'], reversedConditions: true } }, expectedRemove: true },
         { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['videos', 'uncommented'], ['images', 'unliked']], reversedConditions: true } }, expectedRemove: true },
         { htmlPath: VIDEOS_UNCOMMENTED, configOptions: { options: { linkedConditions: [['videos', 'uncommented']], reversedConditions: true } }, expectedRemove: false },
         { htmlPath: VIDEOS_UNCOMMENTED, configOptions: { options: { linkedConditions: [['videos', 'images']], reversedConditions: true } }, expectedRemove: true },
