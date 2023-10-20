@@ -8,7 +8,6 @@
 // @grant        none
 // @license      MIT
 // ==/UserScript==
-// noinspection JSPrimitiveTypeWrapperUsage,JSUnusedGlobalSymbols
 
 const config = {
     remove: {
