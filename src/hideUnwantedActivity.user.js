@@ -121,14 +121,18 @@ class ActivityHandler {
     shouldRemoveNode = (node) => {
         const { options: { reversedConditions } } = this.config;
 
-        const shouldRemoveConditions = Array.from(this.conditionsMap.entries()).some(
-            ([name, predicate]) => this.shouldRemoveConditions(name, node => predicate(node, reversedConditions), node),
+        const shouldRemoveByConditions = Array.from(this.conditionsMap.entries()).some(
+            ([name, predicate]) => this.shouldRemoveByConditions(name, node => predicate(node, reversedConditions), node),
         );
 
-        return this.shouldRemoveLinkedConditions(node) || shouldRemoveConditions;
+        return this.shouldRemoveByLinkedConditions(node) || shouldRemoveByConditions;
     }
 
-    shouldRemoveLinkedConditions = (node) => {
+    shouldRemoveByConditions = (conditionName, predicate, node) => {
+        return this.config.remove[conditionName] && predicate(node);
+    }
+
+    shouldRemoveByLinkedConditions = (node) => {
         const { options: { linkedConditions, reversedConditions } } = this.config;
 
         if (!linkedConditions) return false;
@@ -150,10 +154,6 @@ class ActivityHandler {
         } else {
             return conditionList.every(condition => this.conditionsMap.get(condition)(node, reversedConditions));
         }
-    }
-
-    shouldRemoveConditions = (conditionName, predicate, node) => {
-        return this.config.remove[conditionName] && predicate(node);
     }
 
     shouldRemoveUncommented = (node) => {
