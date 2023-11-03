@@ -63,6 +63,7 @@ describe('ActivityHandler', () => {
         // Tests for multiple unlinked reversed conditions
         { htmlPath: IMAGES, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: false },
         { htmlPath: VIDEOS, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { images: true, containsStrings: ['String1'] }, options: { reversedConditions: true } }, expectedRemove: false },
 
         // Tests for reversed conditions arrays
         /*{ htmlPath: UNLIKED, configOptions: { remove: { unliked: true }, options: { reversedConditions: [] } }, expectedRemove: true },
