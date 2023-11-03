@@ -120,13 +120,21 @@ class ActivityHandler {
     shouldRemoveNode = (node) => {
         const { remove, options: { linkedConditions, reversedConditions } } = this.config;
 
+        let shouldRemoveByCondition;
+
         const shouldSkipChecking = (condition) => !!(linkedConditions && linkedConditions.flat().includes(condition));
 
-        const shouldRemoveByConditions = Array.from(this.conditionsMap.entries()).some(([name, predicate]) => {
-            return !shouldSkipChecking(name) && remove[name] && predicate(node, reversedConditions);
-        });
+        if (reversedConditions && Object.values(remove).filter(Boolean).length >= 2) {
+            shouldRemoveByCondition = Array.from(this.conditionsMap.entries()).every(([name, predicate]) => {
+                return !shouldSkipChecking(name) && remove[name] && predicate(node, reversedConditions);
+            });
+        } else {
+            shouldRemoveByCondition = Array.from(this.conditionsMap.entries()).some(([name, predicate]) => {
+                return !shouldSkipChecking(name) && remove[name] && predicate(node, reversedConditions);
+            });
+        }
 
-        return this.shouldRemoveByLinkedConditions(node) || shouldRemoveByConditions;
+        return this.shouldRemoveByLinkedConditions(node) || shouldRemoveByCondition;
     }
 
     shouldRemoveByLinkedConditions = (node) => {
