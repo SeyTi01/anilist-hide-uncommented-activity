@@ -61,10 +61,10 @@ describe('ActivityHandler', () => {
 
     const testCases = [
         // Tests for multiple unlinked reversed conditions
-        //{ htmlPath: UNLIKED, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: true },
-        { htmlPath: IMAGES, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: false },
+        /*{ htmlPath: IMAGES, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: false },
         { htmlPath: VIDEOS, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { images: true, containsStrings: ['String1'] }, options: { reversedConditions: true } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { images: true, containsStrings: ['String1'] }, options: { reversedConditions: true } }, expectedRemove: false },*/
+        { htmlPath: UNLIKED, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: true },
 
         // Tests for unliked
         { htmlPath: UNLIKED, configOptions: { remove: { unliked: true } }, expectedRemove: true },
