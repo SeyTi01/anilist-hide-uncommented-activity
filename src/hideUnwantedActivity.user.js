@@ -139,21 +139,21 @@ class ActivityHandler {
 
         const conditions = Array.isArray(linkedConditions[0]) ? linkedConditions : [linkedConditions];
 
+        const checkConditions = (node, conditionList, reversedConditions) => {
+            if (reversedConditions) {
+                return conditionList.some(condition => this.conditionsMap.get(condition)(node, reversedConditions));
+            } else {
+                return conditionList.every(condition => this.conditionsMap.get(condition)(node, reversedConditions));
+            }
+        }
+
         for (const condition of conditions) {
-            if (this.checkConditions(node, condition, reversedConditions)) {
+            if (checkConditions(node, condition, reversedConditions)) {
                 return true;
             }
         }
 
         return false;
-    }
-
-    checkConditions = (node, conditionList, reversedConditions) => {
-        if (reversedConditions) {
-            return conditionList.some(condition => this.conditionsMap.get(condition)(node, reversedConditions));
-        } else {
-            return conditionList.every(condition => this.conditionsMap.get(condition)(node, reversedConditions));
-        }
     }
 
     shouldRemoveUncommented = (node) => {
@@ -182,21 +182,21 @@ class ActivityHandler {
 
         if (!containsStrings.flat().length) return false;
 
+        const containsString = (nodeText, strings) => {
+            const { options: { caseSensitive } } = this.config;
+            return !caseSensitive
+                ? nodeText.toLowerCase().includes(strings.toLowerCase())
+                : nodeText.includes(strings);
+        };
+
         const checkStrings = (strings) => Array.isArray(strings)
-            ? strings.every(str => this.containsString(node.textContent, str))
-            : this.containsString(node.textContent, strings);
+            ? strings.every(str => containsString(node.textContent, str))
+            : containsString(node.textContent, strings);
 
         return reversed
             ? !containsStrings.some(checkStrings)
             : containsStrings.some(checkStrings);
     };
-
-    containsString(nodeText, strings) {
-        const { options: { caseSensitive } } = this.config;
-        return !caseSensitive
-            ? nodeText.toLowerCase().includes(strings.toLowerCase())
-            : nodeText.includes(strings);
-    }
 }
 
 class UIHandler {
