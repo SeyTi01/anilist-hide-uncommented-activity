@@ -171,27 +171,6 @@ class ActivityHandler {
         return false;
     }
 
-    shouldRemoveUncommented = (node) => {
-        return !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
-    }
-
-    shouldRemoveUnliked = (node) => {
-        return !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
-    }
-
-    shouldRemoveImage = (node) => {
-        return node?.querySelector(SELECTORS.class.image);
-    }
-
-    shouldRemoveVideo = (node) => {
-        return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
-    }
-
-    shouldRemoveText = (node) => {
-        return (node.classList.contains(SELECTORS.activity.text) || node.classList.contains(SELECTORS.activity.message))
-            && !(this.shouldRemoveImage(node) || this.shouldRemoveVideo(node));
-    }
-
     shouldRemoveStrings = (node, reversed) => {
         const { remove: { containsStrings } } = this.config;
 
@@ -212,6 +191,27 @@ class ActivityHandler {
             ? !containsStrings.some(checkStrings)
             : containsStrings.some(checkStrings);
     };
+
+    shouldRemoveText = (node) => {
+        return (node.classList.contains(SELECTORS.activity.text) || node.classList.contains(SELECTORS.activity.message))
+            && !(this.shouldRemoveImage(node) || this.shouldRemoveVideo(node));
+    }
+
+    shouldRemoveUncommented = (node) => {
+        return !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
+    }
+
+    shouldRemoveUnliked = (node) => {
+        return !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
+    }
+
+    shouldRemoveImage = (node) => {
+        return node?.querySelector(SELECTORS.class.image);
+    }
+
+    shouldRemoveVideo = (node) => {
+        return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
+    }
 }
 
 class UIHandler {
