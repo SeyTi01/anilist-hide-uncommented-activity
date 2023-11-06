@@ -23,7 +23,13 @@ describe('ActivityHandler', () => {
     let activityHandler;
 
     beforeEach(function() {
-        const config = { remove: {}, options: {} };
+        const config = {
+            remove:
+                { uncommented: false, unliked: false, text: false, images: false, videos: false, containsStrings: []},
+            options:
+                { targetLoadCount: 2, caseSensitive: false, linkedConditions: [], reversedConditions: false }
+        };
+
         activityHandler = new ActivityHandler(config);
     });
 
@@ -150,6 +156,7 @@ describe('ActivityHandler', () => {
         { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: true },
         { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: ['images', 'unliked'] } }, expectedRemove: true },
         { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['videos', 'uncommented'], ['images', 'unliked']] } }, expectedRemove: true },
+        { htmlPath: IMAGES, configOptions: { options: { linkedConditions: [['videos', 'uncommented'], ['images', 'unliked']] } }, expectedRemove: false },
         { htmlPath: VIDEOS_UNCOMMENTED, configOptions: { options: { linkedConditions: [['videos', 'uncommented']] } }, expectedRemove: true },
         { htmlPath: VIDEOS_UNCOMMENTED, configOptions: { options: { linkedConditions: [['videos', 'images']] } }, expectedRemove: false },
         { htmlPath: IMAGES, configOptions: { remove: { images: true }, options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
