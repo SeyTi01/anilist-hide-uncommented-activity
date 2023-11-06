@@ -62,7 +62,7 @@ describe('ActivityHandler', () => {
     }
 
     const STRING_1 = 'string1';
-    const STRING_1B = 'String1';
+    const STRING_1_CAP = 'String1';
     const STRING_2 = 'string2';
 
     const testCases = [
@@ -132,7 +132,7 @@ describe('ActivityHandler', () => {
         { htmlPath: VIDEOS, configOptions: { remove: { containsStrings: [STRING_1] } }, expectedRemove: false },
         { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [STRING_1] } }, expectedRemove: true },
         { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [STRING_1] }, options: { caseSensitive: true } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [STRING_1B] }, options: { caseSensitive: true } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [STRING_1_CAP] }, options: { caseSensitive: true } }, expectedRemove: true },
         { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [[STRING_1]] } }, expectedRemove: true },
         { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [] } }, expectedRemove: false },
         { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [[]] } }, expectedRemove: false },
@@ -213,7 +213,7 @@ describe('ActivityHandler', () => {
         { htmlPath: VIDEOS, configOptions: { remove: { containsStrings: [STRING_1] }, options: { reversedConditions: true } }, expectedRemove: true },
         { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [STRING_1] }, options: { reversedConditions: true } }, expectedRemove: false },
         { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [STRING_1] }, options: { caseSensitive: true, reversedConditions: true } }, expectedRemove: true },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [STRING_1B] }, options: { caseSensitive: true, reversedConditions: true } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [STRING_1_CAP] }, options: { caseSensitive: true, reversedConditions: true } }, expectedRemove: false },
         { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { containsStrings: [STRING_1] }, options: { reversedConditions: true } }, expectedRemove: true },
         { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { containsStrings: [[STRING_1]] }, options: { reversedConditions: true } }, expectedRemove: true },
         { htmlPath: CONTAINS_STRING_2, configOptions: { remove: { containsStrings: [] }, options: { reversedConditions: true } }, expectedRemove: false },
