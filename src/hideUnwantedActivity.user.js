@@ -118,7 +118,7 @@ class ActivityHandler {
     }
 
     shouldRemoveNode = (node) => {
-        const { options: { linkedConditions, reversedConditions } } = this.config;
+        const { remove, options: { linkedConditions, reversedConditions } } = this.config;
 
         const shouldSkipChecking = (condition) => {
             if (linkedConditions) {
@@ -131,16 +131,32 @@ class ActivityHandler {
         };
 
         let shouldRemoveByConditions = false;
-        Array.from(this.conditionsMap).forEach(([name, predicate]) => {
-            const conditionName = this.config.remove[name];
-            if (conditionName) {
-                if (!shouldSkipChecking(name)) {
-                    if (predicate(node, reversedConditions)) {
-                        shouldRemoveByConditions = true;
+        if (reversedConditions) {
+            let removed = [];
+            Array.from(this.conditionsMap).forEach(([name, predicate]) => {
+                const conditionOption = remove[name];
+                if (conditionOption === true || (Array.isArray(conditionOption) && conditionOption.length > 0)) {
+                    if (!shouldSkipChecking(name)) {
+                        const results = predicate(node, reversedConditions)
+                        removed = removed.concat(results);
                     }
                 }
+            });
+            if (!removed.includes(false) && removed.includes(true)) {
+                shouldRemoveByConditions = true;
             }
-        });
+        } else {
+            Array.from(this.conditionsMap).forEach(([name, predicate]) => {
+                const conditionName = remove[name];
+                if (conditionName) {
+                    if (!shouldSkipChecking(name)) {
+                        if (predicate(node, reversedConditions)) {
+                            shouldRemoveByConditions = true;
+                        }
+                    }
+                }
+            });
+        }
 
         if (this.shouldRemoveByLinkedConditions(node) || shouldRemoveByConditions) {
             return true;
