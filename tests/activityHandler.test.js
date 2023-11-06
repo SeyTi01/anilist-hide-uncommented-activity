@@ -66,12 +66,6 @@ describe('ActivityHandler', () => {
     const STRING_2 = 'string2';
 
     const testCases = [
-        // Tests for multiple unlinked reversed conditions
-        { htmlPath: UNLIKED, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: true },
-        { htmlPath: VIDEOS, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: false },
-        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { images: true, containsStrings: ['String1'] }, options: { reversedConditions: true } }, expectedRemove: false },
-        { htmlPath: IMAGES, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: false },
-
         // Tests for unliked
         { htmlPath: UNLIKED, configOptions: { remove: { unliked: true } }, expectedRemove: true },
         { htmlPath: UNCOMMENTED, configOptions: { remove: { unliked: true } }, expectedRemove: false },
@@ -250,6 +244,12 @@ describe('ActivityHandler', () => {
         { htmlPath: VIDEOS, configOptions: { remove: { text: true }, options: { reversedConditions: true } }, expectedRemove: true },
         { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { text: true }, options: { reversedConditions: true } }, expectedRemove: true },
         { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { text: true }, options: { reversedConditions: true } }, expectedRemove: true },
+
+        // Tests for multiple unlinked reversed conditions
+        { htmlPath: UNLIKED, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: true },
+        { htmlPath: VIDEOS, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: false },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { images: true, containsStrings: ['String1'] }, options: { reversedConditions: true } }, expectedRemove: false },
+        { htmlPath: IMAGES, configOptions: { remove: { images: true, videos: true }, options: { reversedConditions: true } }, expectedRemove: false },
     ];
 
     runTestCases(testCases);
