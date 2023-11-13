@@ -287,7 +287,7 @@ class ConfigValidator {
 
     validatePositiveNonZeroInteger(key, configKey) {
         const value = this.getConfigValue(configKey);
-        if (typeof value !== 'number' || !Number.isInteger(value) || value <= 0) {
+        if (!(value > 0 && Number.isInteger(value))) {
             this.errors.push(`${key} should be a positive non-zero integer`);
         }
     }
