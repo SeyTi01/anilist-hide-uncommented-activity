@@ -130,9 +130,7 @@ class ActivityHandler {
     shouldRemoveByLinkedConditions = (node) => {
         const { options: { linkedConditions, reversedConditions } } = this.config;
 
-        if (!linkedConditions || linkedConditions.length === 0) {
-            return false;
-        }
+        if (!linkedConditions || linkedConditions.length === 0) return false;
 
         const conditions = Array.isArray(linkedConditions[0]) ? linkedConditions : [linkedConditions];
 
