@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 1.8
+## Version 1.8 (Nov 13, 2023)
 
 ### Features
 - Added filter for activities containing only text
