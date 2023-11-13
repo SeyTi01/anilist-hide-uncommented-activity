@@ -41,8 +41,10 @@ Customize the script's behavior by editing the `config` object at the top of the
 
 ## Example usages
 
-`options.linkedConditions: [['images', 'customStrings'], ['uncommented', 'unliked']]`: Remove activities containing either both images and specific strings, or neither comments nor likes.
-`options.reversedConditions = true`, `remove.images = true`: Remove all activities except those containing images.
+- `options.linkedConditions: [['images', 'customStrings'], ['uncommented', 'unliked']]`: 
+  - Remove activities containing either both images and specific strings, or neither comments nor likes.
+- `options.reversedConditions = true`, `remove.images = true`: 
+  - Remove all activities except those containing images.
 
 ## Editing the config object
 
