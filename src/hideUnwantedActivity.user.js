@@ -40,12 +40,7 @@ class MainApp {
 
     observeMutations = (mutations) => {
         if (this.isAllowedUrl()) {
-            for (const mutation of mutations) {
-                if (mutation.addedNodes.length > 0) {
-                    mutation.addedNodes.forEach(node => this.handleAddedNode(node));
-                }
-            }
-
+            mutations.forEach(mutation => mutation.addedNodes.forEach(node => this.handleAddedNode(node)));
             this.loadMoreOrReset();
         }
     }
