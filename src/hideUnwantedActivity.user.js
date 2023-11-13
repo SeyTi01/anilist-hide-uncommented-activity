@@ -268,7 +268,7 @@ class ConfigValidator {
     validate() {
         this.validatePositiveNonZeroInteger('options.targetLoadCount', 'options.targetLoadCount');
         this.validateLinkedConditions('options.linkedConditions');
-        this.validateStringArrays(['remove.containsStrings', 'remove.containsStrings', 'options.linkedConditions']);
+        this.validateStringArrays(['remove.containsStrings', 'options.linkedConditions']);
         this.validateBooleans(['remove.uncommented', 'remove.unliked', 'remove.text', 'remove.images',
             'remove.videos', 'options.caseSensitive', 'options.reversedConditions', 'runOn.home', 'runOn.social', 'runOn.profile']);
 
