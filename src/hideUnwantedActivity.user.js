@@ -22,7 +22,7 @@ const config = {
         targetLoadCount: 2, // Minimum number of activities to show per click on the "Load More" button
         caseSensitive: false, // Whether string-based removal should be case-sensitive
         reversedConditions: false, // Only keep posts that would be removed by the conditions
-        linkedConditions: [], // Groups of conditions to be checked together (linked conditions are always considered 'true')
+        linkedConditions: [], // Groups of conditions to be checked together
     },
     runOn: {
         home: true, // Run the script on the home feed
