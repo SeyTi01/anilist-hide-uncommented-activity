@@ -122,7 +122,7 @@ class ActivityHandler {
             || (!reversedConditions && Array.from(this.conditionsMap).some(([name, predicate]) => {
 
             const conditionOption = remove[name];
-            return (conditionOption === true || (Array.isArray(conditionOption) && conditionOption.length > 0))
+            return (conditionOption || (Array.isArray(conditionOption) && conditionOption.length > 0))
                 && !skipChecking(name) && predicate(node, reversedConditions);
         }));
     }
