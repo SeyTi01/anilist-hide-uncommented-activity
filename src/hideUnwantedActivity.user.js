@@ -206,11 +206,7 @@ class UIHandler {
     };
 
     showCancel = () => {
-        if (!this.cancel) {
-            this.createCancel();
-        } else {
-            this.cancel.style.display = 'block';
-        }
+        this.cancel ? this.cancel.style.display = 'block' : this.createCancel();
     };
 
     hideCancel = () => {
