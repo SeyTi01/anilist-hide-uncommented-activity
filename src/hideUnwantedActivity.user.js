@@ -146,12 +146,11 @@ class ActivityHandler {
     }
 
     shouldRemoveStrings = (node, reversed) => {
-        const { remove: { containsStrings } } = this.config;
+        const { remove: { containsStrings }, options: { caseSensitive } } = this.config;
 
         if (!containsStrings.flat().length) return false;
 
         const containsString = (nodeText, strings) => {
-            const { options: { caseSensitive } } = this.config;
             return !caseSensitive
                 ? nodeText.toLowerCase().includes(strings.toLowerCase())
                 : nodeText.includes(strings);
