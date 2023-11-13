@@ -292,15 +292,6 @@ class ConfigValidator {
         }
     }
 
-    validateArrays(keys) {
-        for (const key of keys) {
-            const value = this.getConfigValue(key);
-            if (!Array.isArray(value)) {
-                this.errors.push(`${key} should be an array`);
-            }
-        }
-    }
-
     validateStringArrays(keys) {
         for (const key of keys) {
             const value = this.getConfigValue(key);
