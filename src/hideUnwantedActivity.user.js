@@ -267,11 +267,10 @@ class ConfigValidator {
 
     validate() {
         this.validatePositiveNonZeroInteger('options.targetLoadCount', 'options.targetLoadCount');
-        this.validateArrays(['remove.containsStrings', 'options.linkedConditions']);
         this.validateLinkedConditions('options.linkedConditions');
-        this.validateStringArrays(['remove.containsStrings']);
+        this.validateStringArrays(['remove.containsStrings', 'remove.containsStrings', 'options.linkedConditions']);
         this.validateBooleans(['remove.uncommented', 'remove.unliked', 'remove.text', 'remove.images',
-            'remove.videos', 'options.caseSensitive', 'runOn.home', 'runOn.social', 'runOn.profile']);
+            'remove.videos', 'options.caseSensitive', 'options.reversedConditions', 'runOn.home', 'runOn.social', 'runOn.profile']);
 
         if (this.errors.length > 0) {
             const errorMessage = `Script disabled due to configuration errors: ${this.errors.join(', ')}`;
