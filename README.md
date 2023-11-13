@@ -39,6 +39,14 @@ Customize the script's behavior by editing the `config` object at the top of the
   - `social` (Default: `true`): Set to `true` to run the script on social feeds. Set to `false` to exclude social feeds from processing.
   - `profile` (Default: `false`): Set to `true` to run the script on user profile feeds. Set to `false` to exclude profile feeds from processing.
 
+## Additional information
+
+`containsStrings` and `linkedConditions` accept regular arrays `[]` and two-dimensional arrays `[[]]`. 
+When using two-dimensional arrays, conditions/strings within the inner arrays are checked together. 
+- `['A', 'B']` removes entries containing either 'A' or 'B'. 
+- `[['A', 'B']]` removes entries containing both 'A' and 'B'.
+- `[['A', 'B'], ['C', 'D']]` removes entries containing either both 'A' and 'B', or both 'C' and 'D'.
+
 ## Example usages
 
 - `options.linkedConditions: [['images', 'customStrings'], ['uncommented', 'unliked']]`: 
