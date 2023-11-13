@@ -322,12 +322,7 @@ class ConfigValidator {
     }
 
     getConfigValue(key) {
-        const keys = key.split('.');
-        let value = this.config;
-        for (const k of keys) {
-            value = value[k];
-        }
-        return value;
+        return key.split('.').reduce((value, k) => value[k], this.config);
     }
 }
 
