@@ -297,10 +297,8 @@ class ConfigValidator {
             const value = this.getConfigValue(key);
             if (!Array.isArray(value)) {
                 this.errors.push(`${key} should be an array`);
-            } else {
-                if (!this.validateArrayContents(value)) {
-                    this.errors.push(`${key} should only contain strings`);
-                }
+            } else if (!this.validateArrayContents(value)) {
+                this.errors.push(`${key} should only contain strings`);
             }
         }
     }
