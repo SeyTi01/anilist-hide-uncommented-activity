@@ -215,13 +215,9 @@ class UIHandler {
 
     simulateDomEvents = () => {
         const domEvent = new Event('scroll', { bubbles: true });
-        const intervalId = setInterval(() => {
-            if (this.userPressed) {
-                window.dispatchEvent(domEvent);
-            } else {
-                clearInterval(intervalId);
-            }
-        }, 100);
+        const intervalId = setInterval(() => this.userPressed
+            ? window.dispatchEvent(domEvent)
+            : clearInterval(intervalId), 100);
     };
 
     createCancel = () => {
