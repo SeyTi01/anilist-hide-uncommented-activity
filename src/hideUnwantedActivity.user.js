@@ -121,10 +121,10 @@ class ActivityHandler {
             || (reversedConditions && toBeRemoved().includes(true) && !toBeRemoved().includes(false))
             || (!reversedConditions && Array.from(this.conditionsMap).some(([name, predicate]) => {
 
-            const conditionOption = remove[name];
-            return (conditionOption || (Array.isArray(conditionOption) && conditionOption.length > 0))
-                && !skipChecking(name) && predicate(node, reversedConditions);
-        }));
+                const conditionOption = remove[name];
+                return (conditionOption || (Array.isArray(conditionOption) && conditionOption.length > 0))
+                    && !skipChecking(name) && predicate(node, reversedConditions);
+            }));
     }
 
     shouldRemoveByLinkedConditions = (node) => {
