@@ -127,19 +127,19 @@ class ActivityHandler {
         }
 
         if (reversedConditions) {
-            const toBeRemoved = Array.from(this.conditionsMap).filter(([name]) => {
-                const conditionOption = remove[name];
-
-                return (conditionOption === true || (Array.isArray(conditionOption) && conditionOption.length > 0))
-                    && !skipChecking(name);
-            }).map(([, predicate]) => predicate(node, reversedConditions));
+            const toBeRemoved = Array.from(this.conditionsMap)
+                .filter(([name]) => {
+                    const conditionOption = remove[name];
+                    return (conditionOption === true || (Array.isArray(conditionOption) && conditionOption.length > 0))
+                        && !skipChecking(name);
+                })
+                .map(([, predicate]) => predicate(node, reversedConditions));
 
             return toBeRemoved.includes(true) && !toBeRemoved.includes(false);
         }
 
         return Array.from(this.conditionsMap).some(([name, predicate]) => {
             const conditionOption = remove[name];
-
             return (conditionOption === true || (Array.isArray(conditionOption) && conditionOption.length > 0))
                 && !skipChecking(name) && predicate(node, reversedConditions);
         });
