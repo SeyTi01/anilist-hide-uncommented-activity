@@ -41,19 +41,18 @@ Customize the script's behavior by editing the `config` object at the top of the
 
 ## Example usages
 
-`options.linkedConditions`: `[['images', 'customStrings'], ['uncommented', 'unliked']]`: Remove activities containing either both images and specific strings, or neither comments nor likes.
-`options.reversedConditions` = `true`, `remove.images` = `true`: Removing all activities except those containing images.
+`options.linkedConditions: [['images', 'customStrings'], ['uncommented', 'unliked']]`: Remove activities containing either both images and specific strings, or neither comments nor likes.
+`options.reversedConditions = true`, `remove.images = true`: Remove all activities except those containing images.
 
 ## Editing the config object
 
 Editing User Script Files in Violentmonkey
 
 1. Open the Violentmonkey extension in your browser.
-2. Click on the Manage scripts button.
-3. Select the script you want to edit.
-4. Click on the Edit (`</>`) button.
-5. Make the necessary changes to the script.
-6. Click on the Save button to save the changes.
+2. Click on the dashboard button.
+3. Click on the Edit (`</>`) button below the script.
+4. Make the necessary changes to the script.
+5. Click on the Save button to save the changes.
 
 ## Author
 
