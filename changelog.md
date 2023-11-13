@@ -3,9 +3,10 @@
 ## Version 1.8
 
 ### Features
-- Remove activities containing only text
-- Added option to reverse conditions
-- 
+- Added filter for activities containing only text
+- Added option to reverse filter conditions
+- containsStrings now supports two-dimensional arrays
+
 ### Changes
 - Restructured the configuration object
 
