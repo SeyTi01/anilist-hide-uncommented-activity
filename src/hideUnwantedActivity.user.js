@@ -279,12 +279,10 @@ class ConfigValidator {
     }
 
     validateBooleans(keys) {
-        for (const key of keys) {
+        keys.forEach(key => {
             const value = this.getConfigValue(key);
-            if (typeof value !== 'boolean') {
-                this.errors.push(`${key} should be a boolean`);
-            }
-        }
+            typeof value !== 'boolean' ? this.errors.push(`${key} should be a boolean`) : null;
+        });
     }
 
     validatePositiveNonZeroInteger(key, configKey) {
