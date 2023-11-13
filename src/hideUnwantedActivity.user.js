@@ -355,8 +355,8 @@ function main() {
         return;
     }
 
-    const activityHandler = new ActivityHandler(config);
     const uiHandler = new UIHandler();
+    const activityHandler = new ActivityHandler(config);
     const mainApp = new MainApp(activityHandler, uiHandler, config);
 
     mainApp.initializeObserver();
