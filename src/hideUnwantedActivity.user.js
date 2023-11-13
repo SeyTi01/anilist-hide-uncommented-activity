@@ -114,27 +114,22 @@ class ActivityHandler {
 
         const skipChecking = (condition) => linkedConditions?.flat()?.includes(condition);
 
-        if (this.shouldRemoveByLinkedConditions(node)) {
-            return true;
-        }
+        const toBeRemoved = () => reversedConditions && Array.from(this.conditionsMap)
+            .filter(([name]) => {
+                const conditionOption = remove[name];
+                return (conditionOption === true || (Array.isArray(conditionOption) && conditionOption.length > 0))
+                    && !skipChecking(name);
+            })
+            .map(([, predicate]) => predicate(node, reversedConditions));
 
-        if (reversedConditions) {
-            const toBeRemoved = Array.from(this.conditionsMap)
-                .filter(([name]) => {
-                    const conditionOption = remove[name];
-                    return (conditionOption === true || (Array.isArray(conditionOption) && conditionOption.length > 0))
-                        && !skipChecking(name);
-                })
-                .map(([, predicate]) => predicate(node, reversedConditions));
+        return this.shouldRemoveByLinkedConditions(node)
+            || (reversedConditions && toBeRemoved().includes(true) && !toBeRemoved().includes(false))
+            || (!reversedConditions && Array.from(this.conditionsMap).some(([name, predicate]) => {
 
-            return toBeRemoved.includes(true) && !toBeRemoved.includes(false);
-        }
-
-        return Array.from(this.conditionsMap).some(([name, predicate]) => {
             const conditionOption = remove[name];
             return (conditionOption === true || (Array.isArray(conditionOption) && conditionOption.length > 0))
                 && !skipChecking(name) && predicate(node, reversedConditions);
-        });
+        }));
     }
 
     shouldRemoveByLinkedConditions = (node) => {
