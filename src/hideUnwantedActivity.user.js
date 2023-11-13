@@ -16,7 +16,7 @@ const config = {
         text: false, // Remove activities containing only text
         images: false, // Remove activities containing images
         videos: false, // Remove activities containing videos
-        containsStrings: [], // Remove activities containing user defined strings
+        containsStrings: [], // Remove activities containing user-defined strings
     },
     options: {
         targetLoadCount: 2, // Minimum number of activities to show per click on the "Load More" button
