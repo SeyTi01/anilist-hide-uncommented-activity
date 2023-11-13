@@ -193,12 +193,7 @@ class UIHandler {
         });
     };
 
-    clickLoadMore = () => {
-        if (this.loadMore) {
-            this.loadMore.click();
-            this.loadMore = null;
-        }
-    };
+    clickLoadMore = () => this.loadMore?.click() ?? null;
 
     resetState = () => {
         this.userPressed = false;
@@ -207,7 +202,7 @@ class UIHandler {
 
     showCancel = () => {
         this.cancel ? this.cancel.style.display = 'block' : this.createCancel();
-    };
+    }
 
     hideCancel = () => {
         if (this.cancel) this.cancel.style.display = 'none';
