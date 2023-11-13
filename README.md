@@ -41,11 +41,12 @@ Customize the script's behavior by editing the `config` object at the top of the
 
 ## Additional information
 
-`containsStrings` and `linkedConditions` accept regular arrays `[]` and two-dimensional arrays `[[]]`. 
-When using two-dimensional arrays, conditions/strings within the inner arrays are checked together. 
-- `['A', 'B']` removes entries containing either 'A' or 'B'. 
+Both `containsStrings` and `linkedConditions` support regular arrays `[]` as well as two-dimensional arrays `[[]]`.
+When utilizing two-dimensional arrays, conditions/strings within the inner arrays are evaluated together:
+
+- `['A', 'B']` removes entries containing either 'A' or 'B'.
 - `[['A', 'B']]` removes entries containing both 'A' and 'B'.
-- `[['A', 'B'], ['C', 'D']]` removes entries containing either both 'A' and 'B', or both 'C' and 'D'.
+- `[['A', 'B'], ['C', 'D']]` removes entries containing either both 'A' and 'B' or both 'C' and 'D'.
 
 ## Example usages
 
