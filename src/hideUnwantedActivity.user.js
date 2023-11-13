@@ -210,9 +210,7 @@ class UIHandler {
     };
 
     hideCancel = () => {
-        if (this.cancel) {
-            this.cancel.style.display = 'none';
-        }
+        if (this.cancel) this.cancel.style.display = 'none';
     };
 
     simulateDomEvents = () => {
