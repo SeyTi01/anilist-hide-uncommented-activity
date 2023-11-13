@@ -4,7 +4,7 @@ Customize activity feeds by removing unwanted entries.
 
 ## Features (Configurable)
 
-- Filter and selectively include or exclude activities based on custom strings, images, videos, text, comments, or likes.
+- Filter and selectively include or exclude activities based on strings, images, videos, text, comments, or likes.
 - Configure the script to run in specific locations such as home feeds, user profile feeds, or social feeds.
 - Automatic loading of additional activities until a predefined minimum is achieved.
 
