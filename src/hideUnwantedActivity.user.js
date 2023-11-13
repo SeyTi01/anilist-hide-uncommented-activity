@@ -105,17 +105,9 @@ class ActivityHandler {
         ['containsStrings', (node, reverse) => this.shouldRemoveStrings(node, reverse)],
     ]);
 
-    removeEntry = (node) => {
-        if (this.shouldRemoveNode(node)) {
-            node.remove();
-        } else {
-            this.currentLoadCount++;
-        }
-    }
+    removeEntry = (node) => this.shouldRemoveNode(node) ? node.remove() : this.currentLoadCount++;
 
-    resetState = () => {
-        this.currentLoadCount = 0;
-    }
+    resetState = () => this.currentLoadCount = 0;
 
     shouldRemoveNode = (node) => {
         const { remove, options: { linkedConditions, reversedConditions } } = this.config;
@@ -184,26 +176,18 @@ class ActivityHandler {
             : containsStrings.some(checkStrings);
     };
 
-    shouldRemoveText = (node) => {
-        return (node.classList.contains(SELECTORS.activity.text) || node.classList.contains(SELECTORS.activity.message))
-            && !(this.shouldRemoveImage(node) || this.shouldRemoveVideo(node));
-    }
+    shouldRemoveText = (node) =>
+        (node.classList.contains(SELECTORS.activity.text) || node.classList.contains(SELECTORS.activity.message))
+        && !(this.shouldRemoveImage(node) || this.shouldRemoveVideo(node));
 
-    shouldRemoveUncommented = (node) => {
-        return !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
-    }
+    shouldRemoveVideo = (node) => node?.querySelector(SELECTORS.class.video)
+        || node?.querySelector(SELECTORS.span.youTube);
 
-    shouldRemoveUnliked = (node) => {
-        return !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
-    }
+    shouldRemoveUncommented = (node) => !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
 
-    shouldRemoveImage = (node) => {
-        return node?.querySelector(SELECTORS.class.image);
-    }
+    shouldRemoveUnliked = (node) => !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
 
-    shouldRemoveVideo = (node) => {
-        return node?.querySelector(SELECTORS.class.video) || node?.querySelector(SELECTORS.span.youTube);
-    }
+    shouldRemoveImage = (node) => node?.querySelector(SELECTORS.class.image);
 }
 
 class UIHandler {
