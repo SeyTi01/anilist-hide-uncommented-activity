@@ -304,16 +304,12 @@ class ConfigValidator {
     }
 
     validateArrayContents(arr) {
-        for (const element of arr) {
+        return arr.every(element => {
             if (Array.isArray(element)) {
-                if (!this.validateArrayContents(element)) {
-                    return false;
-                }
-            } else if (typeof element !== 'string') {
-                return false;
+                return this.validateArrayContents(element);
             }
-        }
-        return true;
+            return typeof element === 'string';
+        });
     }
 
     validateLinkedConditions(configKey) {
