@@ -126,7 +126,7 @@ class ActivityHandler {
     shouldRemoveByLinkedConditions = (node) => {
         const { options: { linkedConditions, reverseConditions } } = this.config;
 
-        if (!linkedConditions.flat().length) return false;
+        if (linkedConditions.flat().length === 0) return false;
 
         const conditions = Array.isArray(linkedConditions[0]) ? linkedConditions : [linkedConditions];
 
@@ -140,7 +140,7 @@ class ActivityHandler {
     shouldRemoveStrings = (node, reversed) => {
         const { remove: { containsStrings }, options: { caseSensitive } } = this.config;
 
-        if (!containsStrings.flat().length) return false;
+        if (containsStrings.flat().length === 0) return false;
 
         const containsString = (nodeText, strings) => !caseSensitive
             ? nodeText.toLowerCase().includes(strings.toLowerCase())
@@ -197,7 +197,9 @@ class UIHandler {
     }
 
     hideCancel = () => {
-        if (this.cancel) this.cancel.style.display = 'none';
+        if (this.cancel) {
+            this.cancel.style.display = 'none';
+        }
     };
 
     simulateDomEvents = () => {
@@ -250,8 +252,7 @@ class ConfigValidator {
             'remove.videos', 'options.caseSensitive', 'options.reverseConditions', 'runOn.home', 'runOn.social', 'runOn.profile']);
 
         if (this.errors.length > 0) {
-            const errorMessage = `Script disabled due to configuration errors: ${this.errors.join(', ')}`;
-            throw new Error(errorMessage);
+            throw new Error(`Script disabled due to configuration errors: ${this.errors.join(', ')}`);
         }
     }
 
