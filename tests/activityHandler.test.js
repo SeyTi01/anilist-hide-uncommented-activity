@@ -66,8 +66,6 @@ describe('ActivityHandler', () => {
     const STRING_2 = 'string2';
 
     const testCases = [
-        // { htmlPath: UNLIKED, configOptions: { options: { linkedConditions: [[]] } }, expectedRemove: false },
-
         // Tests for unliked
         { htmlPath: UNLIKED, configOptions: { remove: { unliked: true } }, expectedRemove: true },
         { htmlPath: UNCOMMENTED, configOptions: { remove: { unliked: true } }, expectedRemove: false },
@@ -141,6 +139,7 @@ describe('ActivityHandler', () => {
         { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { containsStrings: [STRING_1] } }, expectedRemove: false },
 
         // Tests for linkedConditions
+        { htmlPath: UNLIKED, configOptions: { options: { linkedConditions: [[]] } }, expectedRemove: false },
         { htmlPath: UNLIKED, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
         { htmlPath: UNCOMMENTED, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
         { htmlPath: TEXT, configOptions: { options: { linkedConditions: [['images', 'unliked']] } }, expectedRemove: false },
