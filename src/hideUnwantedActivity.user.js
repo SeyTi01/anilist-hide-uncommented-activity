@@ -21,7 +21,7 @@ const config = {
     options: {
         targetLoadCount: 2, // Minimum number of activities to show per click on the "Load More" button
         caseSensitive: false, // Whether string-based removal should be case-sensitive
-        reversedConditions: false, // Only keep posts that would be removed by the conditions
+        reverseConditions: false, // Only keep posts that would be removed by the conditions
         linkedConditions: [], // Groups of conditions to be checked together
     },
     runOn: {
@@ -105,54 +105,46 @@ class ActivityHandler {
     resetState = () => this.currentLoadCount = 0;
 
     shouldRemoveNode = (node) => {
-        const { remove, options: { linkedConditions, reversedConditions } } = this.config;
+        const { remove, options: { linkedConditions, reverseConditions } } = this.config;
 
         const skipChecking = (condition) => linkedConditions?.flat()?.includes(condition);
 
-        const toBeRemoved = () => reversedConditions && Array.from(this.conditionsMap)
-            .filter(([name]) => {
-                const conditionOption = remove[name];
-                return (conditionOption === true || (Array.isArray(conditionOption) && conditionOption.length > 0))
-                    && !skipChecking(name);
-            })
-            .map(([, predicate]) => predicate(node, reversedConditions));
+        const checkConditions = () => Array.from(this.conditionsMap)
+            .some(([name, predicate]) => remove[name] && !skipChecking(name) && predicate(node, reverseConditions));
+
+        const checkConditionsRev = () => Array.from(this.conditionsMap)
+            .filter(([name]) => remove[name] === true || remove[name].length > 0)
+            .map(([, predicate]) => predicate(node, reverseConditions));
+
+        const conditionsRev = checkConditionsRev();
 
         return this.shouldRemoveByLinkedConditions(node)
-            || (reversedConditions && toBeRemoved().includes(true) && !toBeRemoved().includes(false))
-            || (!reversedConditions && Array.from(this.conditionsMap).some(([name, predicate]) => {
-
-                const conditionOption = remove[name];
-                return (conditionOption || (Array.isArray(conditionOption) && conditionOption.length > 0))
-                    && !skipChecking(name) && predicate(node, reversedConditions);
-            }));
+            || !reverseConditions && checkConditions()
+            || reverseConditions && conditionsRev.includes(true) && !conditionsRev.includes(false);
     }
 
     shouldRemoveByLinkedConditions = (node) => {
-        const { options: { linkedConditions, reversedConditions } } = this.config;
+        const { options: { linkedConditions, reverseConditions } } = this.config;
 
-        if (!linkedConditions || linkedConditions.length === 0) return false;
+        if (linkedConditions.flat().length === 0) return false;
 
         const conditions = Array.isArray(linkedConditions[0]) ? linkedConditions : [linkedConditions];
 
-        const checkConditions = (node, conditionList, reversedConditions) => {
-            return reversedConditions
-                ? conditionList.some(condition => this.conditionsMap.get(condition)(node, reversedConditions))
-                : conditionList.every(condition => this.conditionsMap.get(condition)(node, reversedConditions));
-        }
+        const checkConditions = (node, conditionList, reverseConditions) => reverseConditions
+            ? conditionList.some(condition => this.conditionsMap.get(condition)(node, reverseConditions))
+            : conditionList.every(condition => this.conditionsMap.get(condition)(node, reverseConditions));
 
-        return conditions.some(condition => checkConditions(node, condition, reversedConditions));
+        return conditions.some(condition => checkConditions(node, condition, reverseConditions));
     }
 
     shouldRemoveStrings = (node, reversed) => {
         const { remove: { containsStrings }, options: { caseSensitive } } = this.config;
 
-        if (!containsStrings.flat().length) return false;
+        if (containsStrings.flat().length === 0) return false;
 
-        const containsString = (nodeText, strings) => {
-            return !caseSensitive
-                ? nodeText.toLowerCase().includes(strings.toLowerCase())
-                : nodeText.includes(strings);
-        };
+        const containsString = (nodeText, strings) => !caseSensitive
+            ? nodeText.toLowerCase().includes(strings.toLowerCase())
+            : nodeText.includes(strings);
 
         const checkStrings = (strings) => Array.isArray(strings)
             ? strings.every(str => containsString(node.textContent, str))
@@ -205,7 +197,9 @@ class UIHandler {
     }
 
     hideCancel = () => {
-        if (this.cancel) this.cancel.style.display = 'none';
+        if (this.cancel) {
+            this.cancel.style.display = 'none';
+        }
     };
 
     simulateDomEvents = () => {
@@ -255,11 +249,10 @@ class ConfigValidator {
         this.validateLinkedConditions('options.linkedConditions');
         this.validateStringArrays(['remove.containsStrings', 'options.linkedConditions']);
         this.validateBooleans(['remove.uncommented', 'remove.unliked', 'remove.text', 'remove.images',
-            'remove.videos', 'options.caseSensitive', 'options.reversedConditions', 'runOn.home', 'runOn.social', 'runOn.profile']);
+            'remove.videos', 'options.caseSensitive', 'options.reverseConditions', 'runOn.home', 'runOn.social', 'runOn.profile']);
 
         if (this.errors.length > 0) {
-            const errorMessage = `Script disabled due to configuration errors: ${this.errors.join(', ')}`;
-            throw new Error(errorMessage);
+            throw new Error(`Script disabled due to configuration errors: ${this.errors.join(', ')}`);
         }
     }
 

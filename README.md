@@ -31,7 +31,7 @@ Customize the script's behavior by editing the `config` object at the top of the
 - `options`:
   - `targetLoadCount` (Default: `2`): Set a positive integer representing the minimum number of activities to display per click on the "Load More" button.
   - `caseSensitive` (Default: `false`): Set to `true` for case-sensitive string removal. Set to `false` for case-insensitive removal.
-  - `reversedConditions` (Default: `false`): Set to `true` to only keep posts that would be removed by the conditions.
+  - `reverseConditions` (Default: `false`): Set to `true` to only keep posts that would be removed by the conditions.
   - `linkedConditions` (Default: `[]`): Groups of conditions to be checked together. Linked conditions are always considered 'true'.
 
 - `runOn`:
@@ -52,7 +52,7 @@ When utilizing two-dimensional arrays, conditions/strings within the inner array
 
 - `options.linkedConditions: [['images', 'customStrings'], ['uncommented', 'unliked']]`: 
   - Remove activities containing either both images and specific strings, or neither comments nor likes.
-- `options.reversedConditions = true`, `remove.images = true`: 
+- `options.reverseConditions = true`, `remove.images = true`: 
   - Remove all activities except those containing images.
 
 ## Editing the config object

@@ -16,7 +16,7 @@ describe('ConfigValidator', () => {
             targetLoadCount: 10,
             caseSensitive: false,
             linkedConditions: [],
-            reversedConditions: false,
+            reverseConditions: false,
         },
         runOn: {
             home: false,
