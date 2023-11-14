@@ -140,11 +140,9 @@ class ActivityHandler {
 
         if (!containsStrings.flat().length) return false;
 
-        const containsString = (nodeText, strings) => {
-            return !caseSensitive
-                ? nodeText.toLowerCase().includes(strings.toLowerCase())
-                : nodeText.includes(strings);
-        };
+        const containsString = (nodeText, strings) => !caseSensitive
+            ? nodeText.toLowerCase().includes(strings.toLowerCase())
+            : nodeText.includes(strings);
 
         const checkStrings = (strings) => Array.isArray(strings)
             ? strings.every(str => containsString(node.textContent, str))
