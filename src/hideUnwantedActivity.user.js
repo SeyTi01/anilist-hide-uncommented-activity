@@ -116,9 +116,11 @@ class ActivityHandler {
             .filter(([name]) => remove[name] === true || remove[name].length > 0)
             .map(([, predicate]) => predicate(node, reversedConditions));
 
+        const conditionsRev = checkConditionsRev();
+
         return this.shouldRemoveByLinkedConditions(node)
-            || (!reversedConditions && checkConditions())
-            || (reversedConditions && checkConditionsRev().includes(true) && !checkConditionsRev().includes(false));
+            || !reversedConditions && checkConditions()
+            || reversedConditions && conditionsRev.includes(true) && !conditionsRev.includes(false);
     }
 
     shouldRemoveByLinkedConditions = (node) => {
