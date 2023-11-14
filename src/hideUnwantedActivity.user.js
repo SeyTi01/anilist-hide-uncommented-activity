@@ -128,11 +128,9 @@ class ActivityHandler {
 
         const conditions = Array.isArray(linkedConditions[0]) ? linkedConditions : [linkedConditions];
 
-        const checkConditions = (node, conditionList, reversedConditions) => {
-            return reversedConditions
-                ? conditionList.some(condition => this.conditionsMap.get(condition)(node, reversedConditions))
-                : conditionList.every(condition => this.conditionsMap.get(condition)(node, reversedConditions));
-        }
+        const checkConditions = (node, conditionList, reversedConditions) => reversedConditions
+            ? conditionList.some(condition => this.conditionsMap.get(condition)(node, reversedConditions))
+            : conditionList.every(condition => this.conditionsMap.get(condition)(node, reversedConditions));
 
         return conditions.some(condition => checkConditions(node, condition, reversedConditions));
     }
