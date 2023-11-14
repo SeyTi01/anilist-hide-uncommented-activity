@@ -111,16 +111,13 @@ class ActivityHandler {
 
         const toBeRemoved = () => reversedConditions && Array.from(this.conditionsMap)
             .filter(([name]) => {
-                const conditionOption = remove[name];
-                return (conditionOption === true || (Array.isArray(conditionOption) && conditionOption.length > 0))
-                    && !skipChecking(name);
+                return remove[name] === true || remove[name].length > 0;
             })
             .map(([, predicate]) => predicate(node, reversedConditions));
 
         return this.shouldRemoveByLinkedConditions(node)
             || (reversedConditions && toBeRemoved().includes(true) && !toBeRemoved().includes(false))
             || (!reversedConditions && Array.from(this.conditionsMap).some(([name, predicate]) => {
-
                 return remove[name] && !skipChecking(name) && predicate(node, reversedConditions);
             }));
     }
@@ -128,7 +125,7 @@ class ActivityHandler {
     shouldRemoveByLinkedConditions = (node) => {
         const { options: { linkedConditions, reversedConditions } } = this.config;
 
-        if (!linkedConditions || linkedConditions.length === 0) return false;
+        if (linkedConditions.length === 0) return false;
 
         const conditions = Array.isArray(linkedConditions[0]) ? linkedConditions : [linkedConditions];
 
