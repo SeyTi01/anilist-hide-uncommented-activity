@@ -109,17 +109,21 @@ class ActivityHandler {
 
         const skipChecking = (condition) => linkedConditions?.flat()?.includes(condition);
 
-        const toBeRemoved = () => reversedConditions && Array.from(this.conditionsMap)
+        const checkConditions = () => {
+            return Array.from(this.conditionsMap).some(([name, predicate]) => {
+                return remove[name] && !skipChecking(name) && predicate(node, reversedConditions);
+            });
+        }
+
+        const checkConditionsRev = () => Array.from(this.conditionsMap)
             .filter(([name]) => {
                 return remove[name] === true || remove[name].length > 0;
             })
             .map(([, predicate]) => predicate(node, reversedConditions));
 
         return this.shouldRemoveByLinkedConditions(node)
-            || (reversedConditions && toBeRemoved().includes(true) && !toBeRemoved().includes(false))
-            || (!reversedConditions && Array.from(this.conditionsMap).some(([name, predicate]) => {
-                return remove[name] && !skipChecking(name) && predicate(node, reversedConditions);
-            }));
+            || (!reversedConditions && checkConditions())
+            || (reversedConditions && checkConditionsRev().includes(true) && !checkConditionsRev().includes(false));
     }
 
     shouldRemoveByLinkedConditions = (node) => {
