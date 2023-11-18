@@ -131,13 +131,22 @@ class ActivityHandler {
                 return false;
             }
 
+            let checkResult = [];
             const conditions = Array.isArray(linkedConditions[0]) ? linkedConditions : [linkedConditions];
-            for (let i = 0; i < conditions.length; i++) {
-                if (checkConditions(node, conditions[i], reverseConditions)) {
-                    return true;
+
+            if (reverseConditions) {
+                for (let i = 0; i < conditions.length; i++) {
+                    checkResult.push(checkConditions(node, conditions[i], reverseConditions));
+                }
+            } else {
+                for (let i = 0; i < conditions.length; i++) {
+                    if (checkConditions(node, conditions[i], reverseConditions)) {
+                        return true;
+                    }
                 }
             }
-            return false;
+
+            return checkResult.includes(true) && !checkResult.includes(false);
         };
 
         const shouldRemoveNode = () => {
