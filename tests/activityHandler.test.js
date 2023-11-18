@@ -67,6 +67,7 @@ describe('ActivityHandler', () => {
 
     const testCases = [
         // { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['videos', 'uncommented'], ['images', 'unliked']], reverseConditions: true } }, expectedRemove: false },
+        // { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['images', 'unliked'], ['videos', 'uncommented']], reverseConditions: true } }, expectedRemove: false },
         // { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['videos', 'uncommented'], ['images']], reverseConditions: true } }, expectedRemove: false },
 
         // { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: ['videos', ['images', 'unliked']] } }, expectedRemove: true },
