@@ -66,10 +66,6 @@ describe('ActivityHandler', () => {
     const STRING_2 = 'string2';
 
     const testCases = [
-        // { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['videos', 'uncommented'], ['images', 'unliked']], reverseConditions: true } }, expectedRemove: false },
-        // { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['images', 'unliked'], ['videos', 'uncommented']], reverseConditions: true } }, expectedRemove: false },
-        // { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['videos', 'uncommented'], ['images']], reverseConditions: true } }, expectedRemove: false },
-
         // { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: ['videos', ['images', 'unliked']] } }, expectedRemove: true },
         // { htmlPath: VIDEOS, configOptions: { options: { linkedConditions: [['images', 'unliked'], 'videos'] } }, expectedRemove: true },
 
@@ -242,6 +238,9 @@ describe('ActivityHandler', () => {
         { htmlPath: IMAGES, configOptions: { options: { linkedConditions: ['images', 'unliked'], reverseConditions: true } }, expectedRemove: true },
         { htmlPath: VIDEOS_UNCOMMENTED, configOptions: { options: { linkedConditions: [['videos', 'uncommented']], reverseConditions: true } }, expectedRemove: false },
         { htmlPath: VIDEOS_UNCOMMENTED, configOptions: { options: { linkedConditions: [['videos', 'images']], reverseConditions: true } }, expectedRemove: true },
+        { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['videos', 'uncommented'], ['images', 'unliked']], reverseConditions: true } }, expectedRemove: false },
+        { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['images', 'unliked'], ['videos', 'uncommented']], reverseConditions: true } }, expectedRemove: false },
+        { htmlPath: IMAGES_UNLIKED, configOptions: { options: { linkedConditions: [['videos', 'uncommented'], ['images']], reverseConditions: true } }, expectedRemove: false },
 
         // Tests for reversed text
         { htmlPath: UNLIKED, configOptions: { remove: { text: true }, options: { reverseConditions: true } }, expectedRemove: true },
