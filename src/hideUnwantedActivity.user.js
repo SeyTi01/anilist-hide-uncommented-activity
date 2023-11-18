@@ -108,15 +108,36 @@ class ActivityHandler {
 
         const shouldSkipChecking = (condition) => linkedConditionsFlat.includes(condition);
 
-        const checkConditions = (node, conditionList, reverseConditions) => reverseConditions
-            ? conditionList.some(condition => this.conditionsMap.get(condition)(node, reverseConditions))
-            : conditionList.every(condition => this.conditionsMap.get(condition)(node, reverseConditions));
+        const checkConditions = (node, conditionList, reverseConditions) => {
+            if (reverseConditions) {
+                for (let i = 0; i < conditionList.length; i++) {
+                    if (this.conditionsMap.get(conditionList[i])(node, reverseConditions)) {
+                        return true;
+                    }
+                }
+                return false;
+            } else {
+                for (let i = 0; i < conditionList.length; i++) {
+                    if (!this.conditionsMap.get(conditionList[i])(node, reverseConditions)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        };
 
         const shouldRemoveByLinkedConditions = () => {
-            if (linkedConditionsFlat.length === 0) return false;
+            if (linkedConditionsFlat.length === 0) {
+                return false;
+            }
 
             const conditions = Array.isArray(linkedConditions[0]) ? linkedConditions : [linkedConditions];
-            return conditions.some(condition => checkConditions(node, condition, reverseConditions));
+            for (let i = 0; i < conditions.length; i++) {
+                if (checkConditions(node, conditions[i], reverseConditions)) {
+                    return true;
+                }
+            }
+            return false;
         };
 
         const shouldRemoveNode = () => {
