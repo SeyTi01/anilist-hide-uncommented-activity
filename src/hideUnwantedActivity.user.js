@@ -105,6 +105,7 @@ class ActivityHandler {
     removeEntry = (node) => {
         const { remove, options: { linkedConditions, reverseConditions } } = this.config;
         const linkedConditionsFlat = linkedConditions.flat();
+
         const shouldSkipChecking = (condition) => linkedConditionsFlat.includes(condition);
 
         const checkConditions = (node, conditionList, reverseConditions) => reverseConditions
