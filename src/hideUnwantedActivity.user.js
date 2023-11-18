@@ -169,11 +169,11 @@ class ActivityHandler {
     shouldRemoveVideo = (node) => node?.querySelector(SELECTORS.class.video)
         || node?.querySelector(SELECTORS.span.youTube);
 
+    shouldRemoveImage = (node) => node?.querySelector(SELECTORS.class.image);
+
     shouldRemoveUncommented = (node) => !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
 
     shouldRemoveUnliked = (node) => !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
-
-    shouldRemoveImage = (node) => node?.querySelector(SELECTORS.class.image);
 }
 
 class UIHandler {
