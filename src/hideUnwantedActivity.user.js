@@ -113,26 +113,18 @@ class ActivityHandler {
             : conditionList.every(condition => this.conditionsMap.get(condition)(node, reverseConditions));
 
         const shouldRemoveByLinkedConditions = () => {
-            if (linkedConditionsFlat.length === 0) {
-                return false;
-            }
+            if (linkedConditionsFlat.length === 0) return false;
 
-            let checkResult = [];
-            const conditions = Array.isArray(linkedConditions[0]) ? linkedConditions : [linkedConditions];
+            const conditions = linkedConditions.every(i => typeof i === 'string')
+            && !linkedConditions.some(i => Array.isArray(i))
+                ? [linkedConditions]
+                : linkedConditions.map(i => Array.isArray(i) ? i : [i]);
 
-            if (reverseConditions) {
-                for (let i = 0; i < conditions.length; i++) {
-                    checkResult.push(checkConditions(node, conditions[i], reverseConditions));
-                }
-            } else {
-                for (let i = 0; i < conditions.length; i++) {
-                    if (checkConditions(node, conditions[i], reverseConditions)) {
-                        return true;
-                    }
-                }
-            }
+            const checkResult = conditions.map(c => checkConditions(node, c, reverseConditions));
 
-            return checkResult.includes(true) && !checkResult.includes(false);
+            return reverseConditions
+                ? checkResult.includes(true) && !checkResult.includes(false)
+                : checkResult.includes(true);
         };
 
         const shouldRemoveNode = () => {
@@ -140,7 +132,7 @@ class ActivityHandler {
 
             if (!reverseConditions) {
                 return [...this.conditionsMap].some(([name, conditionPredicate]) =>
-                    remove[name] && !shouldSkipChecking(name) && conditionPredicate(node, reverseConditions)
+                    remove[name] && !shouldSkipChecking(name) && conditionPredicate(node, reverseConditions),
                 );
             } else {
                 const conditionsRev = Array.from(this.conditionsMap)
