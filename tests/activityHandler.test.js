@@ -18,6 +18,7 @@ const CONTAINS_STRING_2 = `${TEST_DATA_PATH}activity-containsString2.html`
 const CONTAINS_STRINGS = `${TEST_DATA_PATH}activity-containsStrings.html`
 const IMAGES_UNLIKED = `${TEST_DATA_PATH}activity-imagesUnliked.html`;
 const VIDEOS_UNCOMMENTED = `${TEST_DATA_PATH}activity-videosUncommented.html`;
+const UNLIKED_UNCOMMENTED = `${TEST_DATA_PATH}activity-unlikedUncommented.html`;
 
 describe('ActivityHandler', () => {
     let activityHandler;
@@ -66,6 +67,8 @@ describe('ActivityHandler', () => {
     const STRING_2 = 'string2';
 
     const testCases = [
+        // { htmlPath: UNLIKED_UNCOMMENTED, configOptions: { remove: { videos: true }, options: { reverseConditions: true, linkedConditions: ['images', ['unliked', 'uncommented']] } }, expectedRemove: false },
+
         // Tests for unliked
         { htmlPath: UNLIKED, configOptions: { remove: { unliked: true } }, expectedRemove: true },
         { htmlPath: UNCOMMENTED, configOptions: { remove: { unliked: true } }, expectedRemove: false },
