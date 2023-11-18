@@ -122,9 +122,7 @@ class ActivityHandler {
 
             const checkResult = conditions.map(c => checkConditions(node, c, reverseConditions));
 
-            return reverseConditions
-                ? checkResult.includes(true) && !checkResult.includes(false)
-                : checkResult.includes(true);
+            return checkResult.includes(true) && (!reverseConditions || !checkResult.includes(false));
         };
 
         const shouldRemoveNode = () => {
