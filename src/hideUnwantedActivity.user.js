@@ -108,23 +108,9 @@ class ActivityHandler {
 
         const shouldSkipChecking = (condition) => linkedConditionsFlat.includes(condition);
 
-        const checkConditions = (node, conditionList, reverseConditions) => {
-            if (reverseConditions) {
-                for (let i = 0; i < conditionList.length; i++) {
-                    if (this.conditionsMap.get(conditionList[i])(node, reverseConditions)) {
-                        return true;
-                    }
-                }
-                return false;
-            } else {
-                for (let i = 0; i < conditionList.length; i++) {
-                    if (!this.conditionsMap.get(conditionList[i])(node, reverseConditions)) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        };
+        const checkConditions = (node, conditionList, reverseConditions) => reverseConditions
+            ? conditionList.some(condition => this.conditionsMap.get(condition)(node, reverseConditions))
+            : conditionList.every(condition => this.conditionsMap.get(condition)(node, reverseConditions));
 
         const shouldRemoveByLinkedConditions = () => {
             if (linkedConditionsFlat.length === 0) {
