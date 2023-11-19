@@ -66,6 +66,8 @@ describe('ActivityHandler', () => {
     const STRING_2 = 'string2';
 
     const testCases = [
+        // { htmlPath: IMAGES, configOptions: { remove: { images: true }, options: { linkedConditions: ['images', 'videos'], reverseConditions: true } }, expectedRemove: true },
+
         // Tests for unliked
         { htmlPath: UNLIKED, configOptions: { remove: { unliked: true } }, expectedRemove: true },
         { htmlPath: UNCOMMENTED, configOptions: { remove: { unliked: true } }, expectedRemove: false },
