@@ -1,7 +1,7 @@
 const fs = require('fs');
 const jsdom = require('jsdom');
 const { expect } = require('chai');
-const { ActivityHandler } = require('../src/hideUnwantedActivity.user');
+const { ActivityHandler } = require('../src/activityFeedFilter.user');
 const { restore, spy } = require("sinon");
 const merge = require('lodash.merge');
 

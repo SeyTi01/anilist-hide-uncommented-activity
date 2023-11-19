@@ -1,6 +1,6 @@
-# Anilist: Hide Unwanted Activity
+# Anilist: Activity-Feed Filter
 
-Customize activity feeds by removing unwanted entries.
+Control the content displayed in your activity feeds
 
 ## Features
 
@@ -12,7 +12,7 @@ Customize activity feeds by removing unwanted entries.
 
 1. Install a user script manager extension for your browser (e.g., Violentmonkey, Tampermonkey).
 
-2. Click [here](https://github.com/SeyTi01/anilist-hide-uncommented-activity/raw/1.8.1/src/hideUncommentedActivity.user.js) to open the raw userscript file.
+2. Click [here](https://github.com/SeyTi01/anilist-hide-uncommented-activity/raw/1.8.1/src/activityFeedFilter.user.js) to open the raw userscript file.
 
 3. The userscript manager extension should detect the script and prompt you to install it. Follow the instructions to install the script.
 
@@ -71,4 +71,4 @@ Editing User Script Files in Violentmonkey
 
 ## License
 
-This project is licensed under the [MIT License](https://github.com/SeyTi01/anilist-hide-uncommented-activity/raw/1.8.1/LICENSE).
+This project is licensed under the [MIT License](https://github.com/SeyTi01/anilist-activity-feed-filter/raw/1.8.1/LICENSE).

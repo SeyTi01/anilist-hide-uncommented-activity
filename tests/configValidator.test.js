@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { ConfigValidator } = require('../src/hideUnwantedActivity.user');
+const { ConfigValidator } = require('../src/activityFeedFilter.user');
 const merge = require('lodash.merge');
 
 describe('ConfigValidator', () => {

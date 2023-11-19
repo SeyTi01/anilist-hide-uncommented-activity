@@ -1,7 +1,7 @@
 const fs = require('fs');
 
-const inputFilePath = '../src/hideUnwantedActivity.user.js';
-const outputFilePath = '../out/hideUnwantedActivity.user.js';
+const inputFilePath = '../src/activityFeedFilter.user.js';
+const outputFilePath = '../out/activityFeedFilter.user.js';
 
 fs.readFile(inputFilePath, 'utf8', (err, data) => {
     if (err) {

@@ -1,7 +1,7 @@
 const chai = require('chai');
 const sinon = require('sinon');
 const { expect } = chai;
-const { UIHandler } = require('../src/hideUnwantedActivity.user');
+const { UIHandler } = require('../src/activityFeedFilter.user');
 const { JSDOM } = require('jsdom');
 const { restore } = require('sinon');
 
