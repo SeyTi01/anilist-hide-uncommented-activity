@@ -113,7 +113,7 @@ class ActivityHandler {
             : conditionList.every(condition => this.conditionsMap.get(condition)(node, reverseConditions));
 
         const shouldRemoveByLinkedConditions = () => {
-            if (linkedConditionsFlat.length === 0) return false;
+            if (linkedConditionsFlat.length === 0) return -1;
 
             const conditions = linkedConditions.every(i => typeof i === 'string')
             && !linkedConditions.some(i => Array.isArray(i))
@@ -122,20 +122,32 @@ class ActivityHandler {
 
             const checkResult = conditions.map(c => checkConditions(node, c, reverseConditions));
 
-            return checkResult.includes(true) && (!reverseConditions || !checkResult.includes(false));
+            return (checkResult.includes(true) && (!reverseConditions || !checkResult.includes(false))) ? 1 : 0;
         };
 
         const shouldRemoveNode = () => {
-            if (shouldRemoveByLinkedConditions()) return true;
+            const linkedResult = shouldRemoveByLinkedConditions();
 
             if (!reverseConditions) {
+                if (linkedResult === 1) return true;
+
                 return [...this.conditionsMap].some(([name, conditionPredicate]) =>
                     remove[name] && !shouldSkipChecking(name) && conditionPredicate(node, reverseConditions),
                 );
             } else {
+
                 const conditionsRev = Array.from(this.conditionsMap)
                     .filter(([name]) => remove[name] === true || remove[name].length > 0)
                     .map(([, conditionPredicate]) => conditionPredicate(node, reverseConditions));
+                conditionsRev.push(linkedResult);
+
+                if (linkedResult === 1 && !conditionsRev.includes(false)) {
+                    return true;
+                }
+
+                if (linkedResult === 0 && !conditionsRev.includes(false)) {
+                    return false;
+                }
 
                 return conditionsRev.includes(true) && !conditionsRev.includes(false);
             }
