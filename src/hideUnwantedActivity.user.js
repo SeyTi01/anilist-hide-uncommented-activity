@@ -103,6 +103,10 @@ class ActivityHandler {
     resetState = () => this.currentLoadCount = 0;
 
     removeEntry = (node) => {
+        const LINKED_TRUE = 1;
+        const LINKED_FALSE = 0;
+        const LINKED_NONE = -1;
+
         const { remove, options: { linkedConditions, reverseConditions } } = this.config;
         const linkedConditionsFlat = linkedConditions.flat();
 
@@ -113,7 +117,9 @@ class ActivityHandler {
             : conditionList.every(condition => this.conditionsMap.get(condition)(node, reverseConditions));
 
         const shouldRemoveByLinkedConditions = () => {
-            if (linkedConditionsFlat.length === 0) return -1;
+            if (linkedConditionsFlat.length === 0) {
+                return LINKED_NONE;
+            }
 
             const conditions = linkedConditions.every(i => typeof i === 'string')
             && !linkedConditions.some(i => Array.isArray(i))
@@ -122,34 +128,25 @@ class ActivityHandler {
 
             const checkResult = conditions.map(c => checkConditions(node, c, reverseConditions));
 
-            return (checkResult.includes(true) && (!reverseConditions || !checkResult.includes(false))) ? 1 : 0;
+            return (checkResult.includes(true) && (!reverseConditions || !checkResult.includes(false)))
+                ? LINKED_TRUE
+                : LINKED_FALSE;
         };
 
         const shouldRemoveNode = () => {
             const linkedResult = shouldRemoveByLinkedConditions();
 
-            if (!reverseConditions) {
-                if (linkedResult === 1) return true;
-
-                return [...this.conditionsMap].some(([name, conditionPredicate]) =>
-                    remove[name] && !shouldSkipChecking(name) && conditionPredicate(node, reverseConditions),
-                );
-            } else {
-
-                const conditionsRev = Array.from(this.conditionsMap)
+            if (reverseConditions) {
+                const checkedConditions = Array.from(this.conditionsMap)
                     .filter(([name]) => remove[name] === true || remove[name].length > 0)
-                    .map(([, conditionPredicate]) => conditionPredicate(node, reverseConditions));
-                conditionsRev.push(linkedResult);
+                    .map(([, predicate]) => predicate(node, reverseConditions));
 
-                if (linkedResult === 1 && !conditionsRev.includes(false)) {
-                    return true;
-                }
-
-                if (linkedResult === 0 && !conditionsRev.includes(false)) {
-                    return false;
-                }
-
-                return conditionsRev.includes(true) && !conditionsRev.includes(false);
+                return linkedResult !== LINKED_FALSE && !checkedConditions.includes(false)
+                    && (linkedResult === LINKED_TRUE || checkedConditions.includes(true));
+            } else {
+                return linkedResult === LINKED_TRUE || [...this.conditionsMap].some(([name, predicate]) =>
+                    remove[name] && !shouldSkipChecking(name) && predicate(node, reverseConditions),
+                );
             }
         };
 
@@ -159,7 +156,9 @@ class ActivityHandler {
     shouldRemoveStrings = (node, reversed) => {
         const { remove: { containsStrings }, options: { caseSensitive } } = this.config;
 
-        if (containsStrings.flat().length === 0) return false;
+        if (containsStrings.flat().length === 0) {
+            return false;
+        }
 
         const containsString = (nodeText, strings) => !caseSensitive
             ? nodeText.toLowerCase().includes(strings.toLowerCase())
