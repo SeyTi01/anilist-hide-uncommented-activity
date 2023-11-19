@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Anilist: Hide Unwanted Activity
+// @name         Anilist: Activity-Feed Filter
 // @namespace    https://github.com/SeyTi01/
 // @version      1.8.1
-// @description  Customize activity feeds by removing unwanted entries
+// @description  Control the content displayed in your activity feeds
 // @author       SeyTi01
 // @match        https://anilist.co/*
 // @grant        none
@@ -11,11 +11,11 @@
 
 const config = {
     remove: {
-        uncommented: false, // Remove activities that have no comments
-        unliked: false, // Remove activities that have no likes
-        text: false, // Remove activities containing only text
         images: false, // Remove activities containing images
         videos: false, // Remove activities containing videos
+        text: false, // Remove activities containing only text
+        uncommented: false, // Remove activities that have no comments
+        unliked: false, // Remove activities that have no likes
         containsStrings: [], // Remove activities containing user-defined strings
     },
     options: {
