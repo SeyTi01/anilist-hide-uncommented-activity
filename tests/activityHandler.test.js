@@ -66,7 +66,7 @@ describe('ActivityHandler', () => {
     const STRING_2 = 'string2';
 
     const testCases = [
-        // { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [STRING_1] }, options: { linkedConditions: ['images', 'containsStrings'], reverseConditions: true } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [STRING_1] }, options: { linkedConditions: ['images', 'containsStrings'], reverseConditions: true } }, expectedRemove: true },
 
         // Tests for unliked
         { htmlPath: UNLIKED, configOptions: { remove: { unliked: true } }, expectedRemove: true },
@@ -250,6 +250,7 @@ describe('ActivityHandler', () => {
         { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { uncommented: true }, options: { linkedConditions: ['videos', ['images', 'unliked']], reverseConditions: true } }, expectedRemove: false },
         { htmlPath: UNCOMMENTED, configOptions: { remove: { uncommented: true }, options: { linkedConditions: ['videos', ['images', 'unliked']], reverseConditions: true } }, expectedRemove: false },
         { htmlPath: IMAGES, configOptions: { remove: { images: true }, options: { linkedConditions: ['images', 'videos'], reverseConditions: true } }, expectedRemove: true },
+        { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { containsStrings: [STRING_1] }, options: { linkedConditions: ['images', 'containsStrings'], reverseConditions: true } }, expectedRemove: true },
 
         // Tests for reversed text
         { htmlPath: UNLIKED, configOptions: { remove: { text: true }, options: { reverseConditions: true } }, expectedRemove: true },
