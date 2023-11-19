@@ -21,11 +21,11 @@ Control the content displayed in your activity feeds
 Customize the script's behavior by editing the `config` object at the top of the script file. Below are the configuration options with their valid values:
 
 - `remove`:
-  - `uncommented` (Default: `false`): Set to `true` to remove activities that have no comments. Set to `false` to keep them.
-  - `unliked` (Default: `false`): Set to `true` to remove activities that have no likes. Set to `false` to keep them.
-  - `text` (Default: `false`): Set to `true` to remove activities containing only text. Set to `false` to keep them.
   - `images` (Default: `false`): Set to `true` to remove activities containing images. Set to `false` to keep them.
   - `videos` (Default: `false`): Set to `true` to remove activities containing videos. Set to `false` to keep them.
+  - `text` (Default: `false`): Set to `true` to remove activities containing only text. Set to `false` to keep them.
+  - `uncommented` (Default: `false`): Set to `true` to remove activities that have no comments. Set to `false` to keep them.
+  - `unliked` (Default: `false`): Set to `true` to remove activities that have no likes. Set to `false` to keep them.
   - `containsStrings` (Default: `[]`): Remove activities containing user-defined strings. For example, `['plans to watch', 'show-name']`. Leave it as an empty array `[]` if you don't want to use this feature.
 
 - `options`:
