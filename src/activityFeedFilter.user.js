@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Anilist: Hide Unwanted Activity
+// @name         Anilist: Activity-Feed Filter
 // @namespace    https://github.com/SeyTi01/
-// @version      1.8
-// @description  Customize activity feeds by removing unwanted entries
+// @version      1.8.1
+// @description  Control the content displayed in your activity feeds
 // @author       SeyTi01
 // @match        https://anilist.co/*
 // @grant        none
@@ -11,11 +11,11 @@
 
 const config = {
     remove: {
-        uncommented: true, // Remove activities that have no comments
-        unliked: false, // Remove activities that have no likes
-        text: false, // Remove activities containing only text
         images: false, // Remove activities containing images
         videos: false, // Remove activities containing videos
+        text: false, // Remove activities containing only text
+        uncommented: false, // Remove activities that have no comments
+        unliked: false, // Remove activities that have no likes
         containsStrings: [], // Remove activities containing user-defined strings
     },
     options: {
@@ -100,47 +100,65 @@ class ActivityHandler {
         ['containsStrings', (node, reverse) => this.shouldRemoveStrings(node, reverse)],
     ]);
 
-    removeEntry = (node) => this.shouldRemoveNode(node) ? node.remove() : this.currentLoadCount++;
-
     resetState = () => this.currentLoadCount = 0;
 
-    shouldRemoveNode = (node) => {
+    removeEntry = (node) => {
+        const LINKED_TRUE = 1;
+        const LINKED_FALSE = 0;
+        const LINKED_NONE = -1;
+
         const { remove, options: { linkedConditions, reverseConditions } } = this.config;
+        const linkedConditionsFlat = linkedConditions.flat();
 
-        const skipChecking = (condition) => linkedConditions?.flat()?.includes(condition);
-
-        const checkConditions = () => Array.from(this.conditionsMap)
-            .some(([name, predicate]) => remove[name] && !skipChecking(name) && predicate(node, reverseConditions));
-
-        const checkConditionsRev = () => Array.from(this.conditionsMap)
-            .filter(([name]) => remove[name] === true || remove[name].length > 0)
-            .map(([, predicate]) => predicate(node, reverseConditions));
-
-        const conditionsRev = checkConditionsRev();
-
-        return this.shouldRemoveByLinkedConditions(node)
-            || !reverseConditions && checkConditions()
-            || reverseConditions && conditionsRev.includes(true) && !conditionsRev.includes(false);
-    }
-
-    shouldRemoveByLinkedConditions = (node) => {
-        const { options: { linkedConditions, reverseConditions } } = this.config;
-
-        if (linkedConditions.flat().length === 0) return false;
-
-        const conditions = Array.isArray(linkedConditions[0]) ? linkedConditions : [linkedConditions];
+        const shouldSkipChecking = (condition) => linkedConditionsFlat.includes(condition);
 
         const checkConditions = (node, conditionList, reverseConditions) => reverseConditions
             ? conditionList.some(condition => this.conditionsMap.get(condition)(node, reverseConditions))
             : conditionList.every(condition => this.conditionsMap.get(condition)(node, reverseConditions));
 
-        return conditions.some(condition => checkConditions(node, condition, reverseConditions));
-    }
+        const shouldRemoveByLinkedConditions = () => {
+            if (linkedConditionsFlat.length === 0) {
+                return LINKED_NONE;
+            }
+
+            const conditions = linkedConditions.every(i => typeof i === 'string')
+            && !linkedConditions.some(i => Array.isArray(i))
+                ? [linkedConditions]
+                : linkedConditions.map(i => Array.isArray(i) ? i : [i]);
+
+            const checkResult = conditions.map(c => checkConditions(node, c, reverseConditions));
+
+            return (checkResult.includes(true) && (!reverseConditions || !checkResult.includes(false)))
+                ? LINKED_TRUE
+                : LINKED_FALSE;
+        };
+
+        const shouldRemoveNode = () => {
+            const linkedResult = shouldRemoveByLinkedConditions();
+
+            if (reverseConditions) {
+                const checkedConditions = Array.from(this.conditionsMap)
+                    .filter(([name]) => remove[name] === true || remove[name].length > 0)
+                    .map(([, predicate]) => predicate(node, reverseConditions));
+
+                return linkedResult !== LINKED_FALSE && !checkedConditions.includes(false)
+                    && (linkedResult === LINKED_TRUE || checkedConditions.includes(true));
+            } else {
+                return linkedResult === LINKED_TRUE || [...this.conditionsMap].some(([name, predicate]) =>
+                    remove[name] && !shouldSkipChecking(name) && predicate(node, reverseConditions),
+                );
+            }
+        };
+
+        shouldRemoveNode() ? node.remove() : this.currentLoadCount++;
+    };
 
     shouldRemoveStrings = (node, reversed) => {
         const { remove: { containsStrings }, options: { caseSensitive } } = this.config;
 
-        if (containsStrings.flat().length === 0) return false;
+        if (containsStrings.flat().length === 0) {
+            return false;
+        }
 
         const containsString = (nodeText, strings) => !caseSensitive
             ? nodeText.toLowerCase().includes(strings.toLowerCase())
@@ -162,11 +180,11 @@ class ActivityHandler {
     shouldRemoveVideo = (node) => node?.querySelector(SELECTORS.class.video)
         || node?.querySelector(SELECTORS.span.youTube);
 
+    shouldRemoveImage = (node) => node?.querySelector(SELECTORS.class.image);
+
     shouldRemoveUncommented = (node) => !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
 
     shouldRemoveUnliked = (node) => !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
-
-    shouldRemoveImage = (node) => node?.querySelector(SELECTORS.class.image);
 }
 
 class UIHandler {

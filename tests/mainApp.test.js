@@ -1,4 +1,4 @@
-const MainApp = require("../src/hideUnwantedActivity.user").MainApp;
+const MainApp = require("../src/activityFeedFilter.user").MainApp;
 const sinon = require('sinon');
 const expect = require('chai').expect;
 const { JSDOM } = require('jsdom');

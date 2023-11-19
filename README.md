@@ -1,6 +1,6 @@
-# Anilist: Hide Unwanted Activity
+# Anilist: Activity-Feed Filter
 
-Customize activity feeds by removing unwanted entries.
+Control the content displayed in your activity feeds
 
 ## Features
 
@@ -12,7 +12,7 @@ Customize activity feeds by removing unwanted entries.
 
 1. Install a user script manager extension for your browser (e.g., Violentmonkey, Tampermonkey).
 
-2. Click [here](https://github.com/SeyTi01/anilist-hide-uncommented-activity/raw/1.8/src/hideUncommentedActivity.user.js) to open the raw userscript file.
+2. Click [here](https://github.com/SeyTi01/anilist-hide-uncommented-activity/raw/1.8.1/src/activityFeedFilter.user.js) to open the raw userscript file.
 
 3. The userscript manager extension should detect the script and prompt you to install it. Follow the instructions to install the script.
 
@@ -21,11 +21,11 @@ Customize activity feeds by removing unwanted entries.
 Customize the script's behavior by editing the `config` object at the top of the script file. Below are the configuration options with their valid values:
 
 - `remove`:
-  - `uncommented` (Default: `true`): Set to `true` to remove activities that have no comments. Set to `false` to keep them.
-  - `unliked` (Default: `false`): Set to `true` to remove activities that have no likes. Set to `false` to keep them.
-  - `text` (Default: `false`): Set to `true` to remove activities containing only text. Set to `false` to keep them.
   - `images` (Default: `false`): Set to `true` to remove activities containing images. Set to `false` to keep them.
   - `videos` (Default: `false`): Set to `true` to remove activities containing videos. Set to `false` to keep them.
+  - `text` (Default: `false`): Set to `true` to remove activities containing only text. Set to `false` to keep them.
+  - `uncommented` (Default: `false`): Set to `true` to remove activities that have no comments. Set to `false` to keep them.
+  - `unliked` (Default: `false`): Set to `true` to remove activities that have no likes. Set to `false` to keep them.
   - `containsStrings` (Default: `[]`): Remove activities containing user-defined strings. For example, `['plans to watch', 'show-name']`. Leave it as an empty array `[]` if you don't want to use this feature.
 
 - `options`:
@@ -37,7 +37,7 @@ Customize the script's behavior by editing the `config` object at the top of the
 - `runOn`:
   - `home` (Default: `true`): Set to `true` to run the script on the home feed. Set to `false` to exclude the home feed from processing.
   - `social` (Default: `true`): Set to `true` to run the script on social feeds. Set to `false` to exclude social feeds from processing.
-  - `profile` (Default: `false`): Set to `true` to run the script on user profile feeds. Set to `false` to exclude profile feeds from processing.
+  - `profile` (Default: `false`): Set to `false` to run the script on user profile feeds. Set to `false` to exclude profile feeds from processing.
 
 ## Additional information
 
@@ -71,4 +71,4 @@ Editing User Script Files in Violentmonkey
 
 ## License
 
-This project is licensed under the [MIT License](https://github.com/SeyTi01/anilist-hide-uncommented-activity/raw/1.8/LICENSE).
+This project is licensed under the [MIT License](https://github.com/SeyTi01/anilist-activity-feed-filter/raw/1.8.1/LICENSE).
