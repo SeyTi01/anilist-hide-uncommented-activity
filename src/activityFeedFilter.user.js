@@ -138,14 +138,14 @@ class ActivityHandler {
 
             if (reverseConditions) {
                 const checkedConditions = Array.from(this.conditionsMap)
-                    .filter(([name]) => remove[name] === true || remove[name].length > 0)
+                    .filter(([name]) => !shouldSkipChecking(name) && remove[name] === true || remove[name].length > 0)
                     .map(([, predicate]) => predicate(node, reverseConditions));
 
                 return linkedResult !== LINKED_FALSE && !checkedConditions.includes(false)
                     && (linkedResult === LINKED_TRUE || checkedConditions.includes(true));
             } else {
                 return linkedResult === LINKED_TRUE || [...this.conditionsMap].some(([name, predicate]) =>
-                    remove[name] && !shouldSkipChecking(name) && predicate(node, reverseConditions),
+                    !shouldSkipChecking(name) && remove[name] && predicate(node, reverseConditions),
                 );
             }
         };
