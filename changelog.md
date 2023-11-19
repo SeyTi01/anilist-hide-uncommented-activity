@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 1.8.1 (Nov 19, 2023)
+
+### Fixes
+- Resolved an issue with linkedConditions not behaving correctly when the array includes both strings and arrays.
+- Fixed a bug where linkedConditions were not functioning correctly when reverseConditions were enabled, along with other conditions.
+
 ## Version 1.8 (Nov 14, 2023)
 
 ### Features
