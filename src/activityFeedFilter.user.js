@@ -110,7 +110,7 @@ class ActivityHandler {
         const { remove, options: { linkedConditions, reverseConditions } } = this.config;
         const linkedConditionsFlat = linkedConditions.flat();
 
-        const shouldSkipChecking = (condition) => linkedConditionsFlat.includes(condition);
+        const shouldSkip = (condition) => linkedConditionsFlat.includes(condition);
 
         const checkConditions = (node, conditionList, reverseConditions) => reverseConditions
             ? conditionList.some(condition => this.conditionsMap.get(condition)(node, reverseConditions))
@@ -138,14 +138,14 @@ class ActivityHandler {
 
             if (reverseConditions) {
                 const checkedConditions = Array.from(this.conditionsMap)
-                    .filter(([name]) => remove[name] === true || remove[name].length > 0)
+                    .filter(([name]) => !shouldSkip(name) && (remove[name] === true || remove[name].length > 0))
                     .map(([, predicate]) => predicate(node, reverseConditions));
 
                 return linkedResult !== LINKED_FALSE && !checkedConditions.includes(false)
                     && (linkedResult === LINKED_TRUE || checkedConditions.includes(true));
             } else {
                 return linkedResult === LINKED_TRUE || [...this.conditionsMap].some(([name, predicate]) =>
-                    remove[name] && !shouldSkipChecking(name) && predicate(node, reverseConditions),
+                    !shouldSkip(name) && remove[name] && predicate(node, reverseConditions),
                 );
             }
         };

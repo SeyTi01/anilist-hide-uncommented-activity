@@ -1,6 +1,6 @@
 # Anilist: Activity-Feed Filter
 
-Control the content displayed in your activity feeds
+Control the content displayed in your activity feeds.
 
 ## Features
 
