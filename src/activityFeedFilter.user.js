@@ -104,8 +104,6 @@ class ActivityHandler {
         this.config = config;
     }
 
-    resetState = () => this.currentLoadCount = 0;
-
     removeEntry = (node) => {
         const { remove, options: { linkedConditions, reverseConditions } } = this.config;
         const linkedConditionsFlat = linkedConditions.flat();
@@ -185,6 +183,8 @@ class ActivityHandler {
     shouldRemoveUncommented = (node) => !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
 
     shouldRemoveUnliked = (node) => !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
+
+    resetState = () => this.currentLoadCount = 0;
 }
 
 class UIHandler {
