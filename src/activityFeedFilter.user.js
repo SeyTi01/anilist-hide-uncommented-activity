@@ -86,12 +86,11 @@ class MainApp {
 }
 
 class ActivityHandler {
-    constructor(config) {
-        this.currentLoadCount = 0;
-        this.config = config;
-    }
+    LINKED_TRUE = 1;
+    LINKED_FALSE = 0;
+    LINKED_NONE = -1;
 
-    conditionsMap = new Map([
+    CONDITIONS_MAP = new Map([
         ['uncommented', (node, reverse) => reverse ? !this.shouldRemoveUncommented(node) : this.shouldRemoveUncommented(node)],
         ['unliked', (node, reverse) => reverse ? !this.shouldRemoveUnliked(node) : this.shouldRemoveUnliked(node)],
         ['text', (node, reverse) => reverse ? !this.shouldRemoveText(node) : this.shouldRemoveText(node)],
@@ -100,25 +99,26 @@ class ActivityHandler {
         ['containsStrings', (node, reverse) => this.shouldRemoveStrings(node, reverse)],
     ]);
 
+    constructor(config) {
+        this.currentLoadCount = 0;
+        this.config = config;
+    }
+
     resetState = () => this.currentLoadCount = 0;
 
     removeEntry = (node) => {
-        const LINKED_TRUE = 1;
-        const LINKED_FALSE = 0;
-        const LINKED_NONE = -1;
-
         const { remove, options: { linkedConditions, reverseConditions } } = this.config;
         const linkedConditionsFlat = linkedConditions.flat();
 
         const shouldSkip = (condition) => linkedConditionsFlat.includes(condition);
 
         const checkConditions = (node, conditionList) => reverseConditions
-            ? conditionList.some(condition => this.conditionsMap.get(condition)(node, reverseConditions))
-            : conditionList.every(condition => this.conditionsMap.get(condition)(node, reverseConditions));
+            ? conditionList.some(condition => this.CONDITIONS_MAP.get(condition)(node, reverseConditions))
+            : conditionList.every(condition => this.CONDITIONS_MAP.get(condition)(node, reverseConditions));
 
         const shouldRemoveByLinkedConditions = () => {
             if (linkedConditionsFlat.length === 0) {
-                return LINKED_NONE;
+                return this.LINKED_NONE;
             }
 
             const conditions = linkedConditions.every(i => typeof i === 'string')
@@ -129,22 +129,22 @@ class ActivityHandler {
             const checkResult = conditions.map(c => checkConditions(node, c));
 
             return (checkResult.includes(true) && (!reverseConditions || !checkResult.includes(false)))
-                ? LINKED_TRUE
-                : LINKED_FALSE;
+                ? this.LINKED_TRUE
+                : this.LINKED_FALSE;
         };
 
         const shouldRemoveNode = () => {
             const linkedResult = shouldRemoveByLinkedConditions();
 
             if (reverseConditions) {
-                const checkedConditions = Array.from(this.conditionsMap)
+                const checkedConditions = Array.from(this.CONDITIONS_MAP)
                     .filter(([name]) => !shouldSkip(name) && (remove[name] === true || remove[name].length > 0))
                     .map(([, predicate]) => predicate(node, reverseConditions));
 
-                return linkedResult !== LINKED_FALSE && !checkedConditions.includes(false)
-                    && (linkedResult === LINKED_TRUE || checkedConditions.includes(true));
+                return linkedResult !== this.LINKED_FALSE && !checkedConditions.includes(false)
+                    && (linkedResult === this.LINKED_TRUE || checkedConditions.includes(true));
             } else {
-                return linkedResult === LINKED_TRUE || [...this.conditionsMap].some(([name, predicate]) =>
+                return linkedResult === this.LINKED_TRUE || [...this.CONDITIONS_MAP].some(([name, predicate]) =>
                     !shouldSkip(name) && remove[name] && predicate(node, reverseConditions),
                 );
             }
