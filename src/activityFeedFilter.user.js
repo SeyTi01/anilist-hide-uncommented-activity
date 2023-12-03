@@ -104,52 +104,63 @@ class ActivityHandler {
         this.config = config;
     }
 
-    removeEntry = (node) => {
+    removeEntry(node) {
         const { remove, options: { linkedConditions, reverseConditions } } = this.config;
         const linkedConditionsFlat = linkedConditions.flat();
 
-        const checkLinkedConditions = (node, conditionList) => reverseConditions
+        const linkedResult = this.shouldRemoveByLinkedConditions(node, linkedConditionsFlat, linkedConditions, reverseConditions);
+
+        const shouldRemoveNode = reverseConditions
+            ? this.evaluateReverseConditions(node, linkedResult, remove, reverseConditions, linkedConditionsFlat)
+            : this.evaluateNormalConditions(node, linkedResult, remove, reverseConditions, linkedConditionsFlat);
+
+        shouldRemoveNode ? node.remove() : this.currentLoadCount++;
+    }
+
+    shouldRemoveByLinkedConditions(node, linkedConditionsFlat, linkedConditions, reverseConditions) {
+        if (linkedConditionsFlat.length === 0) {
+            return this.LINKED_NONE;
+        }
+
+        const conditions = this.getLinkedConditions(linkedConditions);
+        const checkResult = conditions.map(c => this.checkLinkedConditions(node, c, reverseConditions));
+
+        return (checkResult.includes(true) && (!reverseConditions || !checkResult.includes(false)))
+            ? this.LINKED_TRUE
+            : this.LINKED_FALSE;
+    }
+
+    evaluateReverseConditions(node, linkedResult, remove, reverseConditions, linkedConditionsFlat) {
+        const checkedConditions = Array.from(this.CONDITIONS_MAP)
+            .filter(([name]) => !this.shouldSkip(name, linkedConditionsFlat) && (remove[name] === true || remove[name].length > 0))
+            .map(([, predicate]) => predicate(node, reverseConditions));
+
+        return linkedResult !== this.LINKED_FALSE && !checkedConditions.includes(false)
+            && (linkedResult === this.LINKED_TRUE || checkedConditions.includes(true));
+    }
+
+    evaluateNormalConditions(node, linkedResult, remove, reverseConditions, linkedConditionsFlat) {
+        return linkedResult === this.LINKED_TRUE || [...this.CONDITIONS_MAP].some(([name, predicate]) =>
+            !this.shouldSkip(name, linkedConditionsFlat) && remove[name] && predicate(node, reverseConditions),
+        );
+    }
+
+    checkLinkedConditions(node, conditionList, reverseConditions) {
+        return reverseConditions
             ? conditionList.some(condition => this.CONDITIONS_MAP.get(condition)(node, reverseConditions))
             : conditionList.every(condition => this.CONDITIONS_MAP.get(condition)(node, reverseConditions));
+    }
 
-        const shouldRemoveByLinkedConditions = () => {
-            if (linkedConditionsFlat.length === 0) {
-                return this.LINKED_NONE;
-            }
+    getLinkedConditions(linkedConditions) {
+        return linkedConditions.every(condition => typeof condition === 'string')
+        && !linkedConditions.some(condition => Array.isArray(condition))
+            ? [linkedConditions]
+            : linkedConditions.map(condition => Array.isArray(condition) ? condition : [condition]);
+    }
 
-            const conditions = linkedConditions.every(i => typeof i === 'string')
-            && !linkedConditions.some(i => Array.isArray(i))
-                ? [linkedConditions]
-                : linkedConditions.map(i => Array.isArray(i) ? i : [i]);
-
-            const checkResult = conditions.map(c => checkLinkedConditions(node, c));
-
-            return (checkResult.includes(true) && (!reverseConditions || !checkResult.includes(false)))
-                ? this.LINKED_TRUE
-                : this.LINKED_FALSE;
-        };
-
-        const shouldSkip = (condition) => linkedConditionsFlat.includes(condition);
-
-        const shouldRemoveNode = () => {
-            const linkedResult = shouldRemoveByLinkedConditions();
-
-            if (reverseConditions) {
-                const checkedConditions = Array.from(this.CONDITIONS_MAP)
-                    .filter(([name]) => !shouldSkip(name) && (remove[name] === true || remove[name].length > 0))
-                    .map(([, predicate]) => predicate(node, reverseConditions));
-
-                return linkedResult !== this.LINKED_FALSE && !checkedConditions.includes(false)
-                    && (linkedResult === this.LINKED_TRUE || checkedConditions.includes(true));
-            } else {
-                return linkedResult === this.LINKED_TRUE || [...this.CONDITIONS_MAP].some(([name, predicate]) =>
-                    !shouldSkip(name) && remove[name] && predicate(node, reverseConditions),
-                );
-            }
-        };
-
-        shouldRemoveNode() ? node.remove() : this.currentLoadCount++;
-    };
+    shouldSkip(condition, linkedConditionsFlat) {
+        return linkedConditionsFlat.includes(condition);
+    }
 
     shouldRemoveStrings = (node, reversed) => {
         const { remove: { containsStrings }, options: { caseSensitive } } = this.config;
