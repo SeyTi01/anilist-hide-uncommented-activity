@@ -47,9 +47,9 @@ class MainApp {
 
     handleAddedNode = (node) => {
         if (node instanceof HTMLElement) {
-            if (node.matches(SELECTORS.div.activity)) {
+            if (node.matches(selectors.DIV.ACTIVITY)) {
                 this.ac.removeEntry(node);
-            } else if (node.matches(SELECTORS.div.button)) {
+            } else if (node.matches(selectors.DIV.BUTTON)) {
                 this.ui.setLoadMore(node);
             }
         }
@@ -65,10 +65,10 @@ class MainApp {
     }
 
     isAllowedUrl = () => {
-        const allowedPatterns = Object.keys(this.URLS).filter(pattern => this.config.runOn[pattern]);
+        const allowedPatterns = Object.keys(this.urls).filter(pattern => this.config.runOn[pattern]);
 
         return allowedPatterns.some(pattern => {
-            const regex = new RegExp(this.URLS[pattern].replace('*', '.*'));
+            const regex = new RegExp(this.urls[pattern].replace('*', '.*'));
             return regex.test(window.location.href);
         });
     }
@@ -78,10 +78,10 @@ class MainApp {
         this.observer.observe(document.body, { childList: true, subtree: true });
     }
 
-    URLS = {
-        home: 'https://anilist.co/home',
-        profile: 'https://anilist.co/user/*/',
-        social: 'https://anilist.co/*/social',
+    urls = {
+        HOME: 'https://anilist.co/home',
+        PROFILE: 'https://anilist.co/user/*/',
+        SOCIAL: 'https://anilist.co/*/social',
     };
 }
 
@@ -172,17 +172,17 @@ class ActivityHandler {
     };
 
     shouldRemoveText = (node) =>
-        (node.classList.contains(SELECTORS.activity.text) || node.classList.contains(SELECTORS.activity.message))
+        (node.classList.contains(selectors.ACTIVITY.TEXT) || node.classList.contains(selectors.ACTIVITY.MESSAGE))
         && !(this.shouldRemoveImage(node) || this.shouldRemoveVideo(node));
 
-    shouldRemoveVideo = (node) => node?.querySelector(SELECTORS.class.video)
-        || node?.querySelector(SELECTORS.span.youTube);
+    shouldRemoveVideo = (node) => node?.querySelector(selectors.CLASS.VIDEO)
+        || node?.querySelector(selectors.SPAN.YOUTUBE);
 
-    shouldRemoveImage = (node) => node?.querySelector(SELECTORS.class.image);
+    shouldRemoveImage = (node) => node?.querySelector(selectors.CLASS.IMAGE);
 
-    shouldRemoveUncommented = (node) => !node.querySelector(SELECTORS.div.replies)?.querySelector(SELECTORS.span.count);
+    shouldRemoveUncommented = (node) => !node.querySelector(selectors.DIV.REPLIES)?.querySelector(selectors.SPAN.COUNT);
 
-    shouldRemoveUnliked = (node) => !node.querySelector(SELECTORS.div.likes)?.querySelector(SELECTORS.span.count);
+    shouldRemoveUnliked = (node) => !node.querySelector(selectors.DIV.LIKES)?.querySelector(selectors.SPAN.COUNT);
 
     resetState = () => this.currentLoadCount = 0;
 }
@@ -322,24 +322,24 @@ class ConfigValidator {
     }
 }
 
-const SELECTORS = {
-    div: {
-        button: 'div.load-more',
-        activity: 'div.activity-entry',
-        replies: 'div.action.replies',
-        likes: 'div.action.likes',
+const selectors = {
+    DIV: {
+        BUTTON: 'div.load-more',
+        ACTIVITY: 'div.activity-entry',
+        REPLIES: 'div.action.replies',
+        LIKES: 'div.action.likes',
     },
-    span: {
-        count: 'span.count',
-        youTube: 'span.youtube',
+    SPAN: {
+        COUNT: 'span.count',
+        YOUTUBE: 'span.youtube',
     },
-    activity: {
-        text: 'activity-text',
-        message: 'activity-message',
+    ACTIVITY: {
+        TEXT: 'activity-text',
+        MESSAGE: 'activity-message',
     },
-    class: {
-        image: 'img',
-        video: 'video',
+    CLASS: {
+        IMAGE: 'img',
+        VIDEO: 'video',
     },
 };
 
@@ -362,4 +362,4 @@ if (require.main === module) {
     main();
 }
 
-module.exports = { MainApp, ActivityHandler, UIHandler, ConfigValidator, SELECTORS };
+module.exports = { MainApp, ActivityHandler, UIHandler, ConfigValidator, selectors };
