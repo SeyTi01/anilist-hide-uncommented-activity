@@ -112,7 +112,7 @@ class ActivityHandler {
 
         const shouldSkip = (condition) => linkedConditionsFlat.includes(condition);
 
-        const checkConditions = (node, conditionList, reverseConditions) => reverseConditions
+        const checkConditions = (node, conditionList) => reverseConditions
             ? conditionList.some(condition => this.conditionsMap.get(condition)(node, reverseConditions))
             : conditionList.every(condition => this.conditionsMap.get(condition)(node, reverseConditions));
 
@@ -126,7 +126,7 @@ class ActivityHandler {
                 ? [linkedConditions]
                 : linkedConditions.map(i => Array.isArray(i) ? i : [i]);
 
-            const checkResult = conditions.map(c => checkConditions(node, c, reverseConditions));
+            const checkResult = conditions.map(c => checkConditions(node, c));
 
             return (checkResult.includes(true) && (!reverseConditions || !checkResult.includes(false)))
                 ? LINKED_TRUE
