@@ -35,6 +35,7 @@ describe('MainApp', () => {
                 home: false,
                 social: false,
                 profile: false,
+                homeNoUser: false,
             },
         });
     });

@@ -11,23 +11,24 @@
 
 const config = {
     remove: {
-        images: false, // Remove activities containing images
-        videos: false, // Remove activities containing videos
-        text: false, // Remove activities containing only text
-        uncommented: false, // Remove activities that have no comments
-        unliked: false, // Remove activities that have no likes
+        images: false, // Remove activities with images
+        videos: false, // Remove activities with videos
+        text: false, // Remove activities with only text
+        uncommented: false, // Remove activities without comments
+        unliked: false, // Remove activities without likes
         containsStrings: [], // Remove activities containing user-defined strings
     },
     options: {
-        targetLoadCount: 2, // Minimum number of activities to show per click on the "Load More" button
-        caseSensitive: false, // Whether string-based removal should be case-sensitive
-        reverseConditions: false, // Only keep posts that would be removed by the conditions
+        targetLoadCount: 2, // Minimum number of activities to display per "Load More" button click
+        caseSensitive: false, // Use case-sensitive matching for string-based removal
+        reverseConditions: false, // Display only posts that meet the specified removal conditions
         linkedConditions: [], // Groups of conditions to be checked together
     },
     runOn: {
         home: true, // Run the script on the home feed
-        social: true, // Run the script on social feeds
+        social: true, // Run the script on the 'Recent Activity' of anime/manga entries
         profile: false, // Run the script on user profile feeds
+        homeNoUser: false, // Run the script on the home feed for non-user visitors
     },
 };
 
@@ -82,6 +83,7 @@ class MainApp {
         HOME: 'https://anilist.co/home',
         PROFILE: 'https://anilist.co/user/*/',
         SOCIAL: 'https://anilist.co/*/social',
+        HOME_NO_USER: 'https://anilist.co/social',
     };
 }
 
