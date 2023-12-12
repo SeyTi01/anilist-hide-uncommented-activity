@@ -86,10 +86,6 @@ class MainApp {
 }
 
 class ActivityHandler {
-    LINKED_TRUE = 1;
-    LINKED_FALSE = 0;
-    LINKED_NONE = -1;
-
     CONDITIONS_MAP = new Map([
         ['uncommented', (node, reverse) => reverse ? !this.shouldRemoveUncommented(node) : this.shouldRemoveUncommented(node)],
         ['unliked', (node, reverse) => reverse ? !this.shouldRemoveUnliked(node) : this.shouldRemoveUnliked(node)],
@@ -119,15 +115,15 @@ class ActivityHandler {
 
     shouldRemoveByLinkedConditions(node, linkedConditionsFlat, linkedConditions, reverseConditions) {
         if (linkedConditionsFlat.length === 0) {
-            return this.LINKED_NONE;
+            return this.linked.NONE;
         }
 
         const conditions = this.getLinkedConditions(linkedConditions);
         const checkResult = conditions.map(c => this.checkLinkedConditions(node, c, reverseConditions));
 
         return (checkResult.includes(true) && (!reverseConditions || !checkResult.includes(false)))
-            ? this.LINKED_TRUE
-            : this.LINKED_FALSE;
+            ? this.linked.TRUE
+            : this.linked.FALSE;
     }
 
     evaluateReverseConditions(node, linkedResult, remove, reverseConditions, linkedConditionsFlat) {
@@ -135,12 +131,12 @@ class ActivityHandler {
             .filter(([name]) => !this.shouldSkip(name, linkedConditionsFlat) && (remove[name] === true || remove[name].length > 0))
             .map(([, predicate]) => predicate(node, reverseConditions));
 
-        return linkedResult !== this.LINKED_FALSE && !checkedConditions.includes(false)
-            && (linkedResult === this.LINKED_TRUE || checkedConditions.includes(true));
+        return linkedResult !== this.linked.FALSE && !checkedConditions.includes(false)
+            && (linkedResult === this.linked.TRUE || checkedConditions.includes(true));
     }
 
     evaluateNormalConditions(node, linkedResult, remove, reverseConditions, linkedConditionsFlat) {
-        return linkedResult === this.LINKED_TRUE || [...this.CONDITIONS_MAP].some(([name, predicate]) =>
+        return linkedResult === this.linked.TRUE || [...this.CONDITIONS_MAP].some(([name, predicate]) =>
             !this.shouldSkip(name, linkedConditionsFlat) && remove[name] && predicate(node, reverseConditions),
         );
     }
@@ -196,6 +192,12 @@ class ActivityHandler {
     shouldRemoveUnliked = (node) => !node.querySelector(selectors.DIV.LIKES)?.querySelector(selectors.SPAN.COUNT);
 
     resetState = () => this.currentLoadCount = 0;
+
+    linked = {
+        TRUE: 1,
+        FALSE: 0,
+        NONE: -1,
+    };
 }
 
 class UIHandler {
