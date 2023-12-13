@@ -18,10 +18,10 @@ describe('ConfigValidator', () => {
             linkedConditions: [],
             reverseConditions: false,
         },
-        runOn: {
-            home: false,
-            social: false,
-            profile: false,
+        RUN_ON: {
+            HOME: false,
+            SOCIAL: false,
+            PROFILE: false,
         },
     };
 

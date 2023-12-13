@@ -24,11 +24,11 @@ const config = {
         reverseConditions: false, // Display only posts that meet the specified removal conditions
         linkedConditions: [], // Groups of conditions to be checked together
     },
-    runOn: {
-        home: true, // Run the script on the home feed
-        social: true, // Run the script on the 'Recent Activity' of anime/manga entries
-        profile: false, // Run the script on user profile feeds
-        homeNoUser: false, // Run the script on the home feed for non-user visitors
+    RUN_ON: {
+        HOME: true, // Run the script on the HOME feed
+        SOCIAL: true, // Run the script on the 'Recent Activity' of anime/manga entries
+        PROFILE: false, // Run the script on user profile feeds
+        GUEST_HOME: false, // Run the script on the home feed for non-user visitors
     },
 };
 
@@ -66,10 +66,10 @@ class MainApp {
     }
 
     isAllowedUrl = () => {
-        const allowedPatterns = Object.keys(this.URLS).filter(pattern => this.config.runOn[pattern]);
+        const allowedPatterns = Object.keys(this.urls).filter(pattern => this.config.runOn[pattern.toUpperCase()]);
 
         return allowedPatterns.some(pattern => {
-            const regex = new RegExp(this.URLS[pattern].replace('*', '.*'));
+            const regex = new RegExp(this.urls[pattern].replace('*', '.*'));
             return regex.test(window.location.href);
         });
     }
@@ -79,11 +79,11 @@ class MainApp {
         this.observer.observe(document.body, { childList: true, subtree: true });
     }
 
-    URLS = {
-        home: 'https://anilist.co/home',
-        profile: 'https://anilist.co/user/*/',
-        social: 'https://anilist.co/*/social',
-        homeNoUser: 'https://anilist.co/social',
+    urls = {
+        HOME: 'https://anilist.co/home',
+        PROFILE: 'https://anilist.co/user/*/',
+        SOCIAL: 'https://anilist.co/*/social',
+        GUEST_HOME: 'https://anilist.co/social',
     };
 }
 
@@ -282,7 +282,7 @@ class ConfigValidator {
         this.validateLinkedConditions('options.linkedConditions');
         this.validateStringArrays(['remove.containsStrings', 'options.linkedConditions']);
         this.validateBooleans(['remove.uncommented', 'remove.unliked', 'remove.text', 'remove.images',
-            'remove.videos', 'options.caseSensitive', 'options.reverseConditions', 'runOn.home', 'runOn.social', 'runOn.profile']);
+            'remove.videos', 'options.caseSensitive', 'options.reverseConditions', 'RUN_ON.HOME', 'RUN_ON.SOCIAL', 'RUN_ON.PROFILE', 'RUN_ON.GUEST_HOME']);
 
         if (this.errors.length > 0) {
             throw new Error(`Script disabled due to configuration errors: ${this.errors.join(', ')}`);
