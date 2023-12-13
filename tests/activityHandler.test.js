@@ -53,7 +53,7 @@ describe('ActivityHandler', () => {
                             const dom = new jsdom.JSDOM(htmlContent);
                             const node = dom.window.document.body.firstChild;
                             const removeSpy = spy(node, 'remove');
-                            activityHandler.removeEntry(node);
+                            activityHandler.processNode(node);
 
                             expect(removeSpy.calledOnce).to.equal(expectedRemove);
                             done();
@@ -76,7 +76,7 @@ describe('ActivityHandler', () => {
                     const dom = new jsdom.JSDOM(htmlContent);
                     const node = dom.window.document.body.firstChild;
                     const removeSpy = spy(node, 'remove');
-                    activityHandler.removeEntry(node);
+                    activityHandler.processNode(node);
 
                     if (removeSpy.calledOnce !== expectedRemove) {
                         fs.appendFile(path.join(__dirname, 'failedAssertions.txt'), `${testMessage},\n`, (err) => {

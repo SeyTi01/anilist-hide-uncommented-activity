@@ -15,7 +15,7 @@ describe('MainApp', () => {
 
     beforeEach(() => {
         activityHandler = {
-            removeEntry: sinon.spy(),
+            processNode: sinon.spy(),
             resetState: sinon.spy(),
             currentLoadCount: 0,
         };
@@ -77,13 +77,13 @@ describe('MainApp', () => {
     });
 
     describe('handleAddedNode', () => {
-        it('should call ac.removeEntry when an activity node is added', () => {
+        it('should call ac.processNode when an activity node is added', () => {
             const activityNode = document.createElement('div');
             activityNode.classList.add('activity-entry');
 
             mainApp.handleAddedNode(activityNode);
 
-            expect(activityHandler.removeEntry.calledOnce).to.be.true;
+            expect(activityHandler.processNode.calledOnce).to.be.true;
         });
 
         it('should call ui.setLoadMore when a button node is added', () => {
@@ -95,12 +95,12 @@ describe('MainApp', () => {
             expect(uiHandler.setLoadMore.calledOnce).to.be.true;
         });
 
-        it('should not call ac.removeEntry or ui.setLoadMore for other node types', () => {
+        it('should not call ac.processNode or ui.setLoadMore for other node types', () => {
             const otherNode = document.createElement('div');
 
             mainApp.handleAddedNode(otherNode);
 
-            expect(activityHandler.removeEntry.called).to.be.false;
+            expect(activityHandler.processNode.called).to.be.false;
             expect(uiHandler.setLoadMore.called).to.be.false;
         });
     });

@@ -49,7 +49,7 @@ class MainApp {
     handleAddedNode = (node) => {
         if (node instanceof HTMLElement) {
             if (node.matches(selectors.DIV.ACTIVITY)) {
-                this.ac.removeEntry(node);
+                this.ac.processNode(node);
             } else if (node.matches(selectors.DIV.BUTTON)) {
                 this.ui.setLoadMore(node);
             }
@@ -107,7 +107,7 @@ class ActivityHandler {
         ['containsStrings', (node, reverse) => this.shouldRemoveStrings(node, reverse)],
     ]);
 
-    removeEntry(node) {
+    processNode(node) {
         const { options: { reverseConditions } } = this.config;
         const linkedResult = this.shouldRemoveByLinkedConditions(node);
 
