@@ -38,6 +38,7 @@ Customize the script's behavior by editing the `config` object at the top of the
   - `home` (Default: `true`): Set to `true` to run the script on the home feed. Set to `false` to exclude the home feed from processing.
   - `social` (Default: `true`): Set to `true` to run the script on social feeds. Set to `false` to exclude social feeds from processing.
   - `profile` (Default: `false`): Set to `false` to run the script on user profile feeds. Set to `false` to exclude profile feeds from processing.
+  - `guestHome` (Default: `false`): Set to `true` to run the script on the home feed for not logged-in users. Set to `false` to exclude the guest home feed from processing.
 
 ## Additional information
 
@@ -50,7 +51,7 @@ When utilizing two-dimensional arrays, conditions/strings within the inner array
 
 ## Example usages
 
-- `options.linkedConditions: [['images', 'customStrings'], ['uncommented', 'unliked']]`: 
+- `options.linkedConditions: [['images', 'containsStrings'], ['uncommented', 'unliked']]`: 
   - Remove activities containing either both images and specific strings, or neither comments nor likes.
 - `options.reverseConditions = true`, `remove.images = true`: 
   - Remove all activities except those containing images.
