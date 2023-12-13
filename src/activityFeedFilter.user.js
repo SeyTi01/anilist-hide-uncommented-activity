@@ -109,7 +109,7 @@ class ActivityHandler {
 
     processNode(node) {
         const { options: { reverseConditions } } = this.config;
-        const linkedResult = this.shouldRemoveByLinkedConditions(node);
+        const linkedResult = this.evaluateLinkedConditions(node);
 
         const shouldRemoveNode = reverseConditions
             ? this.evaluateReverseConditions(node, linkedResult)
@@ -118,7 +118,7 @@ class ActivityHandler {
         shouldRemoveNode ? node.remove() : this.currentLoadCount++;
     }
 
-    shouldRemoveByLinkedConditions(node) {
+    evaluateLinkedConditions(node) {
         const { options: { linkedConditions } } = this.config;
         this.linkedConditionsFlat = linkedConditions.flat();
 
