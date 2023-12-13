@@ -135,4 +135,35 @@ describe('MainApp', () => {
             expect(uiHandler.resetState.calledOnce).to.be.true;
         });
     });
+
+    describe('isAllowedUrl', () => {
+        const testUrls = [
+            'https://anilist.co/home',
+            'https://anilist.co/user/username/',
+            'https://anilist.co/anime/social',
+            'https://anilist.co/social',
+        ];
+
+        it('should return false for all URLs when all config values are false', () => {
+            Object.keys(mainApp.config.runOn).forEach(key => {
+                mainApp.config.runOn[key] = false;
+            });
+
+            testUrls.forEach(url => {
+                global.window = { location: { href: url } };
+                expect(mainApp.isAllowedUrl()).to.be.false;
+            });
+        });
+
+        it('should return true for corresponding URLs when all config values are true', () => {
+            Object.keys(mainApp.config.runOn).forEach(key => {
+                mainApp.config.runOn[key] = true;
+            });
+
+            testUrls.forEach(url => {
+                global.window = { location: { href: url } };
+                expect(mainApp.isAllowedUrl()).to.be.true;
+            });
+        });
+    });
 });
