@@ -51,7 +51,7 @@ class MainApp {
             if (node.matches(selectors.DIV.ACTIVITY)) {
                 this.ac.processNode(node);
             } else if (node.matches(selectors.DIV.BUTTON)) {
-                this.ui.setLoadMore(node);
+                this.ui.assignLoadMore(node);
             }
         }
     }
@@ -217,12 +217,12 @@ class UIHandler {
         this.loadMore = null;
     }
 
-    setLoadMore = (button) => {
+    assignLoadMore = (button) => {
         this.loadMore = button;
         this.loadMore.addEventListener('click', () => {
             this.userPressed = true;
-            this.simulateDomEvents();
-            this.showCancel();
+            this.triggerScrollEvents();
+            this.displayCancel();
         });
     };
 
@@ -233,7 +233,7 @@ class UIHandler {
         this.hideCancel();
     };
 
-    showCancel = () => {
+    displayCancel = () => {
         this.cancel ? this.cancel.style.display = 'block' : this.createCancel();
     }
 
@@ -243,7 +243,7 @@ class UIHandler {
         }
     };
 
-    simulateDomEvents = () => {
+    triggerScrollEvents = () => {
         const domEvent = new Event('scroll', { bubbles: true });
         const intervalId = setInterval(() => this.userPressed
             ? window.dispatchEvent(domEvent)

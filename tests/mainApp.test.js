@@ -21,7 +21,7 @@ describe('MainApp', () => {
         };
 
         uiHandler = {
-            setLoadMore: sinon.spy(),
+            assignLoadMore: sinon.spy(),
             clickLoadMore: sinon.spy(),
             userPressed: true,
             resetState: sinon.spy(),
@@ -86,22 +86,22 @@ describe('MainApp', () => {
             expect(activityHandler.processNode.calledOnce).to.be.true;
         });
 
-        it('should call ui.setLoadMore when a button node is added', () => {
+        it('should call ui.assignLoadMore when a button node is added', () => {
             const buttonNode = document.createElement('div');
             buttonNode.classList.add('load-more');
 
             mainApp.handleAddedNode(buttonNode);
 
-            expect(uiHandler.setLoadMore.calledOnce).to.be.true;
+            expect(uiHandler.assignLoadMore.calledOnce).to.be.true;
         });
 
-        it('should not call ac.processNode or ui.setLoadMore for other node types', () => {
+        it('should not call ac.processNode or ui.assignLoadMore for other node types', () => {
             const otherNode = document.createElement('div');
 
             mainApp.handleAddedNode(otherNode);
 
             expect(activityHandler.processNode.called).to.be.false;
-            expect(uiHandler.setLoadMore.called).to.be.false;
+            expect(uiHandler.assignLoadMore.called).to.be.false;
         });
     });
 
