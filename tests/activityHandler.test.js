@@ -1,5 +1,6 @@
 const fs = require('fs');
 const jsdom = require('jsdom');
+const path = require('path');
 const { expect } = require('chai');
 const { ActivityHandler } = require('../src/activityFeedFilter.user');
 const { restore, spy } = require("sinon");
@@ -25,9 +26,9 @@ describe('ActivityHandler', () => {
     beforeEach(function() {
         const config = {
             remove:
-                { uncommented: false, unliked: false, text: false, images: false, videos: false, containsStrings: []},
+                { uncommented: false, unliked: false, text: false, images: false, videos: false, containsStrings: [] },
             options:
-                { targetLoadCount: 2, caseSensitive: false, linkedConditions: [], reversedConditions: false }
+                { targetLoadCount: 2, caseSensitive: false, linkedConditions: [], reversedConditions: false },
         };
 
         activityHandler = new ActivityHandler(config);
@@ -58,6 +59,35 @@ describe('ActivityHandler', () => {
                             done();
                         });
                 });
+        });
+    }
+
+    function logTestCases(testCases) {
+        testCases.forEach((testCase) => {
+            const { htmlPath, configOptions, expectedRemove } = testCase;
+            const nodeType = htmlPath.split('-')[1].split('.')[0];
+            const testMessage = `should ${expectedRemove ? '' : 'not '}remove ${nodeType} node with config: ${JSON.stringify(configOptions)}`;
+
+            it(testMessage, function(done) {
+                fs.readFile(htmlPath, 'utf8', function(err, htmlContent) {
+                    if (err) throw err;
+
+                    merge(activityHandler.config, configOptions);
+                    const dom = new jsdom.JSDOM(htmlContent);
+                    const node = dom.window.document.body.firstChild;
+                    const removeSpy = spy(node, 'remove');
+                    activityHandler.removeEntry(node);
+
+                    if (removeSpy.calledOnce !== expectedRemove) {
+                        fs.appendFile(path.join(__dirname, 'failedAssertions.txt'), `${testMessage},\n`, (err) => {
+                            if (err) throw err;
+                            done();
+                        });
+                    } else {
+                        done();
+                    }
+                });
+            });
         });
     }
 
@@ -267,5 +297,6 @@ describe('ActivityHandler', () => {
         { htmlPath: IMAGES, configOptions: { remove: { images: true, videos: true }, options: { reverseConditions: true } }, expectedRemove: false },
     ];
 
+    // logTestCases(testCases)
     runTestCases(testCases);
 });
