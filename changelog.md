@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 1.8.2 (Dec 13, 2023)
+
+### Features
+- Added option to run the script on the home feed of not logged-in users
+
 ## Version 1.8.1 (Nov 19, 2023)
 
 ### Fixes
