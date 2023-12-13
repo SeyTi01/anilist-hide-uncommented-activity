@@ -88,6 +88,11 @@ class MainApp {
 }
 
 class ActivityHandler {
+    constructor(config) {
+        this.currentLoadCount = 0;
+        this.config = config;
+    }
+
     CONDITIONS_MAP = new Map([
         ['uncommented', (node, reverse) => reverse ? !this.shouldRemoveUncommented(node) : this.shouldRemoveUncommented(node)],
         ['unliked', (node, reverse) => reverse ? !this.shouldRemoveUnliked(node) : this.shouldRemoveUnliked(node)],
@@ -96,11 +101,6 @@ class ActivityHandler {
         ['videos', (node, reverse) => reverse ? !this.shouldRemoveVideo(node) : this.shouldRemoveVideo(node)],
         ['containsStrings', (node, reverse) => this.shouldRemoveStrings(node, reverse)],
     ]);
-
-    constructor(config) {
-        this.currentLoadCount = 0;
-        this.config = config;
-    }
 
     removeEntry(node) {
         const { remove, options: { linkedConditions, reverseConditions } } = this.config;
