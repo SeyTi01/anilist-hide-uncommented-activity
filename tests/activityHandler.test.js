@@ -62,6 +62,7 @@ describe('ActivityHandler', () => {
         });
     }
 
+    // noinspection JSUnusedLocalSymbols
     function logTestCases(testCases) {
         testCases.forEach((testCase) => {
             const { htmlPath, configOptions, expectedRemove } = testCase;
