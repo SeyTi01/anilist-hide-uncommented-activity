@@ -138,7 +138,7 @@ class ActivityHandler {
         const { remove, options: { reverseConditions } } = this.config;
 
         const checkedConditions = Array.from(this.CONDITIONS_MAP)
-            .filter(([name]) => !this.shouldSkip(name) && (remove[name] === true || remove[name].length > 0))
+            .filter(([name]) => !this.isConditionInLinked(name) && (remove[name] === true || remove[name].length > 0))
             .map(([, predicate]) => predicate(node, reverseConditions));
 
         return linkedResult !== this.linked.FALSE && !checkedConditions.includes(false)
@@ -149,7 +149,7 @@ class ActivityHandler {
         const { remove, options: { reverseConditions } } = this.config;
 
         return linkedResult === this.linked.TRUE || [...this.CONDITIONS_MAP].some(([name, predicate]) =>
-            !this.shouldSkip(name) && remove[name] && predicate(node, reverseConditions),
+            !this.isConditionInLinked(name) && remove[name] && predicate(node, reverseConditions),
         );
     }
 
@@ -170,7 +170,7 @@ class ActivityHandler {
                 : [condition]);
     }
 
-    shouldSkip(condition) {
+    isConditionInLinked(condition) {
         return this.linkedConditionsFlat.includes(condition);
     }
 
