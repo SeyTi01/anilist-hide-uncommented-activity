@@ -91,6 +91,11 @@ class ActivityHandler {
     constructor(config) {
         this.currentLoadCount = 0;
         this.config = config;
+        this.linked = {
+            TRUE: 1,
+            FALSE: 0,
+            NONE: -1,
+        };
     }
 
     CONDITIONS_MAP = new Map([
@@ -194,12 +199,6 @@ class ActivityHandler {
     shouldRemoveUnliked = (node) => !node.querySelector(selectors.DIV.LIKES)?.querySelector(selectors.SPAN.COUNT);
 
     resetState = () => this.currentLoadCount = 0;
-
-    linked = {
-        TRUE: 1,
-        FALSE: 0,
-        NONE: -1,
-    };
 }
 
 class UIHandler {
