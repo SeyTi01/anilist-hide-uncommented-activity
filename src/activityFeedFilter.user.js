@@ -126,7 +126,7 @@ class ActivityHandler {
             return this.linked.NONE;
         }
 
-        const conditions = this.getLinkedConditions(linkedConditions);
+        const conditions = this.extractLinkedConditions(linkedConditions);
         const checkResult = conditions.map(c => this.evaluateConditionList(node, c));
 
         return (checkResult.includes(true) && (!this.config.options.reverseConditions || !checkResult.includes(false)))
@@ -161,7 +161,7 @@ class ActivityHandler {
             : conditionList.every(condition => this.CONDITIONS_MAP.get(condition)(node, reverseConditions));
     }
 
-    getLinkedConditions(linkedConditions) {
+    extractLinkedConditions(linkedConditions) {
         return linkedConditions.every(condition => typeof condition === 'string')
         && !linkedConditions.some(condition => Array.isArray(condition))
             ? [linkedConditions]
