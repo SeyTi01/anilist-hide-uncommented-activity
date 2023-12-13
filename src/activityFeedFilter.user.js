@@ -127,7 +127,7 @@ class ActivityHandler {
         }
 
         const conditions = this.getLinkedConditions(linkedConditions);
-        const checkResult = conditions.map(c => this.checkLinkedConditions(node, c));
+        const checkResult = conditions.map(c => this.evaluateConditionList(node, c));
 
         return (checkResult.includes(true) && (!this.config.options.reverseConditions || !checkResult.includes(false)))
             ? this.linked.TRUE
@@ -153,7 +153,7 @@ class ActivityHandler {
         );
     }
 
-    checkLinkedConditions(node, conditionList) {
+    evaluateConditionList(node, conditionList) {
         const { options: { reverseConditions } } = this.config;
 
         return reverseConditions
