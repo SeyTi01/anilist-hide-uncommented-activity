@@ -66,7 +66,7 @@ class MainApp {
     }
 
     isAllowedUrl = () => {
-        const allowedPatterns = Object.keys(this.urls).filter(pattern => this.config.runOn[pattern]);
+        const allowedPatterns = Object.keys(this.urls).filter(pattern => this.config.runOn[pattern.toUpperCase()]);
 
         return allowedPatterns.some(pattern => {
             const regex = new RegExp(this.urls[pattern].replace('*', '.*'));
