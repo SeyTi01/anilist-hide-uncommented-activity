@@ -60,7 +60,7 @@ class MainApp {
         if (this.ac.currentLoadCount < this.config.options.targetLoadCount && this.ui.userPressed) {
             this.ui.clickLoadMore();
         } else {
-            this.ac.resetState();
+            this.ac.resetLoadCount();
             this.ui.resetState();
         }
     }
@@ -99,12 +99,12 @@ class ActivityHandler {
     }
 
     CONDITIONS_MAP = new Map([
-        ['uncommented', (node, reverse) => reverse ? !this.shouldRemoveUncommented(node) : this.shouldRemoveUncommented(node)],
-        ['unliked', (node, reverse) => reverse ? !this.shouldRemoveUnliked(node) : this.shouldRemoveUnliked(node)],
-        ['text', (node, reverse) => reverse ? !this.shouldRemoveText(node) : this.shouldRemoveText(node)],
-        ['images', (node, reverse) => reverse ? !this.shouldRemoveImage(node) : this.shouldRemoveImage(node)],
-        ['videos', (node, reverse) => reverse ? !this.shouldRemoveVideo(node) : this.shouldRemoveVideo(node)],
-        ['containsStrings', (node, reverse) => this.shouldRemoveStrings(node, reverse)],
+        ['uncommented', (node, reverse) => reverse ? !this.evaluateUncommentedRemoval(node) : this.evaluateUncommentedRemoval(node)],
+        ['unliked', (node, reverse) => reverse ? !this.evaluateUnlikedRemoval(node) : this.evaluateUnlikedRemoval(node)],
+        ['text', (node, reverse) => reverse ? !this.evaluateTextRemoval(node) : this.evaluateTextRemoval(node)],
+        ['images', (node, reverse) => reverse ? !this.evaluateImageRemoval(node) : this.evaluateImageRemoval(node)],
+        ['videos', (node, reverse) => reverse ? !this.evaluateVideoRemoval(node) : this.evaluateVideoRemoval(node)],
+        ['containsStrings', (node, reverse) => this.evaluateStringRemoval(node, reverse)],
     ]);
 
     processNode(node) {
@@ -174,7 +174,7 @@ class ActivityHandler {
         return this.linkedConditionsFlat.includes(condition);
     }
 
-    shouldRemoveStrings = (node, reversed) => {
+    evaluateStringRemoval = (node, reversed) => {
         const { remove: { containsStrings }, options: { caseSensitive } } = this.config;
 
         if (containsStrings.flat().length === 0) {
@@ -194,20 +194,20 @@ class ActivityHandler {
             : containsStrings.some(checkStrings);
     };
 
-    shouldRemoveText = (node) =>
+    evaluateTextRemoval = (node) =>
         (node.classList.contains(selectors.ACTIVITY.TEXT) || node.classList.contains(selectors.ACTIVITY.MESSAGE))
-        && !(this.shouldRemoveImage(node) || this.shouldRemoveVideo(node));
+        && !(this.evaluateImageRemoval(node) || this.evaluateVideoRemoval(node));
 
-    shouldRemoveVideo = (node) => node?.querySelector(selectors.CLASS.VIDEO)
+    evaluateVideoRemoval = (node) => node?.querySelector(selectors.CLASS.VIDEO)
         || node?.querySelector(selectors.SPAN.YOUTUBE);
 
-    shouldRemoveImage = (node) => node?.querySelector(selectors.CLASS.IMAGE);
+    evaluateImageRemoval = (node) => node?.querySelector(selectors.CLASS.IMAGE);
 
-    shouldRemoveUncommented = (node) => !node.querySelector(selectors.DIV.REPLIES)?.querySelector(selectors.SPAN.COUNT);
+    evaluateUncommentedRemoval = (node) => !node.querySelector(selectors.DIV.REPLIES)?.querySelector(selectors.SPAN.COUNT);
 
-    shouldRemoveUnliked = (node) => !node.querySelector(selectors.DIV.LIKES)?.querySelector(selectors.SPAN.COUNT);
+    evaluateUnlikedRemoval = (node) => !node.querySelector(selectors.DIV.LIKES)?.querySelector(selectors.SPAN.COUNT);
 
-    resetState = () => this.currentLoadCount = 0;
+    resetLoadCount = () => this.currentLoadCount = 0;
 }
 
 class UIHandler {

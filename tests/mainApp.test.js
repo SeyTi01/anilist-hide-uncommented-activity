@@ -16,7 +16,7 @@ describe('MainApp', () => {
     beforeEach(() => {
         activityHandler = {
             processNode: sinon.spy(),
-            resetState: sinon.spy(),
+            resetLoadCount: sinon.spy(),
             currentLoadCount: 0,
         };
 
@@ -115,23 +115,23 @@ describe('MainApp', () => {
             expect(uiHandler.clickLoadMore.calledOnce).to.be.true;
         });
 
-        it('should call ac.resetState and ui.resetState if currentLoadCount is equal to targetLoadCount and userPressed is true', () => {
+        it('should call ac.resetLoadCount and ui.resetLoadCount if currentLoadCount is equal to targetLoadCount and userPressed is true', () => {
             activityHandler.currentLoadCount = 10;
             uiHandler.userPressed = true;
 
             mainApp.loadMoreOrReset();
 
-            expect(activityHandler.resetState.calledOnce).to.be.true;
+            expect(activityHandler.resetLoadCount.calledOnce).to.be.true;
             expect(uiHandler.resetState.calledOnce).to.be.true;
         });
 
-        it('should call ac.resetState and ui.resetState if currentLoadCount >= config.targetLoadCount or userPressed is false', () => {
+        it('should call ac.resetLoadCount and ui.resetLoadCount if currentLoadCount >= config.targetLoadCount or userPressed is false', () => {
             activityHandler.currentLoadCount = 10;
             uiHandler.userPressed = false;
 
             mainApp.loadMoreOrReset();
 
-            expect(activityHandler.resetState.calledOnce).to.be.true;
+            expect(activityHandler.resetLoadCount.calledOnce).to.be.true;
             expect(uiHandler.resetState.calledOnce).to.be.true;
         });
     });
