@@ -282,7 +282,8 @@ class ConfigValidator {
         this.validateLinkedConditions('options.linkedConditions');
         this.validateStringArrays(['remove.containsStrings', 'options.linkedConditions']);
         this.validateBooleans(['remove.uncommented', 'remove.unliked', 'remove.text', 'remove.images',
-            'remove.videos', 'options.caseSensitive', 'options.reverseConditions', 'runOn.home', 'runOn.social', 'runOn.profile']);
+            'remove.videos', 'options.caseSensitive', 'options.reverseConditions', 'runOn.home', 'runOn.social',
+            'runOn.profile', 'runOn.guestHome']);
 
         if (this.errors.length > 0) {
             throw new Error(`Script disabled due to configuration errors: ${this.errors.join(', ')}`);
