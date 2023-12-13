@@ -28,7 +28,7 @@ const config = {
         home: true, // Run the script on the home feed
         social: true, // Run the script on the 'Recent Activity' of anime/manga entries
         profile: false, // Run the script on user profile feeds
-        homeNoUser: false, // Run the script on the home feed for non-user visitors
+        guestHome: false, // Run the script on the home feed for non-user visitors
     },
 };
 
@@ -81,9 +81,9 @@ class MainApp {
 
     URLS = {
         home: 'https://anilist.co/home',
-        profile: 'https://anilist.co/user/*/',
         social: 'https://anilist.co/*/social',
-        homeNoUser: 'https://anilist.co/social',
+        profile: 'https://anilist.co/user/*/',
+        guestHome: 'https://anilist.co/social',
     };
 }
 
