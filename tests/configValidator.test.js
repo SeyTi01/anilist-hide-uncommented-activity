@@ -22,7 +22,6 @@ describe('ConfigValidator', () => {
             HOME: false,
             SOCIAL: false,
             PROFILE: false,
-            GUEST_HOME: false,
         },
     };
 
