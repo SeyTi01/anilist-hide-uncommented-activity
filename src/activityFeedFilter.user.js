@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Anilist: Activity-Feed Filter
 // @namespace    https://github.com/SeyTi01/
-// @version      1.8.2
+// @version      1.8.2b
 // @description  Control the content displayed in your activity feeds
 // @author       SeyTi01
 // @match        https://anilist.co/*
@@ -215,6 +215,8 @@ class UIHandler {
         this.userPressed = true;
         this.cancel = null;
         this.loadMore = null;
+        this.options = null;
+        this.createOptions();
     }
 
     assignLoadMore = (button) => {
@@ -227,6 +229,8 @@ class UIHandler {
     };
 
     clickLoadMore = () => this.loadMore?.click() ?? null;
+
+    clickOptionsButton = () => this.options?.click() ?? null;
 
     resetState = () => {
         this.userPressed = false;
@@ -249,6 +253,122 @@ class UIHandler {
             ? window.dispatchEvent(domEvent)
             : clearInterval(intervalId), 100);
     };
+
+    createOptions = () => {
+        const BUTTON_STYLE = `
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            z-index: 9999;
+            line-height: 1.3;
+            background-color: rgb(var(--color-background-blue-dark));
+            color: rgb(var(--color-text-bright));
+            font: 1.6rem 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            box-sizing: border-box;
+            --button-color: rgb(var(--color-blue));
+            `;
+
+        this.options = Object.assign(document.createElement('button'), {
+            textContent: 'Options',
+            className: 'options-button',
+            style: BUTTON_STYLE,
+            onclick: () => {
+                this.openPopup();
+            },
+        });
+
+        document.body.appendChild(this.options);
+    };
+
+    openPopup = () => {
+        const popup = document.createElement('div');
+        popup.style = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            background-color: rgb(var(--color-background-blue-dark));
+            color: rgb(var(--color-text-bright));
+            font: 1.6rem 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            box-sizing: border-box;
+            --button-color: rgb(var(--color-blue));
+        `;
+        popup.innerHTML = `
+            <h1>Options</h1>
+            <form>
+                <label for="targetLoadCount">Minimum number of activities to display per "Load More" button click:</label>
+                <input type="number" id="targetLoadCount" name="targetLoadCount" min="1" value="${config.options.targetLoadCount}">
+                <br>
+                <label for="caseSensitive">Use case-sensitive matching for string-based removal:</label>
+                <input type="checkbox" id="caseSensitive" name="caseSensitive" ${config.options.caseSensitive ? 'checked' : ''}>
+                <br>
+                <label for="reverseConditions">Display only posts that meet the specified removal conditions:</label>
+                <input type="checkbox" id="reverseConditions" name="reverseConditions" ${config.options.reverseConditions ? 'checked' : ''}>
+                <br>
+                <label for="linkedConditions">Groups of conditions to be checked together:</label>
+                <input type="text" id="linkedConditions" name="linkedConditions" value="${config.options.linkedConditions.join(', ')}">
+                <br>
+                <label for="runOnHome">Run the script on the home feed:</label>
+                <input type="checkbox" id="runOnHome" name="runOnHome" ${config.runOn.home ? 'checked' : ''}>
+                <br>
+                <label for="runOnSocial">Run the script on the 'Recent Activity' of anime/manga entries:</label>
+                <input type="checkbox" id="runOnSocial" name="runOnSocial" ${config.runOn.social ? 'checked' : ''}>
+                <br>
+                <label for="runOnProfile">Run the script on user profile feeds:</label>
+                <input type="checkbox" id="runOnProfile" name="runOnProfile" ${config.runOn.profile ? 'checked' : ''}>
+                <br>
+                <label for="runOnGuestHome">Run the script on the home feed for non-user visitors:</label>
+                <input type="checkbox" id="runOnGuestHome" name="runOnGuestHome" ${config.runOn.guestHome ? 'checked' : ''}>
+                <br>
+                <label for="removeImages">Remove activities with images:</label>
+                <input type="checkbox" id="removeImages" name="removeImages" ${config.remove.images ? 'checked' : ''}>
+                <br>
+                <label for="removeVideos">Remove activities with videos:</label>
+                <input type="checkbox" id="removeVideos" name="removeVideos" ${config.remove.videos ? 'checked' : ''}>
+                <br>
+                <label for="removeText">Remove activities with only text:</label>
+                <input type="checkbox" id="removeText" name="removeText" ${config.remove.text ? 'checked' : ''}>
+                <br>
+                <label for="removeContainsStrings">Remove activities containing user-defined strings:</label>
+                <input type="text" id="removeContainsStrings" name="removeContainsStrings" value="${config.remove.containsStrings.join(', ')}">
+                <br>
+                <label for="removeUncommented">Remove activities without comments:</label>
+                <input type="checkbox" id="removeUncommented" name="removeUncommented" ${config.remove.uncommented ? 'checked' : ''}>
+                <br>
+                <label for="removeUnliked">Remove activities without likes:</label>
+                <input type="checkbox" id="removeUnliked" name="removeUnliked" ${config.remove.unliked ? 'checked' : ''}>
+                <br>
+            `;
+        const submitButton = document.createElement('button');
+        submitButton.textContent = 'Save';
+        submitButton.onclick = () => {
+            this.saveOptions(popup);
+        };
+        popup.appendChild(submitButton);
+        document.body.appendChild(popup);
+    };
+
+    saveOptions(popup) {
+        const form = popup.querySelector('form');
+        const formData = new FormData(form);
+        const options = {};
+
+        for (const [key, value] of formData.entries()) {
+            if (key === 'linkedConditions') {
+                options[key] = value.split(',').map(condition => condition.trim().split(' '));
+            } else if (key === 'removeContainsStrings') {
+                options[key] = value.split(',').map(str => str.trim());
+            } else {
+                options[key] = key === 'targetLoadCount' ? parseInt(value) : value === 'on' ? true : value === 'off' ? false : value;
+            }
+        }
+
+        Object.assign(config, options);
+        popup.remove();
+    }
 
     createCancel = () => {
         const BUTTON_STYLE = `
@@ -379,6 +499,7 @@ function main() {
     const activityHandler = new ActivityHandler(config);
     const mainApp = new MainApp(activityHandler, uiHandler, config);
 
+    mainApp.ui.createOptions();
     mainApp.initializeObserver();
 }
 

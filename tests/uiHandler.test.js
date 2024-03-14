@@ -45,4 +45,16 @@ describe('UIHandler', () => {
 
         expect(uiHandler.userPressed).to.be.false;
     });
+
+    it('should open a popup when the options button is clicked', () => {
+        uiHandler.createOptions();
+
+        const openPopupSpy = sinon.spy(uiHandler, 'openPopup');
+
+        uiHandler.clickOptionsButton();
+
+        expect(openPopupSpy.calledOnce).to.be.true;
+
+        openPopupSpy.restore();
+    });
 });
