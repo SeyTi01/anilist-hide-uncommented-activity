@@ -22,6 +22,7 @@ Customize the script's behavior by editing the `config` object at the top of the
 
 - `remove`:
   - `images` (Default: `false`): Set to `true` to remove activities containing images. Set to `false` to keep them.
+  - `gifs` (Default: `false`): Set to `true` to remove activities containing gifs. Set to `false` to keep them.
   - `videos` (Default: `false`): Set to `true` to remove activities containing videos. Set to `false` to keep them.
   - `text` (Default: `false`): Set to `true` to remove activities containing only text. Set to `false` to keep them.
   - `uncommented` (Default: `false`): Set to `true` to remove activities that have no comments. Set to `false` to keep them.

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Anilist: Activity-Feed Filter
 // @namespace    https://github.com/SeyTi01/
-// @version      1.8.2
+// @version      1.8.3
 // @description  Control the content displayed in your activity feeds
 // @author       SeyTi01
 // @match        https://anilist.co/*
@@ -23,7 +23,7 @@ const config = {
         targetLoadCount: 2, // Minimum number of activities to display per "Load More" button click
         caseSensitive: false, // Use case-sensitive matching for string-based removal
         reverseConditions: false, // Display only posts that meet the specified removal conditions
-        linkedConditions: [], // Groups of conditions to be checked together
+        linkedConditions: [], // Groups of conditions to be evaluated together
     },
     runOn: {
         home: true, // Run the script on the home feed
