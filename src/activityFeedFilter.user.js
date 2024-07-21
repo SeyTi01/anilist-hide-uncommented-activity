@@ -141,7 +141,7 @@ class ActivityHandler {
 
         const checkedConditions = Array.from(this.CONDITIONS_MAP)
             .filter(([name]) => !this.isConditionInLinked(name) && (remove[name] === true || remove[name].length > 0))
-            .map(([, predicate]) => predicate(node, reverseConditions));
+            .map(([, condition]) => condition(node, reverseConditions));
 
         return linkedResult !== this.linked.FALSE && !checkedConditions.includes(false)
             && (linkedResult === this.linked.TRUE || checkedConditions.includes(true));
@@ -150,8 +150,8 @@ class ActivityHandler {
     evaluateNormalConditions(node, linkedResult) {
         const { remove, options: { reverseConditions } } = this.config;
 
-        return linkedResult === this.linked.TRUE || [...this.CONDITIONS_MAP].some(([name, predicate]) =>
-            !this.isConditionInLinked(name) && remove[name] && predicate(node, reverseConditions),
+        return linkedResult === this.linked.TRUE || [...this.CONDITIONS_MAP].some(([name, condition]) =>
+            !this.isConditionInLinked(name) && remove[name] && condition(node, reverseConditions),
         );
     }
 
@@ -200,8 +200,7 @@ class ActivityHandler {
         (node.classList.contains(selectors.ACTIVITY.TEXT) || node.classList.contains(selectors.ACTIVITY.MESSAGE))
         && !(this.evaluateImageRemoval(node) || this.evaluateGifRemoval(node) || this.evaluateVideoRemoval(node));
 
-    evaluateVideoRemoval = (node) => node?.querySelector(selectors.CLASS.VIDEO)
-        || node?.querySelector(selectors.SPAN.YOUTUBE);
+    evaluateVideoRemoval = (node) => node?.querySelector(selectors.CLASS.VIDEO) || node?.querySelector(selectors.SPAN.YOUTUBE);
 
     evaluateImageRemoval = (node) => node?.querySelector(selectors.CLASS.IMAGE) && !node.querySelector(selectors.CLASS.IMAGE).src.includes('.gif');
 
