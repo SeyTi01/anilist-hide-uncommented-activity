@@ -12,6 +12,7 @@
 const config = {
     remove: {
         images: false, // Remove activities with images
+        gifs: false, // Remove activities with gifs
         videos: false, // Remove activities with videos
         text: false, // Remove activities with only text
         uncommented: false, // Remove activities without comments
@@ -103,6 +104,7 @@ class ActivityHandler {
         ['unliked', (node, reverse) => reverse ? !this.evaluateUnlikedRemoval(node) : this.evaluateUnlikedRemoval(node)],
         ['text', (node, reverse) => reverse ? !this.evaluateTextRemoval(node) : this.evaluateTextRemoval(node)],
         ['images', (node, reverse) => reverse ? !this.evaluateImageRemoval(node) : this.evaluateImageRemoval(node)],
+        ['gifs', (node, reverse) => reverse ? !this.evaluateGifRemoval(node) : this.evaluateGifRemoval(node)],
         ['videos', (node, reverse) => reverse ? !this.evaluateVideoRemoval(node) : this.evaluateVideoRemoval(node)],
         ['containsStrings', (node, reverse) => this.evaluateStringRemoval(node, reverse)],
     ]);
@@ -196,12 +198,14 @@ class ActivityHandler {
 
     evaluateTextRemoval = (node) =>
         (node.classList.contains(selectors.ACTIVITY.TEXT) || node.classList.contains(selectors.ACTIVITY.MESSAGE))
-        && !(this.evaluateImageRemoval(node) || this.evaluateVideoRemoval(node));
+        && !(this.evaluateImageRemoval(node) || this.evaluateGifRemoval(node) || this.evaluateVideoRemoval(node));
 
     evaluateVideoRemoval = (node) => node?.querySelector(selectors.CLASS.VIDEO)
         || node?.querySelector(selectors.SPAN.YOUTUBE);
 
-    evaluateImageRemoval = (node) => node?.querySelector(selectors.CLASS.IMAGE);
+    evaluateImageRemoval = (node) => node?.querySelector(selectors.CLASS.IMAGE) && !node.querySelector(selectors.CLASS.IMAGE).src.includes('.gif');
+
+    evaluateGifRemoval = (node) => node?.querySelector(selectors.CLASS.IMAGE)?.src.includes('.gif');
 
     evaluateUncommentedRemoval = (node) => !node.querySelector(selectors.DIV.REPLIES)?.querySelector(selectors.SPAN.COUNT);
 
@@ -289,9 +293,7 @@ class ConfigValidator {
         this.validatePositiveNonZeroInteger('options.targetLoadCount', 'options.targetLoadCount');
         this.validateLinkedConditions('options.linkedConditions');
         this.validateStringArrays(['remove.containsStrings', 'options.linkedConditions']);
-        this.validateBooleans(['remove.uncommented', 'remove.unliked', 'remove.text', 'remove.images',
-            'remove.videos', 'options.caseSensitive', 'options.reverseConditions', 'runOn.home', 'runOn.social',
-            'runOn.profile', 'runOn.guestHome']);
+        this.validateBooleans(['remove.uncommented', 'remove.unliked', 'remove.text', 'remove.images', 'remove.gifs', 'remove.videos', 'options.caseSensitive', 'options.reverseConditions', 'runOn.home', 'runOn.social', 'runOn.profile', 'runOn.guestHome']);
 
         if (this.errors.length > 0) {
             throw new Error(`Script disabled due to configuration errors: ${this.errors.join(', ')}`);
