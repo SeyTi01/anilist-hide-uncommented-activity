@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Anilist: Activity-Feed Filter
 // @namespace    https://github.com/SeyTi01/
-// @version      1.8.2
+// @version      1.8.3
 // @description  Control the content displayed in your activity feeds
 // @author       SeyTi01
 // @match        https://anilist.co/*
@@ -12,6 +12,7 @@
 const config = {
     remove: {
         images: false, // Remove activities with images
+        gifs: false, // Remove activities with gifs
         videos: false, // Remove activities with videos
         text: false, // Remove activities with only text
         uncommented: false, // Remove activities without comments
@@ -22,7 +23,7 @@ const config = {
         targetLoadCount: 2, // Minimum number of activities to display per "Load More" button click
         caseSensitive: false, // Use case-sensitive matching for string-based removal
         reverseConditions: false, // Display only posts that meet the specified removal conditions
-        linkedConditions: [], // Groups of conditions to be checked together
+        linkedConditions: [], // Groups of conditions to be evaluated together
     },
     runOn: {
         home: true, // Run the script on the home feed
@@ -103,6 +104,7 @@ class ActivityHandler {
         ['unliked', (node, reverse) => reverse ? !this.evaluateUnlikedRemoval(node) : this.evaluateUnlikedRemoval(node)],
         ['text', (node, reverse) => reverse ? !this.evaluateTextRemoval(node) : this.evaluateTextRemoval(node)],
         ['images', (node, reverse) => reverse ? !this.evaluateImageRemoval(node) : this.evaluateImageRemoval(node)],
+        ['gifs', (node, reverse) => reverse ? !this.evaluateGifRemoval(node) : this.evaluateGifRemoval(node)],
         ['videos', (node, reverse) => reverse ? !this.evaluateVideoRemoval(node) : this.evaluateVideoRemoval(node)],
         ['containsStrings', (node, reverse) => this.evaluateStringRemoval(node, reverse)],
     ]);
@@ -139,7 +141,7 @@ class ActivityHandler {
 
         const checkedConditions = Array.from(this.CONDITIONS_MAP)
             .filter(([name]) => !this.isConditionInLinked(name) && (remove[name] === true || remove[name].length > 0))
-            .map(([, predicate]) => predicate(node, reverseConditions));
+            .map(([, condition]) => condition(node, reverseConditions));
 
         return linkedResult !== this.linked.FALSE && !checkedConditions.includes(false)
             && (linkedResult === this.linked.TRUE || checkedConditions.includes(true));
@@ -148,8 +150,8 @@ class ActivityHandler {
     evaluateNormalConditions(node, linkedResult) {
         const { remove, options: { reverseConditions } } = this.config;
 
-        return linkedResult === this.linked.TRUE || [...this.CONDITIONS_MAP].some(([name, predicate]) =>
-            !this.isConditionInLinked(name) && remove[name] && predicate(node, reverseConditions),
+        return linkedResult === this.linked.TRUE || [...this.CONDITIONS_MAP].some(([name, condition]) =>
+            !this.isConditionInLinked(name) && remove[name] && condition(node, reverseConditions),
         );
     }
 
@@ -196,12 +198,13 @@ class ActivityHandler {
 
     evaluateTextRemoval = (node) =>
         (node.classList.contains(selectors.ACTIVITY.TEXT) || node.classList.contains(selectors.ACTIVITY.MESSAGE))
-        && !(this.evaluateImageRemoval(node) || this.evaluateVideoRemoval(node));
+        && !(this.evaluateImageRemoval(node) || this.evaluateGifRemoval(node) || this.evaluateVideoRemoval(node));
 
-    evaluateVideoRemoval = (node) => node?.querySelector(selectors.CLASS.VIDEO)
-        || node?.querySelector(selectors.SPAN.YOUTUBE);
+    evaluateVideoRemoval = (node) => node?.querySelector(selectors.CLASS.VIDEO) || node?.querySelector(selectors.SPAN.YOUTUBE);
 
-    evaluateImageRemoval = (node) => node?.querySelector(selectors.CLASS.IMAGE);
+    evaluateImageRemoval = (node) => node?.querySelector(selectors.CLASS.IMAGE) && !node.querySelector(selectors.CLASS.IMAGE).src.includes('.gif');
+
+    evaluateGifRemoval = (node) => node?.querySelector(selectors.CLASS.IMAGE)?.src.includes('.gif');
 
     evaluateUncommentedRemoval = (node) => !node.querySelector(selectors.DIV.REPLIES)?.querySelector(selectors.SPAN.COUNT);
 
@@ -289,9 +292,7 @@ class ConfigValidator {
         this.validatePositiveNonZeroInteger('options.targetLoadCount', 'options.targetLoadCount');
         this.validateLinkedConditions('options.linkedConditions');
         this.validateStringArrays(['remove.containsStrings', 'options.linkedConditions']);
-        this.validateBooleans(['remove.uncommented', 'remove.unliked', 'remove.text', 'remove.images',
-            'remove.videos', 'options.caseSensitive', 'options.reverseConditions', 'runOn.home', 'runOn.social',
-            'runOn.profile', 'runOn.guestHome']);
+        this.validateBooleans(['remove.uncommented', 'remove.unliked', 'remove.text', 'remove.images', 'remove.gifs', 'remove.videos', 'options.caseSensitive', 'options.reverseConditions', 'runOn.home', 'runOn.social', 'runOn.profile', 'runOn.guestHome']);
 
         if (this.errors.length > 0) {
             throw new Error(`Script disabled due to configuration errors: ${this.errors.join(', ')}`);

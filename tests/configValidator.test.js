@@ -9,6 +9,7 @@ describe('ConfigValidator', () => {
             unliked: false,
             text: false,
             images: false,
+            gifs: false,
             videos: false,
             containsStrings: [],
         },

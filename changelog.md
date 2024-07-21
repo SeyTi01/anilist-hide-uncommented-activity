@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 1.8.3 (Jul 21, 2024)
+
+### Features
+- Add option to remove activities with gifs
+
+### Changes
+- Remove image option no longer removes gifs
+
 ## Version 1.8.2 (Dec 13, 2023)
 
 ### Features

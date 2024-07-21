@@ -19,6 +19,7 @@ const CONTAINS_STRING_2 = `${TEST_DATA_PATH}activity-containsString2.html`
 const CONTAINS_STRINGS = `${TEST_DATA_PATH}activity-containsStrings.html`
 const IMAGES_UNLIKED = `${TEST_DATA_PATH}activity-imagesUnliked.html`;
 const VIDEOS_UNCOMMENTED = `${TEST_DATA_PATH}activity-videosUncommented.html`;
+const GIF = `${TEST_DATA_PATH}activity-gif.html`;
 
 describe('ActivityHandler', () => {
     let activityHandler;
@@ -26,7 +27,7 @@ describe('ActivityHandler', () => {
     beforeEach(function() {
         const config = {
             remove:
-                { uncommented: false, unliked: false, text: false, images: false, videos: false, containsStrings: [] },
+                { uncommented: false, unliked: false, text: false, images: false, gifs: false, videos: false, containsStrings: [] },
             options:
                 { targetLoadCount: 2, caseSensitive: false, linkedConditions: [], reversedConditions: false },
         };
@@ -126,6 +127,7 @@ describe('ActivityHandler', () => {
         { htmlPath: VIDEOS, configOptions: { remove: { text: true } }, expectedRemove: false },
         { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { text: true } }, expectedRemove: false },
         { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { text: true } }, expectedRemove: false },
+        { htmlPath: GIF, configOptions: { remove: { text: true } }, expectedRemove: false },
 
         // Tests for images
         { htmlPath: UNLIKED, configOptions: { remove: { images: true } }, expectedRemove: false },
@@ -136,6 +138,10 @@ describe('ActivityHandler', () => {
         { htmlPath: VIDEOS, configOptions: { remove: { images: true } }, expectedRemove: false },
         { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { images: true } }, expectedRemove: false },
         { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { images: true } }, expectedRemove: true },
+        { htmlPath: GIF, configOptions: { remove: { images: true } }, expectedRemove: false },
+
+        // Tests for gifs
+        { htmlPath: GIF, configOptions: { remove: { gifs: true } }, expectedRemove: true },
 
         // Tests for videos
         { htmlPath: UNLIKED, configOptions: { remove: { videos: true } }, expectedRemove: false },
@@ -224,6 +230,9 @@ describe('ActivityHandler', () => {
         { htmlPath: VIDEOS, configOptions: { remove: { images: true }, options: { reverseConditions: true } }, expectedRemove: true },
         { htmlPath: CONTAINS_STRING_1, configOptions: { remove: { images: true }, options: { reverseConditions: true } }, expectedRemove: true },
         { htmlPath: IMAGES_UNLIKED, configOptions: { remove: { images: true }, options: { reverseConditions: true } }, expectedRemove: false },
+
+        // Tests for reversed gifs
+        { htmlPath: GIF, configOptions: { remove: { gifs: true }, options: { reverseConditions: true } }, expectedRemove: false },
 
         // Tests for reversed videos
         { htmlPath: UNLIKED, configOptions: { remove: { videos: true }, options: { reverseConditions: true } }, expectedRemove: true },
