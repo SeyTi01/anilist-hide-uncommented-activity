@@ -42,7 +42,7 @@ describe('ConfigValidator', () => {
             notContainsStrings: [['A']],
         },
         options: {
-            linkedConditions: ['text'],
+            linkedConditions: ['uncommented', 'unliked', 'text', 'images', 'gifs', 'videos', 'containsStrings'],
         },
     });
 

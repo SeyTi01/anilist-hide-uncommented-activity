@@ -335,7 +335,7 @@ class ConfigValidator {
 
     validateLinkedConditions(configKey) {
         const linkedConditions = this.getConfigValue(configKey).flat();
-        const allowedConditions = ['uncommented', 'unliked', 'text', 'images', 'videos', 'containsStrings'];
+        const allowedConditions = ['uncommented', 'unliked', 'text', 'images', 'gifs', 'videos', 'containsStrings'];
 
         if (linkedConditions.some(condition => !allowedConditions.includes(condition))) {
             this.errors.push(`${configKey} should only contain the following strings: ${allowedConditions.join(', ')}`);
